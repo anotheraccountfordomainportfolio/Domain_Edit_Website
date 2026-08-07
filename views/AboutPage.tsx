@@ -219,9 +219,9 @@ const AboutPage = () => {
                 <div className="absolute -inset-4 bg-gradient-to-r from-[#a8fbd3] to-[#4fb7b3] rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
                 <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10">
                   <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" 
-                    alt="Anas Khan" 
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-110 hover:scale-100"
+                    src="https://res.cloudinary.com/dhejaxxje/image/upload/v1786132094/1000427662_11zon_uhhcph.jpg" 
+                    alt="Domain Edits" 
+                    className="w-full h-full object-cover transition-all duration-700 scale-110 hover:scale-100"
                     referrerPolicy="no-referrer"
                   loading="lazy" />
                 </div>
