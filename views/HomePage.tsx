@@ -139,12 +139,9 @@ const HomePage: React.FC = () => {
               className="text-[12vw] md:text-[10vw] leading-[0.9] font-black tracking-tighter text-center z-10" 
             />
             
-            {/* Optimized Orb - Reduced Blur for Performance */}
-            <motion.div 
-               className="absolute -z-20 w-[50vw] h-[50vw] bg-white/5 blur-[40px] rounded-full pointer-events-none will-change-transform"
-               animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.3, 0.6, 0.3] }}
-               transition={{ duration: 6, repeat: Infinity }}
-               style={{ transform: 'translateZ(0)' }}
+            {/* Static Orb */}
+            <div 
+               className="absolute -z-20 w-[50vw] h-[50vw] bg-white/5 blur-[40px] rounded-full pointer-events-none opacity-40"
             />
           </div>
           
@@ -188,23 +185,56 @@ const HomePage: React.FC = () => {
         
         <div className="text-center mb-12">
           <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4">
-            Latest Project
+            Featured Projects
           </div>
           <h2 className="text-4xl md:text-6xl font-heading font-bold uppercase tracking-tight text-white justify-center text-center">
             Recent Work
           </h2>
         </div>
 
-        <div className="max-w-5xl mx-auto bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-4 md:p-8 rounded-3xl shadow-[0_16px_36px_rgba(0,0,0,0.4)]">
-          <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/5 bg-black">
-            <iframe
-              src="https://www.youtube.com/embed/hHUlfQZsO9o"
-              className="w-full h-full border-0 pointer-events-auto"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              loading="lazy"
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { title: "LATEST SHOWCASE", tag: "Post Production", url: "https://www.youtube.com/embed/hHUlfQZsO9o", desc: "Featured video editing and post-production highlight." },
+            { title: "VIDEO EDITING", tag: "Premiere Pro", url: "https://www.youtube.com/embed/-EbQmeQ5y9c", desc: "Fast-paced cuts, pacing, and seamless transitions." },
+            { title: "VISUAL EFFECTS", tag: "After Effects", url: "https://www.youtube.com/embed/d0mbJpaAnCw", desc: "Dynamic motion graphics, visual effects, and hooks." },
+            { title: "COLOR & FINISHING", tag: "DaVinci Resolve", url: "https://www.youtube.com/embed/dbkR1kKdDO4", desc: "Mood enhancement and professional color grading." },
+            { title: "AUDIO DESIGN", tag: "Audition", url: "https://www.youtube.com/embed/mIBLnHvF2zE", desc: "Immersive sound design and crisp audio mastering." },
+            { title: "VERTICAL CONTENT", tag: "TikTok • Reels • Shorts", url: "https://www.youtube.com/embed/sy_PCFRjkRo", desc: "High retention vertical content editing." }
+          ].map((project, idx) => (
+            <div key={idx} className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 md:p-6 rounded-3xl shadow-[0_16px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#a8fbd3]/40 transition-all duration-300 group">
+              <div>
+                <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/5 bg-black mb-4 shadow-inner">
+                  <iframe
+                    src={project.url}
+                    className="w-full h-full border-0 pointer-events-auto"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[#a8fbd3] text-[10px] font-mono uppercase tracking-widest bg-[#a8fbd3]/10 px-2.5 py-0.5 rounded-full">
+                    {project.tag}
+                  </span>
+                </div>
+                <h3 className="text-xl font-heading font-bold uppercase mb-2 text-white group-hover:text-[#a8fbd3] transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-gray-400 text-xs leading-relaxed">
+                  {project.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link
+            to="/portfolio"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-[#a8fbd3] transition-all duration-300 shadow-lg"
+          >
+            View All Work
+          </Link>
         </div>
       </div>
 
@@ -252,37 +282,31 @@ const HomePage: React.FC = () => {
           <div className="max-w-4xl mx-auto">
             <div className="relative pt-12 pb-8 flex flex-col items-center lg:items-start w-full min-h-[300px]">
               {/* Backing large text "VIDEO EDITORS" */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              <div
                 className="absolute top-4 left-1/2 lg:left-8 -translate-x-1/2 lg:translate-x-0 z-0 whitespace-nowrap"
               >
-                <KineticText 
-                  text="VIDEO EDITORS" 
-                  className="text-6xl md:text-[8vw] font-heading font-black tracking-tighter uppercase drop-shadow-[0_0_35px_rgba(168,251,211,0.25)] select-none pointer-events-none justify-center" 
-                />
-              </motion.div>
+                <h2 className="text-6xl md:text-[8vw] font-heading font-black tracking-tighter uppercase drop-shadow-[0_0_35px_rgba(168,251,211,0.25)] select-none pointer-events-none justify-center bg-gradient-to-r from-white via-[#a8fbd3] via-[#4fb7b3] via-[#637ab9] to-white bg-[length:200%_auto] bg-clip-text text-transparent">
+                  VIDEO EDITORS
+                </h2>
+              </div>
 
-              {/* Floating Glass Card overlapping on the edge of the text above */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="relative z-10 mt-16 md:mt-24 lg:ml-20 bg-black/45 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.6)] max-w-xl text-center lg:text-left hover:border-[#a8fbd3]/35 transition-all duration-300"
+              {/* Clean static card without any float, transition, or gradient animations */}
+              <div
+                className="relative z-10 mt-16 md:mt-24 lg:ml-20 bg-black/45 border border-white/10 p-6 md:p-8 rounded-3xl max-w-xl text-center lg:text-left"
               >
                 <h2 className="text-3xl md:text-5xl font-heading font-bold mb-4 leading-tight uppercase text-white">
                   Built on <br/> 
-                  <KineticText text="CREATIVITY" as="span" className="text-4xl md:text-6xl justify-center lg:justify-start mt-2" />
+                  <span className="text-4xl md:text-6xl justify-center lg:justify-start mt-2 inline-block text-white font-black">
+                    CREATIVITY
+                  </span>
                 </h2>
                 
-                <div className="inline-block bg-white/10 backdrop-blur-md border border-white/5 px-4 py-1.5 rounded-full">
+                <div className="inline-block bg-white/10 border border-white/5 px-4 py-1.5 rounded-full">
                   <h3 className="text-[10px] md:text-xs font-mono text-[#a8fbd3] tracking-[0.15em] uppercase">
                     EDITOR. CREATOR. PROBLEM SOLVER.
                   </h3>
                 </div>
-              </motion.div>
+              </div>
             </div>
             
             <div className="text-center lg:text-left mt-8">
