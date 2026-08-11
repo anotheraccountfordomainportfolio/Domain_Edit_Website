@@ -132,7 +132,7 @@ const HomePage: React.FC = () => {
           </motion.div>
 
           {/* Main Title */}
-          <div className="relative w-full flex justify-center items-center">
+          <div className="relative w-full flex justify-center items-center min-h-[24vw] md:min-h-[12vw]">
             <KineticText 
               text="DOMAIN EDITS" 
               as="h1" 
