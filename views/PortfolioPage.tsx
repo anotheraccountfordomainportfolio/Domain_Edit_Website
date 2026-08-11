@@ -1,6 +1,6 @@
+import LazyYoutube from '../ui/LazyYoutube';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ReactPlayer from 'react-player';
 import { Menu, X, ArrowUp, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -119,20 +119,14 @@ const PortfolioPage = () => {
                 <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-white/10 mb-6">
                   {project.video ? (
                     project.video.includes('youtube.com') || project.video.includes('youtu.be') ? (
-                      <iframe
-                        src={project.video}
-                        className="w-full h-full border-0 bg-black pointer-events-auto"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        loading="lazy"
-                      />
+                      <LazyYoutube url={project.video} className="w-full h-full border-0 bg-black pointer-events-auto" />
                     ) : project.video.includes('collection.cloudinary.com') ? (
                       <iframe src={project.video}
                         
                         className="w-full h-full border-0 bg-black pointer-events-auto"
                         allow="autoplay; fullscreen"
                         allowFullScreen
-                      loading="lazy" />
+                      loading={index < 4 ? "eager" : "lazy"} />
                     ) : (
                       <video src={project.video}
                         
@@ -147,7 +141,7 @@ const PortfolioPage = () => {
                       alt={project.title} 
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
                       referrerPolicy="no-referrer"
-                    loading="lazy" />
+                    loading={index < 4 ? "eager" : "lazy"} />
                   )}
                   {!project.video && (
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 pointer-events-none">

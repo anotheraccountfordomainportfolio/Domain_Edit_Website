@@ -1,5 +1,5 @@
+import LazyYoutube from '../ui/LazyYoutube';
 import React, { useRef, useState, useEffect } from 'react';
-import ReactPlayer from 'react-player';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Ticket, Globe, Zap, Music, MapPin, Menu, X, Calendar, Play, ChevronLeft, ChevronRight, Facebook, Instagram, Heart, Users, Send, Mail, Phone, MessageSquare, ArrowUp, Video, Sparkles, Palette, Headphones, Smartphone, Tv } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -204,13 +204,7 @@ const HomePage: React.FC = () => {
             <div key={idx} className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 md:p-6 rounded-3xl shadow-[0_16px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#a8fbd3]/40 transition-all duration-300 group">
               <div>
                 <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/5 bg-black mb-4 shadow-inner">
-                  <iframe
-                    src={project.url}
-                    className="w-full h-full border-0 pointer-events-auto"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    loading="lazy"
-                  />
+                  <LazyYoutube url={project.url} className="w-full h-full border-0 pointer-events-auto" />
                 </div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[#a8fbd3] text-[10px] font-mono uppercase tracking-widest bg-[#a8fbd3]/10 px-2.5 py-0.5 rounded-full">

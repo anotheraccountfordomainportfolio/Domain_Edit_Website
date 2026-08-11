@@ -223,7 +223,7 @@ const AboutPage = () => {
                     alt="Domain Edits" 
                     className="w-full h-full object-cover transition-all duration-700 scale-110 hover:scale-100"
                     referrerPolicy="no-referrer"
-                  loading="lazy" />
+                   />
                 </div>
               </div>
 
