@@ -161,6 +161,12 @@ const AboutPage = () => {
         <Link to="/" className="font-heading text-xl md:text-2xl font-bold tracking-tighter text-white cursor-pointer z-50">
           DE
         </Link>
+        <button 
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden z-50 p-2 text-white hover:text-[#a8fbd3] transition-colors"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </nav>
 
       {/* Main Spread Bottom Navigation Menu */}
@@ -176,16 +182,18 @@ const AboutPage = () => {
             className="fixed inset-0 z-30 bg-[#31326f]/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 md:hidden"
           >
             {[
+              { name: 'HOME', path: '/' },
               { name: 'WORK', path: '/portfolio' },
-              { name: 'SKILL', path: '/skill' },
               { name: 'ABOUT', path: '/about' },
-              { name: 'CONTACT', path: '/contact' }
+              { name: 'CONTACT', path: '/contact' },
+              { name: 'REVIEW', path: '/#review' },
+              { name: 'GRAPHIC DESIGN', path: '/#graphic-design' }
             ].map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-4xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
+                className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
               >
                 {item.name}
               </Link>
