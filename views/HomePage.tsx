@@ -104,17 +104,37 @@ const HomePage: React.FC = () => {
               { name: 'ABOUT', path: '/about' },
               { name: 'CONTACT', path: '/contact' },
               { name: 'REVIEW', path: '/#review' },
-              { name: 'GRAPHIC DESIGN', path: '/#graphic-design' }
-            ].map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
-              >
-                {item.name}
-              </Link>
-            ))}
+              { name: 'GRAPHIC DESIGN', path: 'https://domaindesign.vercel.app/' }
+            ].map((item) => {
+              const isExternal = item.path.startsWith('/#') || item.path.startsWith('http');
+              const isFullExternal = item.path.startsWith('http');
+              
+              if (isExternal) {
+                return (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    target={isFullExternal ? "_blank" : undefined}
+                    rel={isFullExternal ? "noopener noreferrer" : undefined}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
+                  >
+                    {item.name}
+                  </a>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
             
 
           </motion.div>
@@ -188,7 +208,7 @@ const HomePage: React.FC = () => {
       </header>
 
       {/* Recent Works / Video Showcase */}
-      <div id="graphic-design" className="relative max-w-7xl mx-auto px-4 md:px-6 py-16 z-30">
+      <div id="recent-work" className="relative max-w-7xl mx-auto px-4 md:px-6 py-16 z-30">
         <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-[#a8fbd3]/5 via-transparent to-[#4fb7b3]/5 blur-[80px] rounded-3xl" />
         
         <div className="text-center mb-12">

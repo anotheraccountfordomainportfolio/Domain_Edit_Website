@@ -100,17 +100,37 @@ const ContactPage = () => {
               { name: 'ABOUT', path: '/about' },
               { name: 'CONTACT', path: '/contact' },
               { name: 'REVIEW', path: '/#review' },
-              { name: 'GRAPHIC DESIGN', path: '/#graphic-design' }
-            ].map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
-              >
-                {item.name}
-              </Link>
-            ))}
+              { name: 'GRAPHIC DESIGN', path: 'https://domaindesign.vercel.app/' }
+            ].map((item) => {
+              const isExternal = item.path.startsWith('/#') || item.path.startsWith('http');
+              const isFullExternal = item.path.startsWith('http');
+              
+              if (isExternal) {
+                return (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    target={isFullExternal ? "_blank" : undefined}
+                    rel={isFullExternal ? "noopener noreferrer" : undefined}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
+                  >
+                    {item.name}
+                  </a>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

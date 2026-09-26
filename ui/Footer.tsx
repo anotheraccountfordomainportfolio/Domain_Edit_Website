@@ -79,13 +79,38 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
           <div>
             <h3 className="text-xs font-mono text-[#a8fbd3] uppercase tracking-[0.3em] mb-8">Navigation</h3>
             <ul className="space-y-4">
-              {['Home', 'Work', 'About', 'Skill', 'Contact'].map((item) => (
-                <li key={item}>
-                  <Link to={item === 'Home' ? '/' : (item === 'Work' ? '/portfolio' : `/${item.toLowerCase()}`)} className="text-gray-400 hover:text-white transition-colors text-lg font-light group flex items-center gap-2 pointer-events-auto">
-                    <span className="w-0 h-px bg-[#a8fbd3] group-hover:w-4 transition-all duration-300" />
-                    {item}
-                  </Link></li>
-              ))}
+              {[
+                { name: 'Home', path: '/' },
+                { name: 'Work', path: '/portfolio' },
+                { name: 'About', path: '/about' },
+                { name: 'Contact', path: '/contact' },
+                { name: 'Review', path: '/#review' },
+                { name: 'Graphic Design', path: 'https://domaindesign.vercel.app/' }
+              ].map((item) => {
+                const isExternal = item.path.startsWith('/#') || item.path.startsWith('http');
+                const isFullExternal = item.path.startsWith('http');
+                
+                return (
+                  <li key={item.name}>
+                    {isExternal ? (
+                      <a 
+                        href={item.path} 
+                        target={isFullExternal ? "_blank" : undefined}
+                        rel={isFullExternal ? "noopener noreferrer" : undefined}
+                        className="text-gray-400 hover:text-white transition-colors text-lg font-light group flex items-center gap-2 pointer-events-auto"
+                      >
+                        <span className="w-0 h-px bg-[#a8fbd3] group-hover:w-4 transition-all duration-300" />
+                        {item.name}
+                      </a>
+                    ) : (
+                      <Link to={item.path} className="text-gray-400 hover:text-white transition-colors text-lg font-light group flex items-center gap-2 pointer-events-auto">
+                        <span className="w-0 h-px bg-[#a8fbd3] group-hover:w-4 transition-all duration-300" />
+                        {item.name}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
