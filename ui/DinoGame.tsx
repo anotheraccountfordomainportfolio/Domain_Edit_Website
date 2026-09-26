@@ -19,19 +19,20 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
     isPlaying: false,
     score: 0,
     dino: {
-      x: 50,
+      x: 60,
       y: 150,
       vy: 0,
       gravity: 0.6,
-      jumpForce: -11,
-      width: 36,
-      height: 42,
+      jumpForce: -11.5,
+      width: 48,
+      height: 52,
       grounded: true,
     },
-    obstacles: [] as { x: number; y: number; width: number; height: number; speed: number }[],
-    clouds: [] as { x: number; y: number; speed: number }[],
+    obstacles: [] as { x: number; y: number; width: number; height: number; speed: number; type: number }[],
+    buildings: [] as { x: number; y: number; width: number; height: number; windows: { x: number; y: number; lit: boolean }[]; speed: number }[],
+    stars: [] as { x: number; y: number; size: number; alpha: number }[],
     frameCount: 0,
-    speed: 5,
+    speed: 5.5,
   });
 
   useEffect(() => {
@@ -41,15 +42,47 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
     if (!ctx) return;
 
     // Set canvas dimensions
-    canvas.width = 800;
-    canvas.height = 300;
+    canvas.width = 900;
+    canvas.height = 320;
 
-    // Initialize clouds
-    stateRef.current.clouds = [
-      { x: 200, y: 50, speed: 1 },
-      { x: 500, y: 80, speed: 1.2 },
-      { x: 750, y: 40, speed: 0.8 },
-    ];
+    // Initialize starry night sky
+    const stars = [];
+    for (let i = 0; i < 40; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * 150,
+        size: Math.random() * 2 + 1,
+        alpha: Math.random() * 0.8 + 0.2,
+      });
+    }
+    stateRef.current.stars = stars;
+
+    // Initialize City Skyline Buildings
+    const buildings = [];
+    let currentX = 0;
+    while (currentX < canvas.width + 200) {
+      const bWidth = Math.floor(Math.random() * 60) + 50;
+      const bHeight = Math.floor(Math.random() * 120) + 80;
+      const windows = [];
+      
+      // Generate lit windows
+      for (let wx = 10; wx < bWidth - 10; wx += 14) {
+        for (let wy = 15; wy < bHeight - 20; wy += 20) {
+          windows.push({ x: wx, y: wy, lit: Math.random() > 0.3 });
+        }
+      }
+
+      buildings.push({
+        x: currentX,
+        y: 240 - bHeight,
+        width: bWidth,
+        height: bHeight,
+        windows,
+        speed: 1.2,
+      });
+      currentX += bWidth + 5;
+    }
+    stateRef.current.buildings = buildings;
 
     let animationFrameId: number;
 
@@ -59,9 +92,9 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
         // Start game
         state.isPlaying = true;
         state.score = 0;
-        state.speed = 5;
+        state.speed = 5.5;
         state.obstacles = [];
-        state.dino.y = 150;
+        state.dino.y = 240 - 52;
         state.dino.vy = 0;
         setGameState('PLAYING');
         setScore(0);
@@ -79,7 +112,6 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
         e.preventDefault();
         jump();
       } else {
-        // Any key jump support
         jump();
       }
     };
@@ -98,35 +130,72 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Background Grid / Atmosphere
-      ctx.fillStyle = '#0b0c16';
+      // 1. Night Sky Gradient
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      skyGrad.addColorStop(0, '#04050a');
+      skyGrad.addColorStop(0.7, '#0b0f19');
+      skyGrad.addColorStop(1, '#111827');
+      ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw Ground Line
-      ctx.strokeStyle = '#a8fbd3';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, 220);
-      ctx.lineTo(800, 220);
-      ctx.stroke();
-
-      // Draw Clouds
-      ctx.fillStyle = 'rgba(168, 251, 211, 0.15)';
-      state.clouds.forEach(cloud => {
-        cloud.x -= cloud.speed;
-        if (cloud.x < -60) cloud.x = 860;
-        ctx.beginPath();
-        ctx.arc(cloud.x, cloud.y, 20, 0, Math.PI * 2);
-        ctx.arc(cloud.x + 15, cloud.y - 10, 15, 0, Math.PI * 2);
-        ctx.arc(cloud.x + 30, cloud.y, 18, 0, Math.PI * 2);
-        ctx.fill();
+      // Draw Twinkling Stars
+      state.stars.forEach(star => {
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        ctx.fillRect(star.x, star.y, star.size, star.size);
       });
+
+      // 2. City Skyline Buildings (Night Lights)
+      state.buildings.forEach(b => {
+        if (state.isPlaying) {
+          b.x -= b.speed;
+          if (b.x + b.width < 0) {
+            b.x = canvas.width + Math.random() * 50;
+            b.height = Math.floor(Math.random() * 120) + 80;
+            b.y = 240 - b.height;
+          }
+        }
+
+        // Building silhouette
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(b.x, b.y, b.width, b.height);
+
+        // Neon rooftop glow
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(b.x, b.y, b.width, 2);
+
+        // Windows
+        b.windows.forEach(w => {
+          ctx.fillStyle = w.lit ? (Math.random() > 0.99 ? '#facc15' : '#38bdf8') : '#1e293b';
+          ctx.fillRect(b.x + w.x, b.y + w.y, 6, 10);
+        });
+      });
+
+      // 3. Ground & Road
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 240, canvas.width, 80);
+
+      // Neon road line
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.moveTo(0, 240);
+      ctx.lineTo(canvas.width, 240);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Road markings
+      ctx.fillStyle = '#cbd5e1';
+      for (let rx = (state.frameCount * 8) % 40; rx < canvas.width; rx += 40) {
+        ctx.fillRect(rx, 270, 20, 4);
+      }
 
       if (state.isPlaying) {
         state.frameCount++;
         
         // Increment score
-        if (state.frameCount % 6 === 0) {
+        if (state.frameCount % 5 === 0) {
           state.score += 1;
           setScore(state.score);
           if (state.score > highScore) {
@@ -135,47 +204,72 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
         }
 
         // Increase speed gradually
-        if (state.frameCount % 500 === 0) {
-          state.speed += 0.5;
+        if (state.frameCount % 400 === 0) {
+          state.speed += 0.4;
         }
 
         // Update Dino Physics
         state.dino.vy += state.dino.gravity;
         state.dino.y += state.dino.vy;
 
-        const groundLevel = 220 - state.dino.height;
+        const groundLevel = 240 - state.dino.height;
         if (state.dino.y >= groundLevel) {
           state.dino.y = groundLevel;
           state.dino.vy = 0;
           state.dino.grounded = true;
         }
 
-        // Spawn Obstacles (Cacti)
-        if (state.frameCount % Math.max(90 - Math.floor(state.speed * 3), 45) === 0) {
-          const isDouble = Math.random() > 0.7;
+        // Spawn Realistic Cacti
+        if (state.frameCount % Math.max(85 - Math.floor(state.speed * 3), 40) === 0) {
+          const type = Math.floor(Math.random() * 3);
           state.obstacles.push({
-            x: 800,
-            y: 220 - 36,
-            width: isDouble ? 36 : 24,
-            height: 36,
+            x: canvas.width,
+            y: 240 - (type === 0 ? 54 : type === 1 ? 46 : 60),
+            width: type === 0 ? 32 : type === 1 ? 26 : 38,
+            height: type === 0 ? 54 : type === 1 ? 46 : 60,
             speed: state.speed,
+            type,
           });
         }
 
-        // Update & Draw Obstacles
-        ctx.fillStyle = '#a8fbd3';
+        // Update & Draw Realistic Cacti
         for (let i = state.obstacles.length - 1; i >= 0; i--) {
           const obs = state.obstacles[i];
           obs.x -= obs.speed;
 
-          // Draw Cactus shape
-          ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-          ctx.fillRect(obs.x - 4, obs.y + 10, 6, 12);
-          ctx.fillRect(obs.x + obs.width - 2, obs.y + 6, 6, 14);
+          // Draw Realistic Saguaro Cactus
+          ctx.fillStyle = '#10b981';
+          ctx.shadowColor = '#059669';
+          ctx.shadowBlur = 8;
 
-          // Collision Detection (Bounding Box)
-          const dinoBox = { x: 55, y: state.dino.y + 4, width: state.dino.width - 10, height: state.dino.height - 8 };
-          const obsBox = { x: obs.x, y: obs.y, width: obs.width, height: obs.height };
+          if (obs.type === 0) {
+            // Large Saguaro with 2 arms
+            ctx.fillRect(obs.x + 10, obs.y, 12, obs.height); // main trunk
+            ctx.fillRect(obs.x + 2, obs.y + 16, 10, 6); // left arm bottom
+            ctx.fillRect(obs.x + 2, obs.y + 6, 6, 14); // left arm top
+            ctx.fillRect(obs.x + 20, obs.y + 22, 10, 6); // right arm bottom
+            ctx.fillRect(obs.x + 24, obs.y + 12, 6, 14); // right arm top
+          } else if (obs.type === 1) {
+            // Medium cactus with 1 arm
+            ctx.fillRect(obs.x + 8, obs.y, 10, obs.height);
+            ctx.fillRect(obs.x + 16, obs.y + 14, 8, 6);
+            ctx.fillRect(obs.x + 20, obs.y + 6, 6, 14);
+          } else {
+            // Cluster cactus
+            ctx.fillRect(obs.x + 4, obs.y + 10, 10, obs.height - 10);
+            ctx.fillRect(obs.x + 18, obs.y, 12, obs.height);
+            ctx.fillRect(obs.x + 8, obs.y + 20, 8, obs.height - 20);
+          }
+
+          // Cactus ridges / needle highlights
+          ctx.fillStyle = '#6ee7b7';
+          ctx.fillRect(obs.x + 12, obs.y + 4, 2, obs.height - 8);
+
+          ctx.shadowBlur = 0;
+
+          // Collision Detection (Precise Bounding Box)
+          const dinoBox = { x: state.dino.x + 6, y: state.dino.y + 6, width: state.dino.width - 12, height: state.dino.height - 10 };
+          const obsBox = { x: obs.x + 2, y: obs.y + 2, width: obs.width - 4, height: obs.height - 4 };
 
           if (
             dinoBox.x < obsBox.x + obsBox.width &&
@@ -183,63 +277,74 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
             dinoBox.y < obsBox.y + obsBox.height &&
             dinoBox.y + dinoBox.height > obsBox.y
           ) {
-            // Game Over
             state.isPlaying = false;
             setGameState('GAME_OVER');
           }
 
           // Remove off-screen obstacles
-          if (obs.x < -50) {
+          if (obs.x < -60) {
             state.obstacles.splice(i, 1);
           }
         }
       }
 
-      // Draw Dino (Cyberpunk T-Rex style)
-      const dx = 50;
+      // 4. Realistic T-Rex Dinosaur Drawing
+      const dx = state.dino.x;
       const dy = state.dino.y;
-      
-      // Neon Glow
-      ctx.shadowColor = '#a8fbd3';
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = '#a8fbd3';
 
-      // Head & Body
-      ctx.fillRect(dx + 16, dy, 20, 16); // head
-      ctx.fillRect(dx + 28, dy + 6, 8, 8); // snout
-      ctx.fillRect(dx + 8, dy + 14, 22, 18); // body
-      
-      // Eye
-      ctx.fillStyle = '#0b0c16';
-      ctx.fillRect(dx + 26, dy + 4, 3, 3);
-      ctx.fillStyle = '#a8fbd3';
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 15;
+      ctx.fillStyle = '#38bdf8'; // Cyber-teal / realistic sleek dinosaur armor
 
       // Tail
-      ctx.fillRect(dx, dy + 16, 10, 6);
-      ctx.fillRect(dx - 4, dy + 14, 6, 4);
+      ctx.fillRect(dx, dy + 22, 16, 8);
+      ctx.fillRect(dx - 6, dy + 26, 8, 6);
+      ctx.fillRect(dx - 12, dy + 30, 8, 4);
 
-      // Legs (animated if running)
-      const legFrame = Math.floor(state.frameCount / 8) % 2;
+      // Body / Torso
+      ctx.fillRect(dx + 14, dy + 18, 22, 22);
+
+      // Neck & Head
+      ctx.fillRect(dx + 28, dy + 4, 16, 18);
+      ctx.fillRect(dx + 40, dy + 8, 10, 10); // Snout/Jaw
+
+      // Eye (Glowing Red/Amber)
+      ctx.fillStyle = '#f43f5e';
+      ctx.fillRect(dx + 42, dy + 10, 3, 3);
+      ctx.fillStyle = '#38bdf8';
+
+      // Tiny T-Rex Arms
+      ctx.fillRect(dx + 30, dy + 24, 6, 4);
+
+      // Legs (Animated Running)
+      const legFrame = Math.floor(state.frameCount / 6) % 2;
       if (state.isPlaying && state.dino.grounded) {
         if (legFrame === 0) {
-          ctx.fillRect(dx + 10, dy + 32, 6, 10);
-          ctx.fillRect(dx + 20, dy + 32, 6, 7);
+          // Left leg forward, right leg back
+          ctx.fillRect(dx + 18, dy + 40, 6, 12);
+          ctx.fillRect(dx + 14, dy + 50, 10, 4); // foot
+
+          ctx.fillRect(dx + 28, dy + 40, 6, 8);
         } else {
-          ctx.fillRect(dx + 10, dy + 32, 6, 7);
-          ctx.fillRect(dx + 20, dy + 32, 6, 10);
+          // Right leg forward, left leg back
+          ctx.fillRect(dx + 26, dy + 40, 6, 12);
+          ctx.fillRect(dx + 22, dy + 50, 10, 4); // foot
+
+          ctx.fillRect(dx + 18, dy + 40, 6, 8);
         }
       } else {
-        ctx.fillRect(dx + 10, dy + 32, 6, 10);
-        ctx.fillRect(dx + 20, dy + 32, 6, 10);
+        // Jumping pose (legs tucked)
+        ctx.fillRect(dx + 18, dy + 40, 6, 10);
+        ctx.fillRect(dx + 26, dy + 40, 6, 10);
       }
 
       ctx.shadowBlur = 0; // reset shadow
 
-      // Draw Score on canvas if playing or game over
+      // Score Display
       if (state.isPlaying || gameState === 'GAME_OVER') {
         ctx.fillStyle = '#ffffff';
-        ctx.font = '16px monospace';
-        ctx.fillText(`HI: ${String(highScore).padStart(5, '0')}  ${String(state.score).padStart(5, '0')}`, 640, 35);
+        ctx.font = 'bold 18px monospace';
+        ctx.fillText(`HI: ${String(highScore).padStart(5, '0')}  ${String(state.score).padStart(5, '0')}`, canvas.width - 200, 35);
       }
 
       animationFrameId = requestAnimationFrame(update);
@@ -256,14 +361,14 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
   }, [highScore, gameState]);
 
   return (
-    <div className="min-h-screen bg-[#07080f] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden select-none">
+    <div className="min-h-screen bg-[#04050a] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden select-none">
       {/* Background Glows */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#a8fbd3]/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#31326f]/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#38bdf8]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#10b981]/10 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-3xl w-full text-center">
+      <div className="relative z-10 max-w-4xl w-full text-center">
         {/* Status Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#38bdf8] font-mono text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
           {isOffline ? (
             <>
               <WifiOff className="w-4 h-4 text-red-400 animate-pulse" />
@@ -275,34 +380,34 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
               <span>Error 404 • Page Not Found</span>
             </>
           ) : (
-            <span>T-Rex Cyber Runner</span>
+            <span>Cyber City T-Rex Runner</span>
           )}
         </div>
 
         <h1 className="text-4xl md:text-6xl font-heading font-black uppercase tracking-tighter mb-4 text-white">
-          {isOffline ? "You're Offline" : is404 ? "Lost in the Digital Void" : "Dino Runner"}
+          {isOffline ? "You're Offline" : is404 ? "Lost in the City Night" : "T-Rex Night Runner"}
         </h1>
         <p className="text-gray-400 font-sans font-light text-sm md:text-base max-w-lg mx-auto mb-8">
           {isOffline 
-            ? "Your internet connection was interrupted. Press any key or tap screen to jump over the obstacles!"
+            ? "Your internet connection was interrupted. Press any key or tap screen to jump over the cacti in the cyber city!"
             : is404 
-            ? "The page you are looking for doesn't exist or has been moved. While you're here, test your reflexes!"
+            ? "The page you are looking for doesn't exist. Test your reflexes through the midnight skyline!"
             : "Press any key or tap screen to jump."}
         </p>
 
         {/* Game Container */}
-        <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/60 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl p-4">
+        <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/80 shadow-[0_25px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl p-4">
           <canvas
             ref={canvasRef}
-            className="w-full max-w-full h-auto rounded-2xl cursor-pointer block mx-auto aspect-[8/3]"
+            className="w-full max-w-full h-auto rounded-2xl cursor-pointer block mx-auto aspect-[45/16]"
           />
 
           {gameState === 'IDLE' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] pointer-events-none">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[3px] pointer-events-none">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="px-6 py-3 rounded-2xl bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest text-sm shadow-[0_0_25px_rgba(168,251,211,0.5)]"
+                className="px-8 py-4 rounded-2xl bg-[#38bdf8] text-black font-heading font-bold uppercase tracking-widest text-sm shadow-[0_0_30px_rgba(56,189,248,0.6)]"
               >
                 Press Any Key or Tap to Play
               </motion.div>
@@ -310,15 +415,15 @@ export const DinoGame: React.FC<DinoGameProps> = ({ isOffline = false, is404 = f
           )}
 
           {gameState === 'GAME_OVER' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 backdrop-blur-md">
-              <h3 className="text-2xl md:text-3xl font-heading font-black uppercase text-white mb-2">Game Over</h3>
-              <p className="text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-6">Score: {score} | High Score: {highScore}</p>
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 backdrop-blur-md">
+              <h3 className="text-3xl font-heading font-black uppercase text-white mb-2">Game Over</h3>
+              <p className="text-[#38bdf8] font-mono text-xs uppercase tracking-widest mb-6">Score: {score} | High Score: {highScore}</p>
               <button
                 onClick={() => {
                   setGameState('PLAYING');
                   window.location.reload();
                 }}
-                className="px-8 py-3 rounded-xl bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-white transition-colors shadow-[0_0_20px_rgba(168,251,211,0.4)]"
+                className="px-8 py-3 rounded-xl bg-[#38bdf8] text-black font-heading font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-white transition-colors shadow-[0_0_25px_rgba(56,189,248,0.5)]"
               >
                 <RefreshCw className="w-4 h-4" />
                 Play Again
