@@ -84,7 +84,7 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
                 { name: 'Work', path: '/portfolio' },
                 { name: 'About', path: '/about' },
                 { name: 'Contact', path: '/contact' },
-                { name: 'Review', path: '/#review' },
+                { name: 'Reviews', path: '/reviews' },
                 { name: 'Graphic Design', path: 'https://domaindesign.vercel.app/' }
               ].map((item) => {
                 const isExternal = item.path.startsWith('/#') || item.path.startsWith('http');

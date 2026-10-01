@@ -2,27 +2,47 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import LoadingScreen from './ui/LoadingScreen';
 import { Toaster } from 'sonner';
 import { DinoGame } from './ui/DinoGame';
+import LoadingScreen from './ui/LoadingScreen';
+import { AnimatePresence, motion } from 'framer-motion';
 
-// Import HomePage synchronously for instant LCP and 0 CLS on initial load
+// Import all pages synchronously
 import HomePage from './views/HomePage';
-
-const SkillPage = lazy(() => import('./views/SkillPage'));
-const AboutPage = lazy(() => import('./views/AboutPage'));
-const ContactPage = lazy(() => import('./views/ContactPage'));
-const PortfolioPage = lazy(() => import('./views/PortfolioPage'));
-const NotFoundPage = lazy(() => import('./views/NotFoundPage'));
+import SkillPage from './views/SkillPage';
+import AboutPage from './views/AboutPage';
+import ContactPage from './views/ContactPage';
+import PortfolioPage from './views/PortfolioPage';
+import ReviewsPage from './views/ReviewsPage';
+import NotFoundPage from './views/NotFoundPage';
 
 const App: React.FC = () => {
   const location = useLocation();
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingTitle, setLoadingTitle] = useState('DOMAIN EDITS');
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const titleMap: Record<string, string> = {
+      '/': 'HOME',
+      '/portfolio': 'PORTFOLIO',
+      '/skill': 'SKILLS',
+      '/about': 'ABOUT',
+      '/contact': 'CONTACT',
+      '/reviews': 'REVIEWS',
+    };
+    const title = titleMap[location.pathname] || 'DOMAIN EDITS';
+    setLoadingTitle(title);
+    setIsLoading(true);
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -38,17 +58,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const getPageTitle = () => {
-    switch (location.pathname) {
-      case '/': return 'HOME';
-      case '/portfolio': return 'PORTFOLIO';
-      case '/skill': return 'SKILLS';
-      case '/about': return 'ABOUT';
-      case '/contact': return 'CONTACT';
-      default: return 'WELCOME TO DOMAIN EDITS';
-    }
-  };
-
   if (isOffline) {
     return (
       <>
@@ -61,20 +70,30 @@ const App: React.FC = () => {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <Suspense fallback={
-        <div className="fixed inset-0 z-[100]">
-          <LoadingScreen title={getPageTitle()} />
-        </div>
-      }>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/skill" element={<SkillPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
+      
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[99999]"
+          >
+            <LoadingScreen title={loadingTitle} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/skill" element={<SkillPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </>
   );
 };

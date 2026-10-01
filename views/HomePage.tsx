@@ -29,7 +29,7 @@ const HomePage: React.FC = () => {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -50,7 +50,6 @@ const HomePage: React.FC = () => {
   };
 
   const scrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
       const headerOffset = 100;
@@ -73,73 +72,8 @@ const HomePage: React.FC = () => {
       {/* The actual Blue Glaucus element */}
       <BlueGlaucus active={glaucusActive} />
       
-      {/* Navigation Top Header */}
-      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-8 py-6 mix-blend-difference pointer-events-auto">
-        <Link to="/" className="font-heading text-xl md:text-2xl font-bold tracking-tighter text-white cursor-pointer z-50">
-          DE
-        </Link>
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden z-50 p-2 text-white hover:text-[#a8fbd3] transition-colors"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </nav>
-
-      {/* Main Spread Bottom Navigation Menu */}
+      {/* Bottom Spread Navigation Menu */}
       <BottomNav glaucusActive={glaucusActive} setGlaucusActive={setGlaucusActive} />
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-30 bg-[#31326f]/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 md:hidden"
-          >
-            {[
-              { name: 'HOME', path: '/' },
-              { name: 'WORK', path: '/portfolio' },
-              { name: 'ABOUT', path: '/about' },
-              { name: 'CONTACT', path: '/contact' },
-              { name: 'REVIEW', path: '/#review' },
-              { name: 'GRAPHIC DESIGN', path: 'https://domaindesign.vercel.app/' }
-            ].map((item) => {
-              const isExternal = item.path.startsWith('/#') || item.path.startsWith('http');
-              const isFullExternal = item.path.startsWith('http');
-              
-              if (isExternal) {
-                return (
-                  <a
-                    key={item.name}
-                    href={item.path}
-                    target={isFullExternal ? "_blank" : undefined}
-                    rel={isFullExternal ? "noopener noreferrer" : undefined}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
-                  >
-                    {item.name}
-                  </a>
-                );
-              }
-
-              return (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-3xl font-heading font-bold text-white hover:text-[#a8fbd3] transition-colors uppercase bg-transparent border-none"
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-            
-
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* HERO SECTION */}
       <header className="relative h-[100svh] min-h-[600px] flex flex-col items-center justify-center overflow-hidden px-4">
