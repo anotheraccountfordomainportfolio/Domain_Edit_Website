@@ -33,6 +33,7 @@ const App: React.FC = () => {
       '/about': 'ABOUT',
       '/contact': 'CONTACT',
       '/reviews': 'REVIEWS',
+      '/404': '404 NOT FOUND',
     };
     const title = titleMap[location.pathname] || 'DOMAIN EDITS';
     setLoadingTitle(title);
@@ -92,6 +93,7 @@ const App: React.FC = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/reviews" element={<ReviewsPage />} />
+        <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

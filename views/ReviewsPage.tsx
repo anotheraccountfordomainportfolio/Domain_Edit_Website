@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Star, Quote, Sparkles, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Star, Sparkles, ExternalLink } from 'lucide-react';
 import BottomNav from '../ui/BottomNav';
 import FluidBackground from '../ui/FluidBackground';
 import FloatingTextBackground from '../ui/FloatingTextBackground';
@@ -153,25 +153,17 @@ const ReviewsPage: React.FC = () => {
                       ))}
                     </div>
                   </div>
-
-                  {/* Comment */}
-                  <div className="relative mb-6">
-                    <Quote className="absolute -top-2 -left-2 w-8 h-8 text-white/5 pointer-events-none" />
-                    <p className="text-gray-300 text-sm leading-relaxed relative z-10 italic">
-                      "{review.comment}"
-                    </p>
-                  </div>
                 </div>
 
                 <div>
                   {/* Clickable Review Image Preview */}
                   <div 
                     onClick={() => setActiveImageIndex(index)}
-                    className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-6 transition-all"
+                    className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-4 transition-all"
                   >
                     <img 
                       src={review.image} 
-                      alt={review.client} 
+                      alt={review.platform} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       referrerPolicy="no-referrer"
                     />
@@ -182,12 +174,8 @@ const ReviewsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Client Info */}
-                  <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                    <div>
-                      <h4 className="font-heading font-bold text-base text-white">{review.client}</h4>
-                      <p className="text-xs font-mono text-gray-400">{review.role}</p>
-                    </div>
+                  {/* Card Footer: ID */}
+                  <div className="flex items-center justify-end border-t border-white/10 pt-4">
                     <span className="text-xs font-mono text-[#a8fbd3]">#0{review.id}</span>
                   </div>
                 </div>

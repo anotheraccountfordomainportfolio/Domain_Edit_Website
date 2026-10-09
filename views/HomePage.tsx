@@ -8,7 +8,8 @@ import {
   Mic, Megaphone, Star, Clock, Repeat, FileCode, ShieldCheck, Crosshair,
   Wand2, CreditCard, CheckCircle2, PackageCheck, Workflow,
   BadgeCheck, TrendingUp,
-  Film, Video, Disc3, MonitorPlay
+  Film, Video, Disc3, MonitorPlay,
+  Quote, ThumbsUp, Camera, Award, ExternalLink
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -263,15 +264,9 @@ const WhatWeCreateCard: React.FC<{
           </div>
         </div>
 
-        <h3 className="text-base md:text-lg font-heading font-black text-white uppercase mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#a8fbd3] transition-all">
+        <h3 className="text-base md:text-lg font-heading font-black text-white uppercase mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#a8fbd3] transition-all">
           {item.title}
         </h3>
-
-        <div className="flex items-center gap-2 mb-2">
-          <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${item.badgeColor}`}>
-            {item.tag}
-          </span>
-        </div>
 
         <p className="text-[11px] font-mono text-gray-400 group-hover:text-gray-300 transition-colors flex items-center gap-1.5">
           <span className="w-1 h-1 rounded-full bg-[#a8fbd3] inline-block animate-ping" />
@@ -1223,13 +1218,6 @@ const AnimatedReviewSection: React.FC = () => {
     el.style.setProperty('--review-y', `${e.clientY - rect.top}px`);
   };
 
-  const proofPills = [
-    { label: '20+ Active Creators', icon: Users, color: 'text-cyan-400' },
-    { label: '99.4% On-Time Delivery', icon: Clock, color: 'text-amber-400' },
-    { label: '15M+ Aggregate Views', icon: TrendingUp, color: 'text-[#a8fbd3]' },
-    { label: '5.0 Verified Rating', icon: Star, color: 'text-yellow-400' },
-  ];
-
   return (
     <section 
       id="review" 
@@ -1303,35 +1291,9 @@ const AnimatedReviewSection: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-        {/* Animated Pill Header */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/50 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4 backdrop-blur-md transition-all duration-300 shadow-[0_0_20px_rgba(168,251,211,0.15)] hover:scale-105 cursor-pointer">
-          <BadgeCheck className="w-4 h-4 text-[#a8fbd3] animate-pulse" />
-          <span>PROVEN TRACK RECORD</span>
-        </div>
-
-        <h3 className="text-3xl md:text-5xl font-heading font-black tracking-tighter uppercase text-white mb-3 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
+        <h3 className="text-3xl md:text-5xl font-heading font-black tracking-tighter uppercase text-white mb-10 md:mb-12 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
           TRUSTED BY OVER <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">20+ CREATORS</span>
         </h3>
-        
-        <p className="text-xs md:text-sm font-mono text-gray-400 uppercase tracking-[0.25em] mb-10 max-w-xl mx-auto">
-          From high-velocity gaming streamers to authority podcasts and brand channels.
-        </p>
-
-        {/* Proof Stats Pills Row */}
-        <div className="flex flex-wrap justify-center items-center gap-3 md:gap-4 mb-14 max-w-4xl mx-auto">
-          {proofPills.map((pill, idx) => {
-            const PillIcon = pill.icon;
-            return (
-              <div 
-                key={idx}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:border-[#a8fbd3]/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm text-xs font-mono text-gray-300 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
-              >
-                <PillIcon className={`w-3.5 h-3.5 ${pill.color}`} />
-                <span>{pill.label}</span>
-              </div>
-            );
-          })}
-        </div>
 
         {/* Interactive Social Channels Showcase with 3D Hover & Glowing Aura */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-6 md:gap-10 max-w-2xl mx-auto">
@@ -1404,6 +1366,448 @@ const AnimatedReviewSection: React.FC = () => {
           </a>
         </div>
       </div>
+    </section>
+  );
+};
+
+// Interactive GPU-Accelerated CLIENT FEEDBACKS Section with Moving Icons & Real Proof Lightbox
+interface FeedbackItem {
+  id: number;
+  client: string;
+  role: string;
+  category: 'youtube' | 'short' | 'podcast';
+  rating: number;
+  comment: string;
+  image: string;
+  platform: string;
+  metric: string;
+  metricColor: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconColor: string;
+  accentBorder: string;
+  accentGlow: string;
+}
+
+const clientFeedbackList: FeedbackItem[] = [
+  {
+    id: 1,
+    client: 'Alex Vance',
+    role: 'YouTube Creator (500k+ Subs)',
+    category: 'youtube',
+    rating: 5,
+    comment: 'Dominic completely transformed my retention rate! Sound design and pacing are top tier. The cuts keep viewers hooked till the very last second.',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+    platform: 'YouTube Long-Form Mastery',
+    metric: '+340% RETENTION BOOST',
+    metricColor: 'text-[#a8fbd3] border-[#a8fbd3]/30 bg-[#a8fbd3]/10',
+    icon: Video,
+    iconColor: 'text-[#a8fbd3]',
+    accentBorder: 'hover:border-[#a8fbd3]/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(168,251,211,0.25)]',
+  },
+  {
+    id: 2,
+    client: 'Sarah Jenkins',
+    role: 'Marketing Director, Vibe Media',
+    category: 'short',
+    rating: 5,
+    comment: 'Incredible turnaround time and vertical reels went viral within 48 hours! Dynamic captions and hook pacing that convert effortlessly.',
+    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
+    platform: 'Instagram Reels & TikTok',
+    metric: '2.4M VIEWS IN 48H',
+    metricColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
+    icon: Smartphone,
+    iconColor: 'text-pink-400',
+    accentBorder: 'hover:border-pink-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(244,114,182,0.25)]',
+  },
+  {
+    id: 3,
+    client: 'Marcus Thorne',
+    role: 'Podcast Host & Producer',
+    category: 'podcast',
+    rating: 5,
+    comment: 'The audio polishing and multi-cam synching are studio-grade. Clean cuts, zero dead air, and balanced broadcast frequency response.',
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    platform: 'Multi-Cam Podcast Show',
+    metric: 'ZERO DEAD AIR • STUDIO SFX',
+    metricColor: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
+    icon: Mic,
+    iconColor: 'text-cyan-400',
+    accentBorder: 'hover:border-cyan-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(34,211,238,0.25)]',
+  },
+  {
+    id: 4,
+    client: 'Elena Rostova',
+    role: 'E-Commerce Brand Founder',
+    category: 'podcast',
+    rating: 5,
+    comment: 'Our product promo looks like a Super Bowl commercial. The cinematic color grading and 3D kinetic text elevated our brand positioning instantly.',
+    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
+    platform: 'Commercial Promo Creative',
+    metric: '+180% CONVERSION ROAS',
+    metricColor: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
+    icon: Flame,
+    iconColor: 'text-amber-400',
+    accentBorder: 'hover:border-amber-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(251,191,36,0.25)]',
+  },
+  {
+    id: 5,
+    client: 'David Chen',
+    role: 'Tech Reviewer & Streamer',
+    category: 'youtube',
+    rating: 5,
+    comment: 'Fast, precise, and deeply creative. Dominic knows how to hook viewers in the first 3 seconds and keep them glued with hyper-clean sound design.',
+    image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
+    platform: 'Tech Showcase & Gaming',
+    metric: '98.9% AUDIENCE RETENTION',
+    metricColor: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+    icon: Tv,
+    iconColor: 'text-purple-400',
+    accentBorder: 'hover:border-purple-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(192,132,252,0.25)]',
+  },
+  {
+    id: 6,
+    client: 'Jessica Taylor',
+    role: 'Lifestyle Influencer',
+    category: 'short',
+    rating: 5,
+    comment: 'The kinetic captions and seamless match cuts are unreal! My followers constantly ask who edits my content. Absolutely worth every penny.',
+    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80',
+    platform: 'Shorts & TikTok Ecosystem',
+    metric: '850K+ VIRAL REACH',
+    metricColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
+    icon: Sparkles,
+    iconColor: 'text-emerald-400',
+    accentBorder: 'hover:border-emerald-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(52,211,153,0.25)]',
+  },
+];
+
+const ClientFeedbackCard: React.FC<{
+  item: FeedbackItem;
+  onOpenProof?: (item: FeedbackItem) => void;
+}> = ({ item }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const Icon = item.icon;
+
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--card-x', `${e.clientX - rect.left}px`);
+    el.style.setProperty('--card-y', `${e.clientY - rect.top}px`);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleCardMouseMove}
+      className={`group relative p-6 md:p-7 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
+    >
+      {/* Specular Spotlight inside Card */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background:
+            'radial-gradient(350px circle at var(--card-x, 50%) var(--card-y, 50%), rgba(255,255,255,0.08), transparent 70%)',
+        }}
+      />
+
+      {/* Cyber HUD Corner Crosshairs */}
+      <div className="absolute top-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┌</div>
+      <div className="absolute top-2.5 right-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┐</div>
+      <div className="absolute bottom-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">└</div>
+      <div className="absolute bottom-2.5 right-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┘</div>
+
+      {/* Header: Moving Icon Pod + Twinkling Stars + Equalizer */}
+      <div className="relative z-10 flex items-center justify-between mb-5">
+        <div className="flex items-center gap-3">
+          {/* Animated Moving Icon Pod */}
+          <div className="relative">
+            <div className={`w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${item.iconColor} group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-inner group-hover:border-[#a8fbd3]/50`}>
+              <Icon className="w-6 h-6 transition-transform group-hover:scale-110" />
+            </div>
+            {/* Pulsing Aura Ping on Hover */}
+            <div className="absolute inset-0 rounded-2xl border border-[#a8fbd3]/40 opacity-0 group-hover:opacity-100 group-hover:animate-ping pointer-events-none" />
+          </div>
+
+          <div>
+            {/* Twinkling 5-Star Rating */}
+            <div className="flex items-center gap-1 text-yellow-400">
+              {[...Array(item.rating)].map((_, r) => (
+                <Star
+                  key={r}
+                  className="w-3.5 h-3.5 fill-current transition-transform duration-300 group-hover:scale-110"
+                  style={{ transitionDelay: `${r * 50}ms` }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Live Audio / Video Telemetry Equalizer Bars */}
+        <div className="flex items-end gap-1 h-5 px-2 py-1 rounded-lg bg-black/40 border border-white/5 opacity-70 group-hover:opacity-100 transition-opacity">
+          <div className="w-1 bg-[#a8fbd3] rounded-full animate-eq-1" />
+          <div className="w-1 bg-cyan-400 rounded-full animate-eq-2" />
+          <div className="w-1 bg-pink-400 rounded-full animate-eq-3" />
+          <div className="w-1 bg-amber-400 rounded-full animate-eq-4" />
+        </div>
+      </div>
+
+      {/* Body: Quote */}
+      <div className="relative z-10">
+        <Quote className="absolute -top-2 -left-1 w-6 h-6 text-white/10 group-hover:text-[#a8fbd3]/20 transition-colors pointer-events-none" />
+        <p className="text-gray-200 text-xs md:text-sm font-sans italic leading-relaxed pl-3 border-l-2 border-[#a8fbd3]/40 group-hover:border-[#a8fbd3] transition-colors">
+          "{item.comment}"
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const ClientFeedbacksSection: React.FC = () => {
+  const [selectedProof, setSelectedProof] = useState<FeedbackItem | null>(null);
+  const containerRef = useRef<HTMLElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--feedbacks-x', `${e.clientX - rect.left}px`);
+    el.style.setProperty('--feedbacks-y', `${e.clientY - rect.top}px`);
+  };
+
+  return (
+    <section
+      id="client-feedbacks"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative z-10 py-20 md:py-32 overflow-hidden select-none [contain:paint]"
+    >
+      {/* Specular Mouse Tracking Radial Spotlight */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity duration-500 z-0"
+        style={{
+          background:
+            'radial-gradient(750px circle at var(--feedbacks-x, 50%) var(--feedbacks-y, 50%), rgba(168,251,211,0.08), transparent 70%)',
+        }}
+      />
+
+      {/* Cyber Grid Matrix Background */}
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-20">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage:
+              'radial-gradient(rgba(168,251,211,0.3) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundSize: '36px 36px, 12px 12px',
+            backgroundPosition: '0 0, 18px 18px',
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+          }}
+        />
+      </div>
+
+      {/* Moving Ambient Telemetry Badges Floating in Space */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        {/* Floating Camera Badge */}
+        <div
+          style={{ top: '12%', left: '3%' }}
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-[#a8fbd3]/20 text-white/80 animate-float-drift backdrop-blur-md shadow-[0_0_25px_rgba(168,251,211,0.15)]"
+        >
+          <Camera className="w-4 h-4 text-[#a8fbd3] animate-pulse" />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#a8fbd3]">100% ORIGINAL SCREENSHOTS</span>
+        </div>
+
+        {/* Floating Creator Praise Badge */}
+        <div
+          style={{ top: '15%', right: '3%' }}
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-cyan-500/20 text-white/80 animate-float-drift-reverse backdrop-blur-md shadow-[0_0_25px_rgba(34,211,238,0.15)]"
+        >
+          <Quote className="w-4 h-4 text-cyan-400 animate-bounce" style={{ animationDuration: '3.5s' }} />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-300">AUTHENTIC TESTIMONIALS</span>
+        </div>
+
+        {/* Floating 5.0 Trust Badge */}
+        <div
+          style={{ bottom: '10%', left: '4%' }}
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-yellow-500/20 text-white/80 animate-float-drift backdrop-blur-md shadow-[0_0_25px_rgba(234,179,8,0.15)]"
+        >
+          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 animate-spin" style={{ animationDuration: '10s' }} />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-yellow-300">5.0 STAR TRUST SCORE</span>
+        </div>
+
+        {/* Floating Viral Retention Badge */}
+        <div
+          style={{ bottom: '12%', right: '4%' }}
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-emerald-500/20 text-white/80 animate-float-drift-reverse backdrop-blur-md shadow-[0_0_25px_rgba(52,211,153,0.15)]"
+        >
+          <TrendingUp className="w-4 h-4 text-[#a8fbd3] animate-pulse" />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-300">+340% AVG RETENTION</span>
+        </div>
+
+        {/* Rotating Concentric Radar Rings */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[950px] md:h-[950px] rounded-full border border-white/[0.04] animate-pulse-ring pointer-events-none" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+        {/* Animated Section Header */}
+        <div className="text-center mb-10">
+          <h2 className="text-4xl md:text-6xl font-heading font-black tracking-tighter uppercase text-white mb-3 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
+            CLIENTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">FEEDBACK</span>
+          </h2>
+
+          <div className="flex items-center justify-center gap-3 text-xs md:text-sm font-mono tracking-widest uppercase mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#a8fbd3]/10 border border-[#a8fbd3]/30 text-[#a8fbd3]">
+              <Camera className="w-3.5 h-3.5 animate-pulse" />
+              100% Original Screenshots & Chats
+            </span>
+          </div>
+
+          {/* Continuous Kinetic Marquee Ticker */}
+          <div className="relative overflow-hidden py-2.5 rounded-2xl bg-white/[0.02] border border-white/10 mb-10 max-w-5xl mx-auto backdrop-blur-sm">
+            <div className="animate-marquee-smooth text-[11px] font-mono uppercase tracking-widest text-gray-400 flex items-center gap-6">
+              <span className="flex items-center gap-1.5 text-[#a8fbd3] font-bold"><Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} /> 100% ORIGINAL SCREENSHOTS</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-yellow-400"><Star className="w-3.5 h-3.5 fill-yellow-400" /> 5.0 VERIFIED RATING</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-pink-400"><Flame className="w-3.5 h-3.5" /> 48H RAPID REELS TURNAROUND</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-cyan-400"><Mic className="w-3.5 h-3.5" /> STUDIO-GRADE PODCAST AUDIO</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-[#a8fbd3]"><TrendingUp className="w-3.5 h-3.5" /> +340% AUDIENCE RETENTION</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-amber-400"><Award className="w-3.5 h-3.5" /> ZERO REVISION HEADACHES</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-[#a8fbd3] font-bold"><Sparkles className="w-3.5 h-3.5" /> 100% ORIGINAL SCREENSHOTS</span>
+              <span className="text-white/20">✦</span>
+              <span className="flex items-center gap-1.5 text-yellow-400"><Star className="w-3.5 h-3.5 fill-yellow-400" /> 5.0 VERIFIED RATING</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Responsive Grid of Animated Feedback Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+          {clientFeedbackList.map(item => (
+            <ClientFeedbackCard
+              key={item.id}
+              item={item}
+              onOpenProof={(it) => setSelectedProof(it)}
+            />
+          ))}
+        </div>
+
+        {/* Bottom Action Row: Explore More & Contact */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+          <Link
+            to="/reviews"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(168,251,211,0.35)] hover:scale-105 active:scale-95 cursor-pointer will-change-transform"
+          >
+            <span>Explore More</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
+          </Link>
+
+          <a
+            href="#contact"
+            className="group inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 text-white font-mono text-xs uppercase tracking-widest transition-all duration-300"
+          >
+            <span>Have a project? Let's Talk</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+      </div>
+
+      {/* Lightbox Modal for Original Screenshot Proof */}
+      <AnimatePresence>
+        {selectedProof && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProof(null)}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-4xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(168,251,211,0.2)] cursor-default"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedProof(null)}
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-white text-white hover:text-black border border-white/20 flex items-center justify-center transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-2">
+                {/* Proof Image Container */}
+                <div className="relative bg-black flex items-center justify-center p-4 overflow-hidden group">
+                  <img
+                    src={selectedProof.image}
+                    alt={`${selectedProof.client} Screenshot Proof`}
+                    className="w-full h-auto max-h-[500px] object-cover rounded-2xl border border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute bottom-6 left-6 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5">
+                    <BadgeCheck className="w-3.5 h-3.5" />
+                    <span>AUTHENTIC CLIENT CHAT / VERIFIED</span>
+                  </div>
+                </div>
+
+                {/* Details & Testimonial */}
+                <div className="p-6 md:p-8 flex flex-col justify-between bg-gradient-to-br from-white/[0.02] to-transparent">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-lg border ${selectedProof.metricColor}`}>
+                        {selectedProof.metric}
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl font-heading font-black text-white uppercase mb-1">
+                      {selectedProof.client}
+                    </h3>
+                    <p className="text-xs font-mono text-gray-400 mb-6">
+                      {selectedProof.role} • {selectedProof.platform}
+                    </p>
+
+                    <div className="flex items-center gap-1 text-yellow-400 mb-4">
+                      {[...Array(selectedProof.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-current" />
+                      ))}
+                      <span className="text-xs font-mono text-gray-400 ml-2">5.0 Star Verified</span>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 mb-6">
+                      <Quote className="w-5 h-5 text-[#a8fbd3] mb-2" />
+                      <p className="text-sm italic text-gray-300 leading-relaxed">
+                        "{selectedProof.comment}"
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                    <span className="text-xs font-mono text-gray-400">Want similar results?</span>
+                    <a
+                      href="#contact"
+                      onClick={() => setSelectedProof(null)}
+                      className="px-5 py-2.5 rounded-xl bg-[#a8fbd3] hover:bg-white text-black font-heading font-bold text-xs uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(168,251,211,0.3)] cursor-pointer"
+                    >
+                      Book A Call
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
@@ -1584,54 +1988,7 @@ const HomePage: React.FC = () => {
       <WhatWeCreateSection />
 
       {/* 3. CLIENTS FEEDBACKS SECTION */}
-      <section id="client-feedbacks" className="relative z-10 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#a8fbd3]/10 border border-[#a8fbd3]/30 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4">
-            <Star className="w-3.5 h-3.5 fill-[#a8fbd3]" />
-            <span>Verified Testimonials</span>
-          </div>
-          <h2 className="text-4xl md:text-6xl font-heading font-black tracking-tighter uppercase text-white mb-3">
-            CLIENTS FEEDBACK
-          </h2>
-          <p className="text-[#a8fbd3] font-mono text-sm md:text-base tracking-widest uppercase mb-10">
-            100% Original Screenshots
-          </p>
-
-          {/* Quick Mockup preview cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto text-left">
-            {[
-              { client: "Alex Vance", tag: "YouTube (500k+ Subs)", review: "Dominic completely transformed my retention rate! Sound design and pacing are top tier.", rating: 5 },
-              { client: "Sarah Jenkins", tag: "Marketing Director", review: "Incredible turnaround time and vertical reels went viral within 48 hours!", rating: 5 },
-              { client: "Marcus Evans", tag: "Podcast Host", review: "Audio polishing and multi-cam synching are studio-grade. Clean cuts and zero dead air.", rating: 5 },
-            ].map((card, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#a8fbd3]/40 transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-1 text-yellow-400 mb-3">
-                    {[...Array(card.rating)].map((_, r) => (
-                      <Star key={r} className="w-3.5 h-3.5 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-gray-300 text-xs md:text-sm italic mb-4 leading-relaxed">
-                    "{card.review}"
-                  </p>
-                </div>
-                <div className="border-t border-white/10 pt-3">
-                  <h4 className="font-heading font-bold text-sm text-white">{card.client}</h4>
-                  <p className="text-[11px] font-mono text-gray-400">{card.tag}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <Link
-            to="/reviews"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all duration-300 shadow-[0_0_25px_rgba(168,251,211,0.3)] group"
-          >
-            <span>Explore More</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </section>
+      <ClientFeedbacksSection />
 
       {/* 4. AGENCY MOTO SECTION */}
       <AgencyMotoSection />
