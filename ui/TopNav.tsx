@@ -32,7 +32,8 @@ export const TopNav: React.FC<TopNavProps> = ({ glaucusActive = false, setGlaucu
               DE <span className="text-[#a8fbd3] text-xs font-mono ml-2">DOMINIC EDITS</span>
             </Link>
 
-            <div className="flex items-center gap-3">
+            <div className="added-header-actions-wrapper">
+              <div className="flex items-center gap-3">
               {setGlaucusActive && (
                 <button
                   onClick={() => setGlaucusActive(!glaucusActive)}
@@ -54,6 +55,7 @@ export const TopNav: React.FC<TopNavProps> = ({ glaucusActive = false, setGlaucu
               >
                 <Menu className="w-5 h-5" />
               </button>
+              </div>
             </div>
           </div>
 

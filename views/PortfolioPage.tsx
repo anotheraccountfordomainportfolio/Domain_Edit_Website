@@ -1,8 +1,8 @@
 import LazyYoutube from '../ui/LazyYoutube';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowUp, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Menu, X, ArrowUp, ExternalLink, Play, Zap, Clapperboard, Smile, Sparkles } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import FluidBackground from '../ui/FluidBackground';
 import FloatingTextBackground from '../ui/FloatingTextBackground';
@@ -15,41 +15,103 @@ import { BlueButterflies } from '../ui/BlueButterflies';
 
 const PortfolioPage = () => {
   const [glaucusActive, setGlaucusActive] = useState(false);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialCategory = searchParams.get('category') || (location.state as any)?.category || 'All';
+  
+  const [activeTab, setActiveTab] = useState<string>(initialCategory);
+  const [selectedProject, setSelectedProject] = useState<any | null>(null);
 
-  
-  
-  const projects: Array<{ title: string, category: string, video?: string, image?: string, description?: string, tags: string[] }> = [
-    { title: 'Shorts 1', category: 'Video Edit', video: 'https://www.youtube.com/embed/-EbQmeQ5y9c', tags: ['Editing'] },
-    { title: 'Shorts 2', category: 'Video Edit', video: 'https://www.youtube.com/embed/d0mbJpaAnCw', tags: ['Editing'] },
-    { title: 'Shorts 3', category: 'Video Edit', video: 'https://www.youtube.com/embed/sy_PCFRjkRo', tags: ['Editing'] },
-    { title: 'Shorts 4', category: 'Video Edit', video: 'https://www.youtube.com/embed/TGBVWOrcwwM', tags: ['Editing'] },
-    { title: 'Shorts 5', category: 'Video Edit', video: 'https://www.youtube.com/embed/k9jhiu3CzPQ', tags: ['Editing'] },
-    { title: 'Shorts 6', category: 'Video Edit', video: 'https://www.youtube.com/embed/vd0mjr189zI', tags: ['Editing'] },
-    { title: 'Shorts 7', category: 'Video Edit', video: 'https://www.youtube.com/embed/tTirwetIqDY', tags: ['Editing'] },
-    { title: 'Shorts 8', category: 'Video Edit', video: 'https://www.youtube.com/embed/7STTCpmyHw8', tags: ['Editing'] },
-    { title: 'Shorts 9', category: 'Video Edit', video: 'https://www.youtube.com/embed/h-s1VuOXErk', tags: ['Editing'] },
-    { title: 'Shorts 10', category: 'Video Edit', video: 'https://www.youtube.com/embed/30MjIz5SizQ', tags: ['Editing'] },
-    { title: 'Shorts 11', category: 'Video Edit', video: 'https://www.youtube.com/embed/vEFswt6v9UE', tags: ['Editing'] },
-    { title: 'Shorts 12', category: 'Video Edit', video: 'https://www.youtube.com/embed/HdVfgA2TnYA', tags: ['Editing'] },
-    { title: 'Shorts 13', category: 'Video Edit', video: 'https://www.youtube.com/embed/dtb9YFXW4Nk', tags: ['Editing'] },
-    { title: 'Shorts 14', category: 'Video Edit', video: 'https://www.youtube.com/embed/NWc9FxBngMo', tags: ['Editing'] },
-    { title: 'Shorts 15', category: 'Video Edit', video: 'https://www.youtube.com/embed/uJFBC9fy2sM', tags: ['Editing'] },
-    { title: 'Shorts 16', category: 'Video Edit', video: 'https://www.youtube.com/embed/7cKIJ_JLlyw', tags: ['Editing'] },
-    { title: 'Shorts 17', category: 'Video Edit', video: 'https://www.youtube.com/embed/zTzMi3EaHVI', tags: ['Editing'] },
-    { title: 'Shorts 18', category: 'Video Edit', video: 'https://www.youtube.com/embed/dEkoPx_VyXc', tags: ['Editing'] },
-    { title: 'Shorts 19', category: 'Video Edit', video: 'https://www.youtube.com/embed/e6KWI9wXzsc', tags: ['Editing'] },
-    { title: 'Video 1', category: 'Video Edit', video: 'https://www.youtube.com/embed/dbkR1kKdDO4', tags: ['Editing'] },
-    { title: 'Video 2', category: 'Video Edit', video: 'https://www.youtube.com/embed/mIBLnHvF2zE', tags: ['Editing'] },
-    { title: 'Video 3', category: 'Video Edit', video: 'https://www.youtube.com/embed/LsEX2jZpgZg', tags: ['Editing'] },
-    { title: 'Video 4', category: 'Video Edit', video: 'https://www.youtube.com/embed/3c-TMPbXIrk', tags: ['Editing'] },
-    { title: 'Video 5', category: 'Video Edit', video: 'https://www.youtube.com/embed/hHUlfQZsO9o', tags: ['Editing'] }
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedProject]);
+
+  const getThumbnail = (url?: string) => {
+    if (!url) return '';
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/);
+    if (match && match[1]) {
+      return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
+    }
+    return '';
+  };
+
+  const categories = [
+    'All',
+    'Gaming Montage',
+    'Highlights',
+    'Funny Gaming Clips',
+    'YouTube Video',
+    'YouTube Shorts',
+    'TikTok/Instagram reel',
+    'Cinematic Reel/Edits',
+    'Motion Graphics',
+    'Outros',
+    'Intro',
+    'App/Icon Animations',
+    'Podcasts Clip',
+    'Promotional Videos',
+    'Gaming Edits'
   ];
 
+  const projects: Array<{ title: string, category: string, video?: string, image?: string, description?: string, tags: string[], type: 'video' | 'short' }> = [
+    { title: 'Shorts 1', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/-EbQmeQ5y9c', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 2', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/d0mbJpaAnCw', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 3', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/sy_PCFRjkRo', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 4', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/TGBVWOrcwwM', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 5', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/k9jhiu3CzPQ', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 6', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/vd0mjr189zI', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 7', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/tTirwetIqDY', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 8', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/7STTCpmyHw8', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 9', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/h-s1VuOXErk', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 10', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/30MjIz5SizQ', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 11', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/vEFswt6v9UE', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 12', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/HdVfgA2TnYA', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 13', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/dtb9YFXW4Nk', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 14', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/NWc9FxBngMo', tags: ['Editing'], type: 'short' },
+    { title: 'App/Icon Animations', category: 'App/Icon Animations', video: 'https://www.youtube.com/embed/mCfc9RZss04', tags: ['Animation'], type: 'short' },
+    { title: 'Shorts 16', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/7cKIJ_JLlyw', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 17', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/zTzMi3EaHVI', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 18', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/dEkoPx_VyXc', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 19', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/e6KWI9wXzsc', tags: ['Editing'], type: 'short' },
+    { title: 'Shorts 20', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/ow-UWKWz4i0', tags: ['Editing'], type: 'short' },
+    { title: 'Intros', category: 'Intro', video: 'https://www.youtube.com/embed/PuUYYV_s8DU', tags: ['Intro'], type: 'short' },
+    { title: 'Mbappe Montage', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/Jz1bGijVXzs', description: 'Mbappe montage edit', tags: ['Gaming'], type: 'short' },
+    { title: 'Shorts 22', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/XKQ5IdFBzIQ', description: 'MCQueen cinematic edit', tags: ['Cinematic'], type: 'short' },
+    { title: 'Video 1', category: 'YouTube Video', video: 'https://www.youtube.com/embed/dbkR1kKdDO4', tags: ['Video'], type: 'video' },
+    { title: 'Video 2', category: 'YouTube Video', video: 'https://www.youtube.com/embed/mIBLnHvF2zE', tags: ['Video'], type: 'video' },
+    { title: 'Video 3', category: 'YouTube Video', video: 'https://www.youtube.com/embed/LsEX2jZpgZg', tags: ['Video'], type: 'video' },
+    { title: 'Video 4', category: 'YouTube Video', video: 'https://www.youtube.com/embed/3c-TMPbXIrk', tags: ['Video'], type: 'video' },
+    { title: 'Video 5', category: 'YouTube Video', video: 'https://www.youtube.com/embed/hHUlfQZsO9o', tags: ['Video'], type: 'video' },
+    { title: 'Video 6', category: 'Highlights', video: 'https://www.youtube.com/embed/GHs3bkO6AN0', tags: ['Stream'], type: 'video' },
+    { title: 'Video 7', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/5Otejr2OY00', tags: ['Funny'], type: 'video' },
+    { title: 'Video 8', category: 'Podcasts Clip', video: 'https://www.youtube.com/embed/SjSjMARyc6s', tags: ['Podcast'], type: 'video' },
+    { title: 'Video 9', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/EL8IBUZqa5w', tags: ['Promo'], type: 'video' },
+    { title: 'Outros', category: 'Outros', video: 'https://www.youtube.com/embed/M4oxWMqXACU', tags: ['Outro'], type: 'video' },
+    { title: 'Video 11', category: 'Motion Graphics', video: 'https://www.youtube.com/embed/7jQYAQKlgBQ', tags: ['Motion'], type: 'video' },
+    { title: 'Video 12', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/EHl092P2HUo', description: 'Snow ski montage edit', tags: ['Montage'], type: 'video' },
+    { title: 'Video 13', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/QDPEFzZ5lgU', description: 'Ronaldo cinematic edit', tags: ['Cinematic'], type: 'video' },
+    { title: 'Video 14', category: 'Gaming Edits', video: 'https://www.youtube.com/embed/0Z-tdW2BnsE', description: 'Gta san Andreas gtr car edit', tags: ['Gaming'], type: 'video' },
+    { title: 'Video 15', category: 'Gaming Edits', video: 'https://www.youtube.com/embed/ea-xQmrFX00', description: 'Porsche car edit', tags: ['Gaming'], type: 'video' },
+    { title: 'Call of Duty Funny Moments', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/Ps8dq8YgHEU', description: 'Call of Duty game funny clips', tags: ['Funny', 'Gaming'], type: 'short' },
+    { title: 'Cant Drive Funny Clip', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/jVMdyFe4eDM', description: 'A person who cant drive funny clip', tags: ['Funny'], type: 'short' },
+    { title: 'Gorilla Need Peanuts', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/rVbLtwyLRhE', description: 'Gorilla need peanuts funny clip', tags: ['Funny'], type: 'short' },
+    { title: 'Outro', category: 'Outros', video: 'https://www.youtube.com/embed/A9JYuUvavwk', description: 'Outro Johnplays', tags: ['Outro'], type: 'short' },
+    { title: 'Apex Legends Montage', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/HMrMlwNVMws', description: 'Apex legends gameplay edit montage', tags: ['Gaming', 'Montage'], type: 'short' },
+    { title: 'Cinematic edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/ne7qG3Z6Kcw', description: 'Doomsday tony stark cinematic edit', tags: ['Cinematic'], type: 'short' },
+    { title: 'Intro', category: 'Intro', video: 'https://www.youtube.com/embed/snvfcjmoM8Q', description: 'Minecraft Intro creeper blast', tags: ['Intro'], type: 'short' }
+  ];
 
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const filteredProjects = projects.filter(project => {
+    if (activeTab === 'All') return true;
+    return project.category === activeTab;
+  });
 
   return (
     <div className="relative min-h-screen flex flex-col text-white selection:bg-[#4fb7b3] selection:text-black cursor-auto overflow-x-hidden">
@@ -67,71 +129,123 @@ const PortfolioPage = () => {
       {/* Main Content */}
       <main className="relative z-10 pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20 relative h-[10vw] md:h-[15vw] flex items-center justify-center overflow-visible">
+          <div className="text-center mb-12 relative h-[10vw] md:h-[15vw] flex items-center justify-center overflow-visible">
              <h1 className="text-[10vw] font-heading font-bold opacity-50 text-transparent bg-clip-text bg-gradient-to-r from-[#a8fbd3] via-white to-[#a8fbd3] whitespace-nowrap leading-none select-none pointer-events-none tracking-tighter absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 drop-shadow-[0_0_30px_rgba(168,251,211,0.4)]">
                SELECTED WORK
              </h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {projects.map((project, index) => (
-              <div
-                key={project.title}
-                className="group relative overflow-visible"
+
+
+          {/* Category Filter Tabs */}
+          <div className="flex flex-wrap justify-center gap-3 mb-16">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className={`px-5 py-2.5 rounded-2xl font-heading font-bold uppercase tracking-wider transition-all duration-300 text-xs md:text-sm ${
+                  activeTab === cat
+                    ? 'bg-[#a8fbd3] text-black shadow-[0_0_25px_rgba(168,251,211,0.5)] scale-105'
+                    : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+                }`}
               >
-                
-                <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-white/10 mb-6">
-                  {project.video ? (
-                    project.video.includes('youtube.com') || project.video.includes('youtu.be') ? (
-                      <LazyYoutube url={project.video} className="w-full h-full border-0 bg-black pointer-events-auto" />
-                    ) : project.video.includes('collection.cloudinary.com') ? (
-                      <iframe src={project.video}
-                        
-                        className="w-full h-full border-0 bg-black pointer-events-auto"
-                        allow="autoplay; fullscreen"
-                        allowFullScreen
-                      loading={index < 4 ? "eager" : "lazy"} />
-                    ) : (
-                      <video src={project.video}
-                        
-                        controls
-                        playsInline
-                        className="w-full h-full object-cover bg-black"
-                      preload="metadata" />
-                    )
-                  ) : (
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
-                      referrerPolicy="no-referrer"
-                    loading={index < 4 ? "eager" : "lazy"} />
-                  )}
-                  {!project.video && (
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 pointer-events-none">
-                      <button className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#a8fbd3] transition-colors pointer-events-auto">
-                        <ExternalLink className="w-5 h-5" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-2">{project.category}</div>
-                    <h3 className="text-2xl font-heading font-bold uppercase mb-2">{project.title}</h3>
-                    <p className="text-gray-400 text-sm max-w-md">{project.description}</p>
-                  </div>
-                  <div className="flex gap-2 flex-wrap justify-end max-w-[150px]">
-                    {project.tags.map(tag => (
-                      <span key={tag} className="text-[10px] px-2 py-1 rounded-full border border-white/10 text-gray-500 uppercase">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                {cat}
+              </button>
             ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {filteredProjects.map((project, index) => {
+              const thumb = getThumbnail(project.video) || project.image || 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1200&auto=format&fit=crop';
+              return (
+                <div
+                  key={project.title}
+                  onClick={() => setSelectedProject(project)}
+                  className="group relative overflow-visible cursor-pointer"
+                >
+                  <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-white/10 mb-6 bg-black">
+                    <img 
+                      src={thumb} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                      referrerPolicy="no-referrer"
+                      loading={index < 4 ? "eager" : "lazy"} 
+                    />
+                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full bg-[#a8fbd3] text-black flex items-center justify-center shadow-[0_0_30px_rgba(168,251,211,0.5)] transform group-hover:scale-110 transition-transform duration-300">
+                        <Play className="w-6 h-6 fill-black ml-0.5" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-mono bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 pointer-events-none">
+                      <span className="truncate">{project.title}</span>
+                      <span className="text-[#a8fbd3] font-bold flex items-center gap-1">▶ Play Video</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-2">{project.category}</div>
+                      <h3 className="text-2xl font-heading font-bold uppercase mb-2">{project.title}</h3>
+                      <p className="text-gray-400 text-sm max-w-md">{project.description}</p>
+                    </div>
+                    <div className="flex gap-2 flex-wrap justify-end max-w-[150px]">
+                      {project.tags.map(tag => (
+                        <span key={tag} className="text-[10px] px-2 py-1 rounded-full border border-white/10 text-gray-500 uppercase">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </main>
+
+      {/* Video Modal Preview */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-3xl w-full bg-[#0a0a0a] border border-[#a8fbd3]/40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(168,251,211,0.3)] cursor-default p-6"
+            >
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/20 flex items-center justify-center transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="mb-4">
+                <span className="text-[10px] font-mono text-[#a8fbd3] uppercase tracking-widest bg-[#a8fbd3]/10 px-3 py-1 rounded-full">
+                  {selectedProject.category}
+                </span>
+                <h3 className="text-2xl font-heading font-black uppercase text-white mt-2">
+                  {selectedProject.title}
+                </h3>
+                {selectedProject.description && (
+                  <p className="text-xs font-mono text-gray-400 mt-1">
+                    {selectedProject.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-white/10 shadow-inner">
+                <LazyYoutube url={selectedProject.video} className="w-full h-full border-0 pointer-events-auto" title={selectedProject.title} />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer className="mt-auto" />
     </div>

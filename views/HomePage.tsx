@@ -11,7 +11,7 @@ import {
   Film, Video, Disc3, MonitorPlay,
   Quote, ThumbsUp, Camera, Award, ExternalLink
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import FluidBackground from '../ui/FluidBackground';
 import FloatingTextBackground from '../ui/FloatingTextBackground';
@@ -186,6 +186,78 @@ const OurStorySection: React.FC = () => {
   );
 };
 
+// Dedicated Finest Work Showcase Section with exact requested heading
+const FinestWorkSection: React.FC = () => {
+  const finestProjects = [
+    { title: "Mbappe Montage Edit", category: "Gaming Montage", url: "https://www.youtube.com/embed/Jz1bGijVXzs", desc: "Dynamic Mbappe football montage edit with rhythmic velocity sync, beat drops, and visual effects.", tag: "MONTAGE", type: "montage" },
+    { title: "Apex Legends Montage", category: "Montage", url: "https://www.youtube.com/embed/HMrMlwNVMws", desc: "High-octane Apex Legends gameplay edit with lightning-fast cuts and spatial audio sync.", tag: "MONTAGE", type: "montage" },
+    { title: "Doomsday Tony Stark Cinematic", category: "Cinematic", url: "https://www.youtube.com/embed/ne7qG3Z6Kcw", desc: "Cinematic edit with dramatic color grading, visual fx, and narrative tension.", tag: "CINEMATIC", type: "cinematic" },
+    { title: "Call of Duty Funny Moments", category: "Funny", url: "https://www.youtube.com/embed/Ps8dq8YgHEU", desc: "Viral meme sync, custom sfx overlays, and side-splitting gaming reactions.", tag: "FUNNY", type: "funny" },
+    { title: "Outro Johnplays", category: "Outros", url: "https://www.youtube.com/embed/A9JYuUvavwk", desc: "Custom motion graphics and branded outro sequence for creator channel retention.", tag: "OUTROS", type: "montage" },
+    { title: "Minecraft Intro Creeper Blast", category: "Intro", url: "https://www.youtube.com/embed/snvfcjmoM8Q", desc: "Explosive 3D intro animation designed for instant viewer hook.", tag: "INTRO", type: "cinematic" },
+    { title: "Ronaldo Cinematic Edit", category: "Cinematic", url: "https://www.youtube.com/embed/QDPEFzZ5lgU", desc: "Legendary sports cinematic edit highlighting peak athletic performance.", tag: "CINEMATIC", type: "cinematic" },
+    { title: "Shorts 9", category: "TikTok/Instagram reel", url: "https://www.youtube.com/embed/h-s1VuOXErk", desc: "High-retention short-form reel edit designed for TikTok and Instagram algorithms.", tag: "TIKTOK / REEL", type: "short" }
+  ];
+
+  return (
+    <section id="finest-work" className="relative z-10 py-20 md:py-32 px-4 md:px-6 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4">
+            <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
+            <span>Curated Masterpieces</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black tracking-tight uppercase text-white mb-6 drop-shadow-[0_0_35px_rgba(168,251,211,0.25)]">
+            A Showcase Of Our Finest Work
+          </h2>
+
+          <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed">
+            Explore our highest-performing edits, cinematic reels, and viral meme syncs engineered for maximum viewer retention.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {finestProjects.map((item, idx) => (
+            <div key={idx} className="group relative bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#a8fbd3]/50 p-5 rounded-3xl transition-all duration-300 hover:-translate-y-2 shadow-[0_16px_40px_rgba(0,0,0,0.4)] flex flex-col justify-between">
+              <div>
+                <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/10 bg-black mb-5 shadow-inner">
+                  <LazyYoutube url={item.url} className="w-full h-full border-0 pointer-events-auto" title={item.title} />
+                </div>
+
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-[#a8fbd3]/10 text-[#a8fbd3] border border-[#a8fbd3]/20">
+                    {item.tag}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-heading font-black text-white uppercase mb-2 group-hover:text-[#a8fbd3] transition-colors">
+                  {item.title}
+                </h3>
+
+                <p className="text-gray-400 text-xs font-mono leading-relaxed mb-4">
+                  {item.desc}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                <span className="text-[10px] font-mono text-gray-500 uppercase">STUDIO MASTER</span>
+                <Link
+                  to="/portfolio"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-[#a8fbd3] hover:text-white transition-colors"
+                >
+                  <span>View in Portfolio</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // Interactive GPU-Accelerated What We Create Card with Equalizer & Moving Icons
 const WhatWeCreateCard: React.FC<{
   item: {
@@ -200,8 +272,10 @@ const WhatWeCreateCard: React.FC<{
     accentGlow: string;
     badgeColor: string;
     iconColor: string;
+    videoUrl?: string;
   };
-}> = ({ item }) => {
+  onClick?: () => void;
+}> = ({ item, onClick }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const Icon = item.icon;
 
@@ -217,6 +291,7 @@ const WhatWeCreateCard: React.FC<{
     <div
       ref={cardRef}
       onMouseMove={handleCardMouseMove}
+      onClick={onClick}
       className={`group relative p-5 md:p-6 rounded-2xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_10px_30px_rgba(0,0,0,0.3)]`}
     >
       {/* Specular spotlight following cursor inside card */}
@@ -264,22 +339,35 @@ const WhatWeCreateCard: React.FC<{
           </div>
         </div>
 
+        <div className="flex items-center gap-2 mb-2">
+          <span className={`text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${item.badgeColor}`}>
+            {item.tag}
+          </span>
+          <span className="text-[10px] font-mono text-gray-400">{item.spec}</span>
+        </div>
+
         <h3 className="text-base md:text-lg font-heading font-black text-white uppercase mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#a8fbd3] transition-all">
           {item.title}
         </h3>
 
-        <p className="text-[11px] font-mono text-gray-400 group-hover:text-gray-300 transition-colors flex items-center gap-1.5">
-          <span className="w-1 h-1 rounded-full bg-[#a8fbd3] inline-block animate-ping" />
-          <span>{item.spec}</span>
-        </p>
+        {item.videoUrl && (
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="my-3 rounded-xl overflow-hidden border border-white/10 bg-black aspect-video pointer-events-auto shadow-md relative z-20"
+          >
+            <LazyYoutube url={item.videoUrl} title={item.title} className="w-full h-full border-0 pointer-events-auto" />
+          </div>
+        )}
+
+
       </div>
 
       <div className="relative z-10 pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-400">
         <span className="text-gray-500 group-hover:text-gray-300 transition-colors">
           {item.software}
         </span>
-        <span className="inline-flex items-center gap-1 text-[#a8fbd3] opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-          <span>Format Specs</span>
+        <span className="inline-flex items-center gap-1 text-[#a8fbd3] opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 font-bold">
+          <span>{item.videoUrl ? '▶ Watch Reel' : 'Format Specs'}</span>
           <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
         </span>
       </div>
@@ -290,7 +378,9 @@ const WhatWeCreateCard: React.FC<{
 // High-performance Animated WHAT WE CREATE Section with Moving Icons & Interactive Pipeline Effects
 const WhatWeCreateSection: React.FC = () => {
   const containerRef = useRef<HTMLElement>(null);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'short' | 'long' | 'vfx' | 'promo'>('all');
+  const navigate = useNavigate();
+  const [activeFilter, setActiveFilter] = useState<string>('All');
+  const [selectedCreationVideo, setSelectedCreationVideo] = useState<any | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const el = containerRef.current;
@@ -300,25 +390,44 @@ const WhatWeCreateSection: React.FC = () => {
     el.style.setProperty('--wc-y', `${e.clientY - rect.top}px`);
   };
 
+  const categories = [
+    'All',
+    'Gaming Montage',
+    'Highlights',
+    'Funny Gaming Clips',
+    'YouTube Video',
+    'YouTube Shorts',
+    'TikTok/Instagram reel',
+    'Cinematic Reel/Edits',
+    'Motion Graphics',
+    'Outros',
+    'Intro',
+    'App/Icon Animations',
+    'Podcasts Clip',
+    'Promotional Videos',
+    'Gaming Edits'
+  ];
+
   const creationItems = [
     {
       id: '01',
-      title: 'Gaming Montage',
+      title: 'Apex Legends Montage',
       icon: Gamepad2,
-      category: 'long',
-      tag: 'High Energy',
+      category: 'Gaming Montage',
+      tag: 'Apex Legends',
       spec: '60 FPS • BEAT SYNC',
       software: 'Premiere Pro',
       accentBorder: 'hover:border-cyan-400/50',
       accentGlow: 'hover:shadow-[0_0_35px_rgba(6,182,212,0.3)]',
       badgeColor: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
       iconColor: 'group-hover:text-cyan-400',
+      videoUrl: 'https://www.youtube.com/embed/HMrMlwNVMws',
     },
     {
       id: '02',
-      title: 'Stream Highlight',
+      title: 'Highlights',
       icon: Tv,
-      category: 'long',
+      category: 'Highlights',
       tag: 'Fast Paced',
       spec: 'MULTI-CAM • TIMECODE',
       software: 'Premiere & Audition',
@@ -329,9 +438,9 @@ const WhatWeCreateSection: React.FC = () => {
     },
     {
       id: '03',
-      title: 'Funny Moments Clips',
+      title: 'Funny Gaming Clips',
       icon: Smile,
-      category: 'short',
+      category: 'Funny Gaming Clips',
       tag: 'Viral Meme Sync',
       spec: 'SFX & MEME OVERLAYS',
       software: 'After Effects',
@@ -339,12 +448,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(245,158,11,0.3)]',
       badgeColor: 'text-amber-400 border-amber-400/30 bg-amber-400/10',
       iconColor: 'group-hover:text-amber-400',
+      videoUrl: 'https://www.youtube.com/embed/Ps8dq8YgHEU',
     },
     {
       id: '04',
-      title: 'YouTube Videos',
+      title: 'YouTube Video',
       icon: Play,
-      category: 'long',
+      category: 'YouTube Video',
       tag: 'Long-Form',
       spec: '4K RETENTION PACING',
       software: 'DaVinci & Premiere',
@@ -352,12 +462,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(244,63,94,0.3)]',
       badgeColor: 'text-rose-400 border-rose-400/30 bg-rose-400/10',
       iconColor: 'group-hover:text-rose-400',
+      videoUrl: 'https://youtu.be/SjSjMARyc6s?si=YL7YsjC9OF-ZVJB0',
     },
     {
       id: '05',
       title: 'YouTube Shorts',
       icon: Smartphone,
-      category: 'short',
+      category: 'YouTube Shorts',
       tag: 'High Retention',
       spec: '9:16 ALGORITHM READY',
       software: 'CapCut & Premiere',
@@ -365,12 +476,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(16,185,129,0.3)]',
       badgeColor: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
       iconColor: 'group-hover:text-emerald-400',
+      videoUrl: 'https://youtube.com/shorts/k9jhiu3CzPQ?si=SgGszHF9NFISPi1G',
     },
     {
       id: '06',
-      title: 'TikTok/Instagram Reel',
+      title: 'TikTok/Instagram reel',
       icon: Share2,
-      category: 'short',
+      category: 'TikTok/Instagram reel',
       tag: 'Vertical Format',
       spec: 'HOOK IN 0.8 SECONDS',
       software: 'After Effects',
@@ -378,12 +490,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(236,72,153,0.3)]',
       badgeColor: 'text-pink-400 border-pink-400/30 bg-pink-400/10',
       iconColor: 'group-hover:text-pink-400',
+      videoUrl: 'https://youtube.com/shorts/d0mbJpaAnCw?si=KOPE4QXtBwwYH1tT',
     },
     {
       id: '07',
-      title: 'Cinematic Reels/Video',
+      title: 'Cinematic Reel/Edits',
       icon: Clapperboard,
-      category: 'long',
+      category: 'Cinematic Reel/Edits',
       tag: 'Color Graded',
       spec: 'FILM LUT • 24FPS LOOK',
       software: 'DaVinci Resolve Studio',
@@ -391,12 +504,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(168,251,211,0.3)]',
       badgeColor: 'text-[#a8fbd3] border-[#a8fbd3]/30 bg-[#a8fbd3]/10',
       iconColor: 'group-hover:text-[#a8fbd3]',
+      videoUrl: 'https://www.youtube.com/embed/ow-UWKWz4i0',
     },
     {
       id: '08',
-      title: 'Motion Graphic',
+      title: 'Motion Graphics',
       icon: Layers,
-      category: 'vfx',
+      category: 'Motion Graphics',
       tag: 'VFX & Design',
       spec: '3D KINETIC COMPOSITION',
       software: 'After Effects & Blender',
@@ -404,12 +518,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(99,102,241,0.3)]',
       badgeColor: 'text-indigo-400 border-indigo-400/30 bg-indigo-400/10',
       iconColor: 'group-hover:text-indigo-400',
+      videoUrl: 'https://youtube.com/shorts/sy_PCFRjkRo?si=jWfttesyUXyt0c-5',
     },
     {
       id: '09',
-      title: 'Intro/Outro',
+      title: 'Outros',
       icon: Flame,
-      category: 'promo',
+      category: 'Outros',
       tag: 'Brand Hooks',
       spec: 'LOGO STINGER & SFX',
       software: 'Cinema 4D / AE',
@@ -417,12 +532,27 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(249,115,22,0.3)]',
       badgeColor: 'text-orange-400 border-orange-400/30 bg-orange-400/10',
       iconColor: 'group-hover:text-orange-400',
+      videoUrl: 'https://www.youtube.com/embed/M4oxWMqXACU',
+    },
+    {
+      id: '13',
+      title: 'Intros',
+      icon: Flame,
+      category: 'Intro',
+      tag: 'Brand Hooks',
+      spec: 'LOGO STINGER & SFX',
+      software: 'After Effects',
+      accentBorder: 'hover:border-violet-400/50',
+      accentGlow: 'hover:shadow-[0_0_35px_rgba(139,92,246,0.3)]',
+      badgeColor: 'text-violet-400 border-violet-400/30 bg-violet-400/10',
+      iconColor: 'group-hover:text-violet-400',
+      videoUrl: 'https://www.youtube.com/embed/PuUYYV_s8DU',
     },
     {
       id: '10',
-      title: 'Logo Animations',
+      title: 'App/Icon Animation',
       icon: Cpu,
-      category: 'vfx',
+      category: 'App/Icon Animations',
       tag: 'Kinetic 2D/3D',
       spec: 'TRANSPARENT ALPHA 4K',
       software: 'After Effects',
@@ -430,12 +560,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(56,189,248,0.3)]',
       badgeColor: 'text-sky-400 border-sky-400/30 bg-sky-400/10',
       iconColor: 'group-hover:text-sky-400',
+      videoUrl: 'https://youtube.com/shorts/mCfc9RZss04?si=DSd9COVm__d937Dn',
     },
     {
       id: '11',
-      title: 'Podcast Clips',
+      title: 'Podcasts Clip',
       icon: Mic,
-      category: 'short',
+      category: 'Podcasts Clip',
       tag: 'Dynamic Captions',
       spec: 'KINETIC SUBTITLES',
       software: 'Audition & Premiere',
@@ -443,12 +574,13 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(234,179,8,0.3)]',
       badgeColor: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10',
       iconColor: 'group-hover:text-yellow-400',
+      videoUrl: 'https://youtube.com/shorts/vEFswt6v9UE?si=BpPN-mWvna7X1QSi',
     },
     {
       id: '12',
       title: 'Promotional Videos',
       icon: Megaphone,
-      category: 'promo',
+      category: 'Promotional Videos',
       tag: 'Commercial',
       spec: 'BRAND CONVERSION HOOKS',
       software: 'Full Creative Suite',
@@ -456,12 +588,30 @@ const WhatWeCreateSection: React.FC = () => {
       accentGlow: 'hover:shadow-[0_0_35px_rgba(59,130,246,0.3)]',
       badgeColor: 'text-blue-400 border-blue-400/30 bg-blue-400/10',
       iconColor: 'group-hover:text-blue-400',
+      videoUrl: 'https://youtube.com/shorts/-EbQmeQ5y9c?si=BeCSRhWvm0yxXQb4',
+    },
+    {
+      id: '14',
+      title: 'Gaming Edits',
+      icon: Gamepad2,
+      category: 'Gaming Edits',
+      tag: 'Car & Game Edits',
+      spec: '4K PORSCHE CAR EDITS',
+      software: 'Premiere Pro & AE',
+      accentBorder: 'hover:border-emerald-400/50',
+      accentGlow: 'hover:shadow-[0_0_35px_rgba(16,185,129,0.3)]',
+      badgeColor: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
+      iconColor: 'group-hover:text-emerald-400',
+      videoUrl: 'https://www.youtube.com/embed/ea-xQmrFX00',
     },
   ];
 
-  const filteredItems = activeFilter === 'all' 
+  const filteredItems = activeFilter === 'All' 
     ? creationItems 
-    : creationItems.filter(item => item.category === activeFilter);
+    : creationItems.filter(item => 
+        item.category === activeFilter ||
+        (activeFilter.toLowerCase() === 'montage' && item.category.toLowerCase().includes('montage'))
+      );
 
   return (
     <section 
@@ -518,6 +668,7 @@ const WhatWeCreateSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* Section Header */}
+        <div className="added-what-we-create-wrapper">
         <div className="text-center mb-10 md:mb-12">
           {/* Animated Interactive Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/40 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4 transition-all duration-300 shadow-[0_0_20px_rgba(168,251,211,0.1)] hover:scale-105 cursor-pointer">
@@ -568,43 +719,82 @@ const WhatWeCreateSection: React.FC = () => {
 
           {/* Interactive Category Filter Tabs */}
           <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
-            {[
-              { id: 'all', label: 'All Formats', count: 12 },
-              { id: 'short', label: 'Short-Form / Vertical', count: 4 },
-              { id: 'long', label: 'Long-Form & YouTube', count: 4 },
-              { id: 'vfx', label: 'VFX & 3D Motion', count: 2 },
-              { id: 'promo', label: 'Promo & Branding', count: 2 },
-            ].map(tab => {
-              const isActive = activeFilter === tab.id;
+            {categories.map(cat => {
+              const isActive = activeFilter === cat;
               return (
                 <button
-                  key={tab.id}
-                  onClick={() => setActiveFilter(tab.id as any)}
+                  key={cat}
+                  onClick={() => setActiveFilter(cat)}
                   className={`px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer ${
                     isActive
                       ? 'bg-[#a8fbd3] text-black font-bold shadow-[0_0_20px_rgba(168,251,211,0.4)] scale-105'
                       : 'bg-white/5 text-gray-300 hover:text-white hover:bg-white/10 border border-white/10'
                   }`}
                 >
-                  <span>{tab.label}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                    isActive ? 'bg-black text-[#a8fbd3]' : 'bg-white/10 text-gray-400'
-                  }`}>
-                    {tab.count}
-                  </span>
+                  <span>{cat}</span>
                 </button>
               );
             })}
           </div>
         </div>
+        </div>
 
         {/* Responsive Grid of Animated Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
           {filteredItems.map(item => (
-            <WhatWeCreateCard key={item.id} item={item} />
+            <WhatWeCreateCard 
+              key={item.id} 
+              item={item} 
+              onClick={() => item.videoUrl && setSelectedCreationVideo(item)}
+            />
           ))}
         </div>
       </div>
+
+      {/* Video Modal Preview for Cinematic Reel */}
+      <AnimatePresence>
+        {selectedCreationVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedCreationVideo(null)}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-3xl w-full bg-[#0a0a0a] border border-[#a8fbd3]/40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(168,251,211,0.3)] cursor-default p-6"
+            >
+              <button
+                onClick={() => setSelectedCreationVideo(null)}
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/20 flex items-center justify-center transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="mb-4">
+                <span className="text-[10px] font-mono text-[#a8fbd3] uppercase tracking-widest bg-[#a8fbd3]/10 px-3 py-1 rounded-full">
+                  {selectedCreationVideo.tag}
+                </span>
+                <h3 className="text-2xl font-heading font-black uppercase text-white mt-2">
+                  {selectedCreationVideo.title}
+                </h3>
+                <p className="text-xs font-mono text-gray-400 mt-1">
+                  {selectedCreationVideo.spec} • {selectedCreationVideo.software}
+                </p>
+              </div>
+
+              <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-white/10 shadow-inner">
+                <LazyYoutube url={selectedCreationVideo.videoUrl} className="w-full h-full border-0 pointer-events-auto" />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
@@ -1656,6 +1846,7 @@ const ClientFeedbacksSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* Animated Section Header */}
+        <div className="added-feedbacks-wrapper">
         <div className="text-center mb-10">
           <h2 className="text-4xl md:text-6xl font-heading font-black tracking-tighter uppercase text-white mb-3 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
             CLIENTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">FEEDBACK</span>
@@ -1688,6 +1879,7 @@ const ClientFeedbacksSection: React.FC = () => {
               <span className="flex items-center gap-1.5 text-yellow-400"><Star className="w-3.5 h-3.5 fill-yellow-400" /> 5.0 VERIFIED RATING</span>
             </div>
           </div>
+        </div>
         </div>
 
         {/* Responsive Grid of Animated Feedback Cards */}
@@ -1821,6 +2013,7 @@ const HomePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [glaucusActive, setGlaucusActive] = useState(false);
+  const [homeTab, setHomeTab] = useState<'all' | 'video' | 'short'>('all');
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -1941,15 +2134,48 @@ const HomePage: React.FC = () => {
           </h2>
         </div>
 
+        {/* Three Sections / Filter Tabs */}
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <button
+            onClick={() => setHomeTab('all')}
+            className={`px-8 py-3.5 rounded-2xl font-heading font-bold uppercase tracking-wider transition-all duration-300 text-sm md:text-base ${
+              homeTab === 'all'
+                ? 'bg-[#a8fbd3] text-black shadow-[0_0_25px_rgba(168,251,211,0.5)] scale-105'
+                : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+            }`}
+          >
+            All Vid/Shorts
+          </button>
+          <button
+            onClick={() => setHomeTab('video')}
+            className={`px-8 py-3.5 rounded-2xl font-heading font-bold uppercase tracking-wider transition-all duration-300 text-sm md:text-base ${
+              homeTab === 'video'
+                ? 'bg-[#a8fbd3] text-black shadow-[0_0_25px_rgba(168,251,211,0.5)] scale-105'
+                : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+            }`}
+          >
+            Videos
+          </button>
+          <button
+            onClick={() => setHomeTab('short')}
+            className={`px-8 py-3.5 rounded-2xl font-heading font-bold uppercase tracking-wider transition-all duration-300 text-sm md:text-base ${
+              homeTab === 'short'
+                ? 'bg-[#a8fbd3] text-black shadow-[0_0_25px_rgba(168,251,211,0.5)] scale-105'
+                : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+            }`}
+          >
+            Shorts
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "LATEST SHOWCASE", tag: "Post Production", url: "https://www.youtube.com/embed/hHUlfQZsO9o", desc: "Featured video editing and post-production highlight." },
-            { title: "VIDEO EDITING", tag: "Premiere Pro", url: "https://www.youtube.com/embed/-EbQmeQ5y9c", desc: "Fast-paced cuts, pacing, and seamless transitions." },
-            { title: "VISUAL EFFECTS", tag: "After Effects", url: "https://www.youtube.com/embed/d0mbJpaAnCw", desc: "Dynamic motion graphics, visual effects, and hooks." },
-            { title: "COLOR & FINISHING", tag: "DaVinci Resolve", url: "https://www.youtube.com/embed/dbkR1kKdDO4", desc: "Mood enhancement and professional color grading." },
-            { title: "AUDIO DESIGN", tag: "Audition", url: "https://www.youtube.com/embed/mIBLnHvF2zE", desc: "Immersive sound design and crisp audio mastering." },
-            { title: "VERTICAL CONTENT", tag: "TikTok • Reels • Shorts", url: "https://www.youtube.com/embed/sy_PCFRjkRo", desc: "High retention vertical content editing." }
-          ].map((project, idx) => (
+            { title: "VIDEO 1", tag: "Post Production", url: "https://www.youtube.com/embed/dbkR1kKdDO4", desc: "Mood enhancement and professional color grading.", type: "video" },
+            { title: "VIDEO 2", tag: "Post Production", url: "https://www.youtube.com/embed/mIBLnHvF2zE", desc: "Immersive sound design and crisp audio mastering.", type: "video" },
+            { title: "VIDEO 9", tag: "Post Production", url: "https://www.youtube.com/embed/EL8IBUZqa5w", desc: "Creative storytelling and high-impact visual editing.", type: "video" }
+          ]
+            .filter(project => homeTab === 'all' || project.type === homeTab)
+            .map((project, idx) => (
             <div key={idx} className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 md:p-6 rounded-3xl shadow-[0_16px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#a8fbd3]/40 transition-all duration-300 group">
               <div>
                 <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/5 bg-black mb-4 shadow-inner">
@@ -1983,6 +2209,9 @@ const HomePage: React.FC = () => {
 
       {/* 1. OUR STORY SECTION */}
       <OurStorySection />
+
+      {/* FINEST WORK SECTION WITH EXACT HEADING */}
+      <FinestWorkSection />
 
       {/* 2. WHAT WE CREATE SECTION */}
       <WhatWeCreateSection />
