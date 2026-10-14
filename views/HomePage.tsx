@@ -190,13 +190,16 @@ const OurStorySection: React.FC = () => {
 const FinestWorkSection: React.FC = () => {
   const finestProjects = [
     { title: "Mbappe Montage Edit", category: "Gaming Montage", url: "https://www.youtube.com/embed/Jz1bGijVXzs", desc: "Dynamic Mbappe football montage edit with rhythmic velocity sync, beat drops, and visual effects.", tag: "MONTAGE", type: "montage" },
-    { title: "Apex Legends Montage", category: "Montage", url: "https://www.youtube.com/embed/HMrMlwNVMws", desc: "High-octane Apex Legends gameplay edit with lightning-fast cuts and spatial audio sync.", tag: "MONTAGE", type: "montage" },
-    { title: "Doomsday Tony Stark Cinematic", category: "Cinematic", url: "https://www.youtube.com/embed/ne7qG3Z6Kcw", desc: "Cinematic edit with dramatic color grading, visual fx, and narrative tension.", tag: "CINEMATIC", type: "cinematic" },
+    { title: "Valorant Montage", category: "Montage", url: "https://www.youtube.com/embed/HMrMlwNVMws", desc: "High-octane Valorant gameplay edit with lightning-fast cuts and spatial audio sync.", tag: "MONTAGE", type: "montage" },
+    { title: "Intro", category: "Intro", url: "https://www.youtube.com/embed/ne7qG3Z6Kcw", desc: "Explosive intro animation designed for instant viewer hook.", tag: "INTRO", type: "intro" },
     { title: "Call of Duty Funny Moments", category: "Funny", url: "https://www.youtube.com/embed/Ps8dq8YgHEU", desc: "Viral meme sync, custom sfx overlays, and side-splitting gaming reactions.", tag: "FUNNY", type: "funny" },
     { title: "Outro Johnplays", category: "Outros", url: "https://www.youtube.com/embed/A9JYuUvavwk", desc: "Custom motion graphics and branded outro sequence for creator channel retention.", tag: "OUTROS", type: "montage" },
-    { title: "Minecraft Intro Creeper Blast", category: "Intro", url: "https://www.youtube.com/embed/snvfcjmoM8Q", desc: "Explosive 3D intro animation designed for instant viewer hook.", tag: "INTRO", type: "cinematic" },
-    { title: "Ronaldo Cinematic Edit", category: "Cinematic", url: "https://www.youtube.com/embed/QDPEFzZ5lgU", desc: "Legendary sports cinematic edit highlighting peak athletic performance.", tag: "CINEMATIC", type: "cinematic" },
-    { title: "Shorts 9", category: "TikTok/Instagram reel", url: "https://www.youtube.com/embed/h-s1VuOXErk", desc: "High-retention short-form reel edit designed for TikTok and Instagram algorithms.", tag: "TIKTOK / REEL", type: "short" }
+    { title: "CREEPER BLAST STYLE INTRO", category: "Intro", url: "https://www.youtube.com/embed/snvfcjmoM8Q", desc: "Explosive 3D intro animation designed for instant viewer hook.", tag: "PROMOTIONAL EDITS", type: "cinematic" },
+    { title: "Ronaldo Cinematic Edit", category: "Cinematic", url: "https://www.youtube.com/embed/QDPEFzZ5lgU", desc: "Legendary sports cinematic edit highlighting peak athletic performance.", tag: "PROMOTIONAL EDITS", type: "cinematic" },
+    { title: "Animated Icons Edit", category: "Promotional Videos", url: "https://www.youtube.com/embed/h-s1VuOXErk", desc: "High-retention short-form reel edit designed for TikTok and Instagram algorithms.", tag: "PROMOTIONAL EDITS", type: "short" },
+    { title: "Podcast Clip Edit", category: "Podcasts Clip", url: "https://www.youtube.com/embed/vEFswt6v9UE", desc: "Engaging short-form vertical edit optimized for TikTok and Instagram reels.", tag: "PODCAST EDIT", type: "short" },
+    { title: "App/Icon Animations", category: "App/Icon Animations", url: "https://www.youtube.com/embed/mCfc9RZss04", desc: "Sleek and fluid app and icon animation reel designed for social media and product showcases.", tag: "APP/ICON ANIMATIONS", type: "short" },
+    { title: "Gaming Edits Video 15", category: "Gaming Edits", url: "https://www.youtube.com/embed/ea-xQmrFX00", desc: "Porsche car edit with high-end cinematic gaming visual effects.", tag: "GAMING EDIT", type: "short" }
   ];
 
   return (
@@ -396,8 +399,6 @@ const WhatWeCreateSection: React.FC = () => {
     'Highlights',
     'Funny Gaming Clips',
     'YouTube Video',
-    'YouTube Shorts',
-    'TikTok/Instagram reel',
     'Cinematic Reel/Edits',
     'Motion Graphics',
     'Outros',
@@ -411,10 +412,10 @@ const WhatWeCreateSection: React.FC = () => {
   const creationItems = [
     {
       id: '01',
-      title: 'Apex Legends Montage',
+      title: 'Valorant Montage',
       icon: Gamepad2,
       category: 'Gaming Montage',
-      tag: 'Apex Legends',
+      tag: 'Valorant',
       spec: '60 FPS • BEAT SYNC',
       software: 'Premiere Pro',
       accentBorder: 'hover:border-cyan-400/50',
@@ -466,23 +467,23 @@ const WhatWeCreateSection: React.FC = () => {
     },
     {
       id: '05',
-      title: 'YouTube Shorts',
+      title: 'Shorts & Reels',
       icon: Smartphone,
-      category: 'YouTube Shorts',
+      category: 'Promotional Videos',
       tag: 'High Retention',
       spec: '9:16 ALGORITHM READY',
       software: 'CapCut & Premiere',
       accentBorder: 'hover:border-emerald-400/50',
-      accentGlow: 'hover:shadow-[0_0_35px_rgba(16,185,129,0.3)]',
+      accentGlow: 'hover:shadow-[0_0_35px_rgba(168,251,211,0.3)]',
       badgeColor: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
       iconColor: 'group-hover:text-emerald-400',
       videoUrl: 'https://youtube.com/shorts/k9jhiu3CzPQ?si=SgGszHF9NFISPi1G',
     },
     {
       id: '06',
-      title: 'TikTok/Instagram reel',
+      title: 'Promotional Shorts',
       icon: Share2,
-      category: 'TikTok/Instagram reel',
+      category: 'Promotional Videos',
       tag: 'Vertical Format',
       spec: 'HOOK IN 0.8 SECONDS',
       software: 'After Effects',
@@ -610,6 +611,10 @@ const WhatWeCreateSection: React.FC = () => {
     ? creationItems 
     : creationItems.filter(item => 
         item.category === activeFilter ||
+        ((activeFilter === 'PROMOTIONAL YT SHORT EDIT' || activeFilter === 'PROMOTIONAL YT SHORT EDIT SECTION' || activeFilter === 'YT SHORT EDIT SECTION' || activeFilter === 'YT SHORT EDIT') && 
+         (item.category === 'PROMOTIONAL YT SHORT EDIT' || item.category === 'PROMOTIONAL YT SHORT EDIT SECTION' || item.category === 'YT SHORT EDIT SECTION' || item.category === 'YT SHORT EDIT')) ||
+        ((activeFilter === 'Promotional Videos' || activeFilter === 'PROMOTIONAL VIDEOS SECTION' || activeFilter === 'PROMOTIONAL VIDEOS' || activeFilter === 'Promotional Video') &&
+         (item.category === 'Promotional Videos' || item.category === 'PROMOTIONAL VIDEOS SECTION' || item.category === 'PROMOTIONAL VIDEOS' || item.category === 'Promotional Video')) ||
         (activeFilter.toLowerCase() === 'montage' && item.category.toLowerCase().includes('montage'))
       );
 

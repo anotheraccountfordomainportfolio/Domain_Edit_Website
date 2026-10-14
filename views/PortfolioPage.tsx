@@ -48,8 +48,6 @@ const PortfolioPage = () => {
     'Highlights',
     'Funny Gaming Clips',
     'YouTube Video',
-    'YouTube Shorts',
-    'TikTok/Instagram reel',
     'Cinematic Reel/Edits',
     'Motion Graphics',
     'Outros',
@@ -61,55 +59,80 @@ const PortfolioPage = () => {
   ];
 
   const projects: Array<{ title: string, category: string, video?: string, image?: string, description?: string, tags: string[], type: 'video' | 'short' }> = [
-    { title: 'Shorts 1', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/-EbQmeQ5y9c', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 2', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/d0mbJpaAnCw', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 3', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/sy_PCFRjkRo', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 4', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/TGBVWOrcwwM', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 5', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/k9jhiu3CzPQ', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 6', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/vd0mjr189zI', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 7', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/tTirwetIqDY', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 8', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/7STTCpmyHw8', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 9', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/h-s1VuOXErk', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 10', category: 'TikTok/Instagram reel', video: 'https://www.youtube.com/embed/30MjIz5SizQ', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 11', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/vEFswt6v9UE', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 12', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/HdVfgA2TnYA', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 13', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/dtb9YFXW4Nk', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 14', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/NWc9FxBngMo', tags: ['Editing'], type: 'short' },
+    { title: 'Promotional Short Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/-EbQmeQ5y9c', tags: ['Editing'], type: 'short' },
+    { title: 'TikTok Reel', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/d0mbJpaAnCw', tags: ['Editing'], type: 'short' },
+    { title: 'Motion Graphics', category: 'Motion Graphics', video: 'https://www.youtube.com/embed/sy_PCFRjkRo', tags: ['Editing'], type: 'short' },
+    { title: 'Promotional Short Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/TGBVWOrcwwM', tags: ['Editing'], type: 'short' },
+    { title: 'Tips n Trick YouTube short', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/k9jhiu3CzPQ', tags: ['Editing'], type: 'short' },
+    { title: 'Promotional Short Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/vd0mjr189zI', tags: ['Editing'], type: 'short' },
+    { title: 'Promotional Short Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/tTirwetIqDY', tags: ['Editing'], type: 'short' },
+    { title: 'Promotional Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/7STTCpmyHw8', tags: ['Editing'], type: 'short' },
+    { title: 'Motion Graphics', category: 'Motion Graphics', video: 'https://www.youtube.com/embed/h-s1VuOXErk', tags: ['Editing'], type: 'short' },
+    { title: 'Podcast Edit', category: 'Podcasts Clip', video: 'https://www.youtube.com/embed/30MjIz5SizQ', tags: ['Editing'], type: 'short' },
+    { title: 'Podcast Edit', category: 'Podcasts Clip', video: 'https://www.youtube.com/embed/vEFswt6v9UE', tags: ['Editing'], type: 'short' },
+    { title: 'Motion/Promotional Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/HdVfgA2TnYA', tags: ['Editing'], type: 'short' },
+    { title: 'Ai Podcast Edit', category: 'Podcasts Clip', video: 'https://www.youtube.com/embed/dtb9YFXW4Nk', tags: ['Editing'], type: 'short' },
+    { title: 'Promotional Short', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/NWc9FxBngMo', tags: ['Editing'], type: 'short' },
     { title: 'App/Icon Animations', category: 'App/Icon Animations', video: 'https://www.youtube.com/embed/mCfc9RZss04', tags: ['Animation'], type: 'short' },
-    { title: 'Shorts 16', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/7cKIJ_JLlyw', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 17', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/zTzMi3EaHVI', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 18', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/dEkoPx_VyXc', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 19', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/e6KWI9wXzsc', tags: ['Editing'], type: 'short' },
-    { title: 'Shorts 20', category: 'YouTube Shorts', video: 'https://www.youtube.com/embed/ow-UWKWz4i0', tags: ['Editing'], type: 'short' },
+    { title: 'TikTok/Instagram Reel Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/7cKIJ_JLlyw', tags: ['Editing'], type: 'short' },
+    { title: 'Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/zTzMi3EaHVI', tags: ['Editing'], type: 'short' },
+    { title: 'Ad/Promotional Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/dEkoPx_VyXc', tags: ['Editing'], type: 'short' },
+    { title: 'Ad/Promotional Edit', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/e6KWI9wXzsc', tags: ['Editing'], type: 'short' },
+    { title: 'Dr Strange Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/ow-UWKWz4i0', tags: ['Editing'], type: 'short' },
     { title: 'Intros', category: 'Intro', video: 'https://www.youtube.com/embed/PuUYYV_s8DU', tags: ['Intro'], type: 'short' },
     { title: 'Mbappe Montage', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/Jz1bGijVXzs', description: 'Mbappe montage edit', tags: ['Gaming'], type: 'short' },
-    { title: 'Shorts 22', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/XKQ5IdFBzIQ', description: 'MCQueen cinematic edit', tags: ['Cinematic'], type: 'short' },
-    { title: 'Video 1', category: 'YouTube Video', video: 'https://www.youtube.com/embed/dbkR1kKdDO4', tags: ['Video'], type: 'video' },
-    { title: 'Video 2', category: 'YouTube Video', video: 'https://www.youtube.com/embed/mIBLnHvF2zE', tags: ['Video'], type: 'video' },
-    { title: 'Video 3', category: 'YouTube Video', video: 'https://www.youtube.com/embed/LsEX2jZpgZg', tags: ['Video'], type: 'video' },
-    { title: 'Video 4', category: 'YouTube Video', video: 'https://www.youtube.com/embed/3c-TMPbXIrk', tags: ['Video'], type: 'video' },
-    { title: 'Video 5', category: 'YouTube Video', video: 'https://www.youtube.com/embed/hHUlfQZsO9o', tags: ['Video'], type: 'video' },
-    { title: 'Video 6', category: 'Highlights', video: 'https://www.youtube.com/embed/GHs3bkO6AN0', tags: ['Stream'], type: 'video' },
-    { title: 'Video 7', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/5Otejr2OY00', tags: ['Funny'], type: 'video' },
-    { title: 'Video 8', category: 'Podcasts Clip', video: 'https://www.youtube.com/embed/SjSjMARyc6s', tags: ['Podcast'], type: 'video' },
-    { title: 'Video 9', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/EL8IBUZqa5w', tags: ['Promo'], type: 'video' },
+    { title: 'Mc Queen Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/XKQ5IdFBzIQ', description: 'MCQueen cinematic edit', tags: ['Cinematic'], type: 'short' },
+    { title: 'YT Video Edit', category: 'YouTube Video', video: 'https://www.youtube.com/embed/dbkR1kKdDO4', tags: ['Video'], type: 'video' },
+    { title: 'Showing Work YT Video Edit', category: 'YouTube Video', video: 'https://www.youtube.com/embed/mIBLnHvF2zE', tags: ['Video'], type: 'video' },
+    { title: 'Documentary Style Edit Video', category: 'YouTube Video', video: 'https://www.youtube.com/embed/LsEX2jZpgZg', tags: ['Video'], type: 'video' },
+    { title: 'Faceless Motion graphics Edit', category: 'YouTube Video', video: 'https://www.youtube.com/embed/3c-TMPbXIrk', tags: ['Video'], type: 'video' },
+    { title: 'Promotional Video', category: 'Promotional Videos', video: 'https://www.youtube.com/embed/hHUlfQZsO9o', tags: ['Video'], type: 'video' },
+    { title: 'Spidermen Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/GHs3bkO6AN0', tags: ['Stream'], type: 'video' },
+    { title: 'IronMen Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/5Otejr2OY00', tags: ['Funny'], type: 'video' },
+    { title: 'Smooth Transition Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/SjSjMARyc6s', tags: ['Podcast'], type: 'video' },
+    { title: 'Thor vs Doomsday Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/EL8IBUZqa5w', tags: ['Promo'], type: 'video' },
     { title: 'Outros', category: 'Outros', video: 'https://www.youtube.com/embed/M4oxWMqXACU', tags: ['Outro'], type: 'video' },
-    { title: 'Video 11', category: 'Motion Graphics', video: 'https://www.youtube.com/embed/7jQYAQKlgBQ', tags: ['Motion'], type: 'video' },
-    { title: 'Video 12', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/EHl092P2HUo', description: 'Snow ski montage edit', tags: ['Montage'], type: 'video' },
-    { title: 'Video 13', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/QDPEFzZ5lgU', description: 'Ronaldo cinematic edit', tags: ['Cinematic'], type: 'video' },
-    { title: 'Video 14', category: 'Gaming Edits', video: 'https://www.youtube.com/embed/0Z-tdW2BnsE', description: 'Gta san Andreas gtr car edit', tags: ['Gaming'], type: 'video' },
-    { title: 'Video 15', category: 'Gaming Edits', video: 'https://www.youtube.com/embed/ea-xQmrFX00', description: 'Porsche car edit', tags: ['Gaming'], type: 'video' },
+    { title: 'PixelForge Studio Intro', category: 'Motion Graphics', video: 'https://www.youtube.com/embed/7jQYAQKlgBQ', tags: ['Motion'], type: 'video' },
+    { title: 'Snow Skii Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/EHl092P2HUo', description: 'Snow ski montage edit', tags: ['Montage'], type: 'video' },
+    { title: 'Ronaldo Cinematic Edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/QDPEFzZ5lgU', description: 'Ronaldo cinematic edit', tags: ['Cinematic'], type: 'video' },
+    { title: 'Gtr Gaming Style Edit', category: 'Gaming Edits', video: 'https://www.youtube.com/embed/0Z-tdW2BnsE', description: 'Gta san Andreas gtr car edit', tags: ['Gaming'], type: 'video' },
+    { title: 'Porsche 911 Gaming Style Edit', category: 'Gaming Edits', video: 'https://www.youtube.com/embed/ea-xQmrFX00', description: 'Porsche car edit', tags: ['Gaming'], type: 'video' },
     { title: 'Call of Duty Funny Moments', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/Ps8dq8YgHEU', description: 'Call of Duty game funny clips', tags: ['Funny', 'Gaming'], type: 'short' },
     { title: 'Cant Drive Funny Clip', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/jVMdyFe4eDM', description: 'A person who cant drive funny clip', tags: ['Funny'], type: 'short' },
     { title: 'Gorilla Need Peanuts', category: 'Funny Gaming Clips', video: 'https://www.youtube.com/embed/rVbLtwyLRhE', description: 'Gorilla need peanuts funny clip', tags: ['Funny'], type: 'short' },
     { title: 'Outro', category: 'Outros', video: 'https://www.youtube.com/embed/A9JYuUvavwk', description: 'Outro Johnplays', tags: ['Outro'], type: 'short' },
-    { title: 'Apex Legends Montage', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/HMrMlwNVMws', description: 'Apex legends gameplay edit montage', tags: ['Gaming', 'Montage'], type: 'short' },
-    { title: 'Cinematic edit', category: 'Cinematic Reel/Edits', video: 'https://www.youtube.com/embed/ne7qG3Z6Kcw', description: 'Doomsday tony stark cinematic edit', tags: ['Cinematic'], type: 'short' },
-    { title: 'Intro', category: 'Intro', video: 'https://www.youtube.com/embed/snvfcjmoM8Q', description: 'Minecraft Intro creeper blast', tags: ['Intro'], type: 'short' }
+    { title: 'Valorant Montage', category: 'Gaming Montage', video: 'https://www.youtube.com/embed/HMrMlwNVMws', description: 'Valorant gameplay edit montage', tags: ['Gaming', 'Montage'], type: 'short' },
+    { title: 'Intro', category: 'Intro', video: 'https://www.youtube.com/embed/ne7qG3Z6Kcw', description: 'Intro animation edit', tags: ['Intro'], type: 'short' },
+    { title: 'CREEPER BLAST STYLE INTRO', category: 'Intro', video: 'https://www.youtube.com/embed/snvfcjmoM8Q', description: 'Creeper blast style intro animation', tags: ['Intro'], type: 'short' }
   ];
 
   const filteredProjects = projects.filter(project => {
     if (activeTab === 'All') return true;
+    if (
+      activeTab === 'PROMOTIONAL YT SHORT EDIT' ||
+      activeTab === 'PROMOTIONAL YT SHORT EDIT SECTION' ||
+      activeTab === 'YT SHORT EDIT SECTION' ||
+      activeTab === 'YT SHORT EDIT'
+    ) {
+      return (
+        project.category === 'PROMOTIONAL YT SHORT EDIT' ||
+        project.category === 'YT SHORT EDIT' ||
+        project.category === 'YT SHORT EDIT SECTION'
+      );
+    }
+    if (
+      activeTab === 'Promotional Videos' ||
+      activeTab === 'PROMOTIONAL VIDEOS SECTION' ||
+      activeTab === 'PROMOTIONAL VIDEOS' ||
+      activeTab === 'Promotional Video'
+    ) {
+      return (
+        project.category === 'Promotional Videos' ||
+        project.category === 'PROMOTIONAL VIDEOS SECTION' ||
+        project.category === 'Promotional Video' ||
+        project.category === 'PROMOTIONAL VIDEOS'
+      );
+    }
     return project.category === activeTab;
   });
 
@@ -159,7 +182,7 @@ const PortfolioPage = () => {
               const thumb = getThumbnail(project.video) || project.image || 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1200&auto=format&fit=crop';
               return (
                 <div
-                  key={project.title}
+                  key={`${project.title}-${index}`}
                   onClick={() => setSelectedProject(project)}
                   className="group relative overflow-visible cursor-pointer"
                 >
