@@ -7,6 +7,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { DinoGame } from './ui/DinoGame';
 import LoadingScreen from './ui/LoadingScreen';
+import { TopAnnouncementBar } from './ui/TopAnnouncementBar';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Import all pages synchronously
@@ -63,6 +64,7 @@ const App: React.FC = () => {
 
   return (
     <>
+      <TopAnnouncementBar />
       <Toaster position="top-center" richColors />
       
       <AnimatePresence>

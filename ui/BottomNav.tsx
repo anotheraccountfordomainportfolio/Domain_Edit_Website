@@ -65,7 +65,7 @@ export const BottomNav: React.FC<ResponsiveNavProps> = ({
   return (
     <>
       {/* 1. MOBILE TOP HEADER (Fully Transparent) */}
-      <header className="fixed top-0 left-0 right-0 z-40 w-full bg-transparent px-6 py-4 md:hidden pointer-events-auto">
+      <header className="fixed top-[40px] left-0 right-0 z-40 w-full bg-transparent px-6 py-4 md:hidden pointer-events-auto">
         <div className="relative z-10 flex items-center justify-between">
           
           {/* Logo with falling sparks originating strictly from DOMAIN EDITS */}

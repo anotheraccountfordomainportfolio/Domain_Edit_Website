@@ -4,6 +4,7 @@ import { Menu, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PWAInstallButton } from './PWAInstallButton';
 import { OfflineIndicator } from './OfflineIndicator';
+import { TopAnnouncementBar } from './TopAnnouncementBar';
 
 interface TopNavProps {
   glaucusActive?: boolean;
@@ -26,7 +27,7 @@ export const TopNav: React.FC<TopNavProps> = ({ glaucusActive = false, setGlaucu
     <>
       <OfflineIndicator />
       {/* Fixed Top Header with Stacked Layout (Appearing strictly on top) */}
-      <header className="fixed top-0 left-0 right-0 z-40 w-full bg-black/70 backdrop-blur-2xl border-b border-white/10 px-6 py-4 pointer-events-auto">
+      <header className="fixed top-[40px] left-0 right-0 z-40 w-full bg-black/90 backdrop-blur-2xl border-b border-white/10 px-6 py-4 pointer-events-auto">
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
           
           {/* Row 1: Logo & Glaucus / Mobile Toggle */}
