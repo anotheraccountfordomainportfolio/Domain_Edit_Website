@@ -59,14 +59,7 @@ const App: React.FC = () => {
     };
   }, []);
 
-  if (isOffline) {
-    return (
-      <>
-        <Toaster position="top-center" richColors />
-        <DinoGame isOffline={true} />
-      </>
-    );
-  }
+
 
   return (
     <>

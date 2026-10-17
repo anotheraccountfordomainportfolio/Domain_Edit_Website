@@ -45,7 +45,6 @@ const PortfolioPage = () => {
   const categories = [
     'All',
     'Gaming Montage',
-    'Highlights',
     'Funny Gaming Clips',
     'YouTube Video',
     'Cinematic Reel/Edits',

@@ -396,7 +396,6 @@ const WhatWeCreateSection: React.FC = () => {
   const categories = [
     'All',
     'Gaming Montage',
-    'Highlights',
     'Funny Gaming Clips',
     'YouTube Video',
     'Cinematic Reel/Edits',
@@ -423,19 +422,6 @@ const WhatWeCreateSection: React.FC = () => {
       badgeColor: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
       iconColor: 'group-hover:text-cyan-400',
       videoUrl: 'https://www.youtube.com/embed/HMrMlwNVMws',
-    },
-    {
-      id: '02',
-      title: 'Highlights',
-      icon: Tv,
-      category: 'Highlights',
-      tag: 'Fast Paced',
-      spec: 'MULTI-CAM • TIMECODE',
-      software: 'Premiere & Audition',
-      accentBorder: 'hover:border-purple-400/50',
-      accentGlow: 'hover:shadow-[0_0_35px_rgba(168,85,247,0.3)]',
-      badgeColor: 'text-purple-400 border-purple-400/30 bg-purple-400/10',
-      iconColor: 'group-hover:text-purple-400',
     },
     {
       id: '03',
