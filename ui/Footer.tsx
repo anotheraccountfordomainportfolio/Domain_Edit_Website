@@ -17,9 +17,21 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
     { name: 'Instagram', icon: Instagram, url: 'https://www.instagram.com/domain.editss/' },
   ];
 
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Work', path: '/portfolio' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Reviews', path: '/reviews' },
+    { name: 'Graphic Design', path: 'https://domaindesign.vercel.app/' },
+    { name: 'Privacy Policy', path: '/privacy' },
+    { name: 'Terms & Conditions', path: '/terms' },
+  ];
+
   return (
-    <footer className={`relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-2xl overflow-hidden ${className || ''}`}>
+    <footer className={`relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-2xl overflow-hidden pb-32 md:pb-24 ${className || ''}`}>
       <FooterGrid clearTrigger={clearTrigger} />
+      
       {/* Animated Marquee */}
       <div className="relative z-10 py-10 border-b border-white/5 overflow-hidden whitespace-nowrap group pointer-events-none">
         <motion.div 
@@ -34,7 +46,7 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
         </motion.div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-24 pointer-events-none">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-24 pointer-events-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
@@ -79,14 +91,7 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
           <div>
             <h3 className="text-xs font-mono text-[#a8fbd3] uppercase tracking-[0.3em] mb-8">Navigation</h3>
             <ul className="space-y-4">
-              {[
-                { name: 'Home', path: '/' },
-                { name: 'Work', path: '/portfolio' },
-                { name: 'About', path: '/about' },
-                { name: 'Contact', path: '/contact' },
-                { name: 'Reviews', path: '/reviews' },
-                { name: 'Graphic Design', path: 'https://domaindesign.vercel.app/' }
-              ].map((item) => {
+              {navLinks.map((item) => {
                 const isExternal = item.path.startsWith('/#') || item.path.startsWith('http');
                 const isFullExternal = item.path.startsWith('http');
                 
@@ -97,13 +102,13 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
                         href={item.path} 
                         target={isFullExternal ? "_blank" : undefined}
                         rel={isFullExternal ? "noopener noreferrer" : undefined}
-                        className="text-gray-400 hover:text-white transition-colors text-lg font-light group flex items-center gap-2 pointer-events-auto"
+                        className="text-gray-400 hover:text-white transition-colors text-base font-light group flex items-center gap-2 pointer-events-auto"
                       >
                         <span className="w-0 h-px bg-[#a8fbd3] group-hover:w-4 transition-all duration-300" />
                         {item.name}
                       </a>
                     ) : (
-                      <Link to={item.path} className="text-gray-400 hover:text-white transition-colors text-lg font-light group flex items-center gap-2 pointer-events-auto">
+                      <Link to={item.path} className="text-gray-400 hover:text-white transition-colors text-base font-light group flex items-center gap-2 pointer-events-auto">
                         <span className="w-0 h-px bg-[#a8fbd3] group-hover:w-4 transition-all duration-300" />
                         {item.name}
                       </Link>
@@ -150,12 +155,9 @@ const Footer: React.FC<{className?: string}> = ({ className }) => {
           </div>
         </div>
 
-        <div className="relative z-10 mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-gray-500 uppercase tracking-widest pointer-events-none">
-          <p className="pointer-events-auto">© 2026 DOMAIN EDITS. ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-8 pointer-events-auto">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-          </div>
+        {/* Bottom Bar */}
+        <div className="relative z-10 mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-mono text-gray-400 uppercase tracking-widest pointer-events-auto">
+          <p>© 2026 DOMAIN EDITS. ALL RIGHTS RESERVED.</p>
         </div>
       </div>
 

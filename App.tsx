@@ -17,6 +17,8 @@ import AboutPage from './views/AboutPage';
 import ContactPage from './views/ContactPage';
 import PortfolioPage from './views/PortfolioPage';
 import ReviewsPage from './views/ReviewsPage';
+import PrivacyPage from './views/PrivacyPage';
+import TermsPage from './views/TermsPage';
 import NotFoundPage from './views/NotFoundPage';
 
 const App: React.FC = () => {
@@ -34,6 +36,8 @@ const App: React.FC = () => {
       '/about': 'ABOUT',
       '/contact': 'CONTACT',
       '/reviews': 'REVIEWS',
+      '/privacy': 'PRIVACY POLICY',
+      '/terms': 'TERMS & CONDITIONS',
       '/404': '404 NOT FOUND',
     };
     const title = titleMap[location.pathname] || 'DOMAIN EDITS';
@@ -88,6 +92,8 @@ const App: React.FC = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/reviews" element={<ReviewsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
