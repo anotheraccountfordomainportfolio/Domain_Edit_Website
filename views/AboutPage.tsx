@@ -123,22 +123,22 @@ const AboutPage = () => {
 
   const experienceList = [
     {
-      role: 'Lead Video Editor & Post-Production Specialist',
-      company: 'Creative Media Agency',
-      desc: 'Spearheaded premium video editing projects, designed Audio Polish templates, and optimized content delivery pipelines for social networks and commercials.',
-      years: '2019-2023',
+      role: 'Commercial & Brand Video Production',
+      company: 'Commercial Production Division',
+      desc: 'Our studio delivers broadcast-ready commercial edits, corporate showcase reels, and high-converting brand campaigns engineered with bespoke narrative pacing, color mastery, and proven marketing ROI.',
+      years: '2021 — PRESENT',
     },
     {
-      role: 'Senior Creative Editor & Motion Graphic Artist',
-      company: 'Domain Edits Studio',
-      desc: 'Formulated visual strategies for high-retention short-form edits, created customized after-effects presets, and oversaw the digital content framework.',
-      years: '2024-2025',
+      role: 'High-Retention Creator & Social Media Content',
+      company: 'Creator & Digital Media Studio',
+      desc: 'We partner with leading YouTube creators, gaming channels, and streamers to engineer high-retention long-form videos, viral vertical Reels and TikToks, multi-cam synchronization, and custom kinetic typography.',
+      years: '2023 — PRESENT',
     },
     {
-      role: 'Creative Director & Post-Production Specialist',
-      company: 'Elite Production Lab',
-      desc: 'Steered narrative flow for high-end digital releases, coordinated high-fidelity audio workflows, and executed premium DaVinci Resolve grading routines.',
-      years: '2025-2026',
+      role: 'Cinematic VFX, Color Grading & Sound Architecture',
+      company: 'Finishing & Post-Production Lab',
+      desc: 'Our specialized post-production team delivers studio-grade DaVinci Resolve color pipelines, custom After Effects visual effects, and multi-track spatial sound mastering to elevate productions to broadcast benchmarks.',
+      years: '2024 — PRESENT',
     },
   ];
 
@@ -164,7 +164,7 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20 relative h-[10vw] md:h-[15vw] flex items-center justify-center">
              <h1 className="text-[14vw] md:text-[16vw] font-heading font-bold opacity-10 text-white whitespace-nowrap leading-none select-none pointer-events-none tracking-tighter absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
-               ABOUT ME
+               ABOUT US
              </h1>
           </div>
 
@@ -183,8 +183,8 @@ const AboutPage = () => {
                 <div className="absolute -inset-4 bg-gradient-to-r from-[#a8fbd3] to-[#4fb7b3] rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
                 <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10">
                   <img 
-                    src="https://res.cloudinary.com/dhejaxxje/image/upload/v1786132094/1000427662_11zon_uhhcph.jpg" 
-                    alt="Domain Edits" 
+                    src="https://i.postimg.cc/CKJTqK8Y/Professional-Color-Grading-Workspace.png" 
+                    alt="Domain Edits - Professional Color Grading Workspace" 
                     className="w-full h-full object-cover transition-all duration-700 scale-110 hover:scale-100"
                     referrerPolicy="no-referrer"
                    />
@@ -282,7 +282,7 @@ const AboutPage = () => {
                 Experience
               </h2>
               <p className="text-gray-400 max-w-2xl mt-4 text-sm md:text-base">
-                A selection of milestones and long-term production contracts completed with agencies and studios.
+                A track record of core company expertise, studio milestones, and long-term production partnerships delivered by Domain Edits.
               </p>
             </div>
 

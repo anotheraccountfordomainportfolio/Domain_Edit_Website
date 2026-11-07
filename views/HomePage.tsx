@@ -1873,16 +1873,6 @@ const ClientFeedbacksSection: React.FC = () => {
         </div>
         </div>
 
-        {/* Responsive Grid of Animated Feedback Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
-          {clientFeedbackList.map(item => (
-            <ClientFeedbackCard
-              key={item.id}
-              item={item}
-              onOpenProof={(it) => setSelectedProof(it)}
-            />
-          ))}
-        </div>
 
         {/* Bottom Action Row: Explore More & Contact */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
@@ -2136,26 +2126,6 @@ const HomePage: React.FC = () => {
             }`}
           >
             All Vid/Shorts
-          </button>
-          <button
-            onClick={() => setHomeTab('video')}
-            className={`px-8 py-3.5 rounded-2xl font-heading font-bold uppercase tracking-wider transition-all duration-300 text-sm md:text-base ${
-              homeTab === 'video'
-                ? 'bg-[#a8fbd3] text-black shadow-[0_0_25px_rgba(168,251,211,0.5)] scale-105'
-                : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
-            }`}
-          >
-            Videos
-          </button>
-          <button
-            onClick={() => setHomeTab('short')}
-            className={`px-8 py-3.5 rounded-2xl font-heading font-bold uppercase tracking-wider transition-all duration-300 text-sm md:text-base ${
-              homeTab === 'short'
-                ? 'bg-[#a8fbd3] text-black shadow-[0_0_25px_rgba(168,251,211,0.5)] scale-105'
-                : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
-            }`}
-          >
-            Shorts
           </button>
         </div>
 
