@@ -1556,7 +1556,7 @@ interface FeedbackItem {
   id: number;
   client: string;
   role: string;
-  category: 'youtube' | 'short' | 'podcast';
+  category: 'youtube' | 'short' | 'podcast' | 'gaming';
   rating: number;
   comment: string;
   image: string;
@@ -1572,16 +1572,16 @@ interface FeedbackItem {
 const clientFeedbackList: FeedbackItem[] = [
   {
     id: 1,
-    client: 'Alex Vance',
-    role: 'YouTube Creator (500k+ Subs)',
-    category: 'youtube',
+    client: 'Valorant Creator',
+    role: 'Gaming Creator & Streamer',
+    category: 'gaming',
     rating: 5,
-    comment: 'Dominic completely transformed my retention rate! Sound design and pacing are top tier. The cuts keep viewers hooked till the very last second.',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
-    platform: 'YouTube Long-Form Mastery',
-    metric: '+340% RETENTION BOOST',
+    comment: 'The Valorant montage was insane! Clean beat sync, crisp color grading, and flawless flow throughout.',
+    image: 'https://i.postimg.cc/sfhmHG8J/Valorant-Montage-Chat-with-Puppy-Profile-(1).png',
+    platform: 'Valorant Montage',
+    metric: 'VERIFIED CLIENT CHAT • 100% ORIGINAL',
     metricColor: 'text-[#a8fbd3] border-[#a8fbd3]/30 bg-[#a8fbd3]/10',
-    icon: Video,
+    icon: Gamepad2,
     iconColor: 'text-[#a8fbd3]',
     accentBorder: 'hover:border-[#a8fbd3]/60',
     accentGlow: 'hover:shadow-[0_0_35px_rgba(168,251,211,0.25)]',
@@ -1671,7 +1671,7 @@ const clientFeedbackList: FeedbackItem[] = [
 const ClientFeedbackCard: React.FC<{
   item: FeedbackItem;
   onOpenProof?: (item: FeedbackItem) => void;
-}> = ({ item }) => {
+}> = ({ item, onOpenProof }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const Icon = item.icon;
 
@@ -1687,7 +1687,8 @@ const ClientFeedbackCard: React.FC<{
     <div
       ref={cardRef}
       onMouseMove={handleCardMouseMove}
-      className={`group relative p-6 md:p-7 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
+      onClick={() => onOpenProof?.(item)}
+      className={`group relative p-6 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
     >
       {/* Specular Spotlight inside Card */}
       <div
@@ -1704,47 +1705,82 @@ const ClientFeedbackCard: React.FC<{
       <div className="absolute bottom-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">└</div>
       <div className="absolute bottom-2.5 right-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┘</div>
 
-      {/* Header: Moving Icon Pod + Twinkling Stars + Equalizer */}
-      <div className="relative z-10 flex items-center justify-between mb-5">
-        <div className="flex items-center gap-3">
-          {/* Animated Moving Icon Pod */}
-          <div className="relative">
-            <div className={`w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${item.iconColor} group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-inner group-hover:border-[#a8fbd3]/50`}>
-              <Icon className="w-6 h-6 transition-transform group-hover:scale-110" />
+      <div>
+        {/* Header: Moving Icon Pod + Platform Tag + Stars */}
+        <div className="relative z-10 flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            {/* Animated Moving Icon Pod */}
+            <div className="relative">
+              <div className={`w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${item.iconColor} group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-inner group-hover:border-[#a8fbd3]/50`}>
+                <Icon className="w-5 h-5 transition-transform group-hover:scale-110" />
+              </div>
             </div>
-            {/* Pulsing Aura Ping on Hover */}
-            <div className="absolute inset-0 rounded-2xl border border-[#a8fbd3]/40 opacity-0 group-hover:opacity-100 group-hover:animate-ping pointer-events-none" />
+
+            <div>
+              <span className="text-[10px] font-mono tracking-wider uppercase text-[#a8fbd3] block">
+                {item.platform}
+              </span>
+              <div className="flex items-center gap-1 text-yellow-400 mt-0.5">
+                {[...Array(item.rating)].map((_, r) => (
+                  <Star
+                    key={r}
+                    className="w-3 h-3 fill-current"
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div>
-            {/* Twinkling 5-Star Rating */}
-            <div className="flex items-center gap-1 text-yellow-400">
-              {[...Array(item.rating)].map((_, r) => (
-                <Star
-                  key={r}
-                  className="w-3.5 h-3.5 fill-current transition-transform duration-300 group-hover:scale-110"
-                  style={{ transitionDelay: `${r * 50}ms` }}
-                />
-              ))}
-            </div>
+          {/* Equalizer Bars */}
+          <div className="flex items-end gap-1 h-4 px-2 py-1 rounded-lg bg-black/40 border border-white/5 opacity-70 group-hover:opacity-100 transition-opacity">
+            <div className="w-1 bg-[#a8fbd3] rounded-full animate-eq-1" />
+            <div className="w-1 bg-cyan-400 rounded-full animate-eq-2" />
+            <div className="w-1 bg-pink-400 rounded-full animate-eq-3" />
           </div>
         </div>
 
-        {/* Live Audio / Video Telemetry Equalizer Bars */}
-        <div className="flex items-end gap-1 h-5 px-2 py-1 rounded-lg bg-black/40 border border-white/5 opacity-70 group-hover:opacity-100 transition-opacity">
-          <div className="w-1 bg-[#a8fbd3] rounded-full animate-eq-1" />
-          <div className="w-1 bg-cyan-400 rounded-full animate-eq-2" />
-          <div className="w-1 bg-pink-400 rounded-full animate-eq-3" />
-          <div className="w-1 bg-amber-400 rounded-full animate-eq-4" />
+        {/* Client Info */}
+        <div className="mb-3 relative z-10">
+          <h3 className="text-base font-heading font-bold uppercase text-white group-hover:text-[#a8fbd3] transition-colors">
+            {item.client}
+          </h3>
+          <p className="text-[11px] font-mono text-gray-400">
+            {item.role}
+          </p>
+        </div>
+
+        {/* Body: Quote */}
+        <div className="relative z-10 mb-4">
+          <p className="text-gray-300 text-xs italic leading-relaxed pl-3 border-l-2 border-[#a8fbd3]/40 group-hover:border-[#a8fbd3] transition-colors line-clamp-3">
+            "{item.comment}"
+          </p>
         </div>
       </div>
 
-      {/* Body: Quote */}
-      <div className="relative z-10">
-        <Quote className="absolute -top-2 -left-1 w-6 h-6 text-white/10 group-hover:text-[#a8fbd3]/20 transition-colors pointer-events-none" />
-        <p className="text-gray-200 text-xs md:text-sm font-sans italic leading-relaxed pl-3 border-l-2 border-[#a8fbd3]/40 group-hover:border-[#a8fbd3] transition-colors">
-          "{item.comment}"
-        </p>
+      {/* Image Thumbnail Preview - Cleanly Sized */}
+      <div className="relative z-10 mt-auto">
+        <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 bg-black/60 flex items-center justify-center p-2 mb-3 transition-all">
+          <img
+            src={item.image}
+            alt={item.client}
+            className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-500"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/80 px-2.5 py-1 rounded-lg border border-[#a8fbd3]/30 backdrop-blur-md">
+              Expand Review Proof
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-[11px] font-mono text-gray-400 border-t border-white/10 pt-2.5">
+          <span className="text-[#a8fbd3] group-hover:underline flex items-center gap-1">
+            <span>View Full Proof</span>
+            <ExternalLink className="w-3 h-3" />
+          </span>
+          <span className="text-[10px] uppercase text-emerald-400/90 font-mono">100% Authentic</span>
+        </div>
       </div>
     </div>
   );
@@ -1837,7 +1873,6 @@ const ClientFeedbacksSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* Animated Section Header */}
-        <div className="added-feedbacks-wrapper">
         <div className="text-center mb-10">
           <h2 className="text-4xl md:text-6xl font-heading font-black tracking-tighter uppercase text-white mb-3 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
             CLIENTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">FEEDBACK</span>
@@ -1871,10 +1906,17 @@ const ClientFeedbacksSection: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* 6 Review Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+          {clientFeedbackList.slice(0, 6).map((item) => (
+            <ClientFeedbackCard
+              key={item.id}
+              item={item}
+              onOpenProof={(proof) => setSelectedProof(proof)}
+            />
+          ))}
         </div>
 
-
-        {/* Bottom Action Row: Explore More & Contact */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
           <Link
             to="/reviews"
@@ -1894,7 +1936,7 @@ const ClientFeedbacksSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Lightbox Modal for Original Screenshot Proof */}
+      {/* Lightbox Modal for Original Screenshot Proof - In-App Preview */}
       <AnimatePresence>
         {selectedProof && (
           <motion.div
@@ -1902,15 +1944,15 @@ const ClientFeedbacksSection: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedProof(null)}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(168,251,211,0.2)] cursor-default"
+              className="relative max-w-5xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(168,251,211,0.25)] cursor-default"
             >
               {/* Close Button */}
               <button
@@ -1920,53 +1962,40 @@ const ClientFeedbacksSection: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* Proof Image Container */}
-                <div className="relative bg-black flex items-center justify-center p-4 overflow-hidden group">
+              <div className="p-4 md:p-6 flex flex-col items-center">
+                {/* Proof Image Container - In-App Preview */}
+                <div className="relative w-full max-h-[72vh] bg-black/80 flex items-center justify-center p-2 rounded-2xl border border-white/10 mb-4 overflow-hidden">
                   <img
                     src={selectedProof.image}
                     alt={`${selectedProof.client} Screenshot Proof`}
-                    className="w-full h-auto max-h-[500px] object-cover rounded-2xl border border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-105"
+                    className="max-w-full max-h-[68vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
+                    referrerPolicy="no-referrer"
                   />
-                  <div className="absolute bottom-6 left-6 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5">
+                  <div className="absolute bottom-4 left-4 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
                     <BadgeCheck className="w-3.5 h-3.5" />
                     <span>AUTHENTIC CLIENT CHAT / VERIFIED</span>
                   </div>
                 </div>
 
-                {/* Details & Testimonial */}
-                <div className="p-6 md:p-8 flex flex-col justify-between bg-gradient-to-br from-white/[0.02] to-transparent">
+                {/* Details Bar */}
+                <div className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-3 border-t border-white/10">
                   <div>
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-1">
                       <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-lg border ${selectedProof.metricColor}`}>
                         {selectedProof.metric}
                       </span>
+                      <div className="flex items-center gap-1 text-yellow-400">
+                        {[...Array(selectedProof.rating)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                        ))}
+                      </div>
                     </div>
-
-                    <h3 className="text-2xl font-heading font-black text-white uppercase mb-1">
-                      {selectedProof.client}
+                    <h3 className="text-lg md:text-xl font-heading font-black text-white uppercase">
+                      {selectedProof.client} • <span className="text-gray-400 font-sans text-xs font-normal">{selectedProof.role}</span>
                     </h3>
-                    <p className="text-xs font-mono text-gray-400 mb-6">
-                      {selectedProof.role} • {selectedProof.platform}
-                    </p>
-
-                    <div className="flex items-center gap-1 text-yellow-400 mb-4">
-                      {[...Array(selectedProof.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-current" />
-                      ))}
-                      <span className="text-xs font-mono text-gray-400 ml-2">5.0 Star Verified</span>
-                    </div>
-
-                    <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 mb-6">
-                      <Quote className="w-5 h-5 text-[#a8fbd3] mb-2" />
-                      <p className="text-sm italic text-gray-300 leading-relaxed">
-                        "{selectedProof.comment}"
-                      </p>
-                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                    <span className="text-xs font-mono text-gray-400">Want similar results?</span>
+                  <div className="flex items-center gap-3">
                     <a
                       href="#contact"
                       onClick={() => setSelectedProof(null)}

@@ -22,12 +22,12 @@ interface Review {
 const reviewsData: Review[] = [
   {
     id: 1,
-    client: 'Alex Vance',
-    role: 'YouTube Creator (500k+ Subs)',
+    client: 'Valorant Creator',
+    role: 'Gaming Creator & Streamer',
     rating: 5,
-    comment: 'Dominic completely transformed my retention rate! The pacing, sound design, and color grading on my latest long-form video are absolute masterclasses.',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
-    platform: 'YouTube Project',
+    comment: 'The Valorant montage was insane! Clean beat sync, crisp color grading, and flawless flow throughout.',
+    image: 'https://i.postimg.cc/sfhmHG8J/Valorant-Montage-Chat-with-Puppy-Profile-(1).png',
+    platform: 'Valorant Montage',
   },
   {
     id: 2,
@@ -143,7 +143,7 @@ const ReviewsPage: React.FC = () => {
               >
                 <div>
                   {/* Top Bar: Platform & Stars */}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-[10px] font-mono tracking-wider uppercase bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[#a8fbd3]">
                       {review.platform}
                     </span>
@@ -153,30 +153,49 @@ const ReviewsPage: React.FC = () => {
                       ))}
                     </div>
                   </div>
+
+                  <h3 className="text-lg font-heading font-bold text-white mb-0.5">
+                    {review.client}
+                  </h3>
+                  <p className="text-xs font-mono text-gray-400 mb-3">
+                    {review.role}
+                  </p>
+                  <p className="text-gray-300 text-xs italic line-clamp-2 mb-4 leading-relaxed">
+                    "{review.comment}"
+                  </p>
                 </div>
 
                 <div>
-                  {/* Clickable Review Image Preview */}
+                  {/* Clickable Review Image Thumbnail - Cleanly Framed */}
                   <div 
                     onClick={() => setActiveImageIndex(index)}
-                    className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-4 transition-all"
+                    className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-3 transition-all bg-black/60 flex items-center justify-center p-2"
                   >
                     <img 
                       src={review.image} 
                       alt={review.platform} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-700"
                       referrerPolicy="no-referrer"
+                      loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="text-xs font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/60 px-3 py-1.5 rounded-xl border border-[#a8fbd3]/30 backdrop-blur-md">
-                        Click to Expand
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                      <span className="text-xs font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/80 px-3 py-1.5 rounded-xl border border-[#a8fbd3]/30 backdrop-blur-md">
+                        Open Review
                       </span>
                     </div>
                   </div>
 
-                  {/* Card Footer: ID */}
-                  <div className="flex items-center justify-end border-t border-white/10 pt-4">
-                    <span className="text-xs font-mono text-[#a8fbd3]">#0{review.id}</span>
+                  {/* Card Footer */}
+                  <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => setActiveImageIndex(index)}
+                      className="text-xs font-mono text-[#a8fbd3] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>View Screenshot</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </button>
+                    <span className="text-xs font-mono text-gray-500">#0{review.id}</span>
                   </div>
                 </div>
               </motion.div>
@@ -186,14 +205,14 @@ const ReviewsPage: React.FC = () => {
         </div>
       </main>
 
-      {/* LIGHTBOX MODAL */}
+      {/* LIGHTBOX MODAL - Shows properly sized pic when each review is opened */}
       <AnimatePresence>
         {activeImageIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-3xl flex items-center justify-center p-4 md:p-12 select-none"
+            className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-3xl flex items-center justify-center p-4 md:p-10 select-none"
             onClick={() => setActiveImageIndex(null)}
           >
             {/* Close Button */}
@@ -229,20 +248,21 @@ const ReviewsPage: React.FC = () => {
               <ChevronRight className="w-6 h-6" />
             </button>
 
-            {/* Modal Content */}
+            {/* Modal Content - Properly Sized Pic */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="relative max-w-5xl w-full max-h-[85vh] flex flex-col items-center bg-slate-950/80 rounded-3xl border border-white/20 p-6 overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.9)]"
+              className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center bg-[#0a0a0a] rounded-3xl border border-white/20 p-5 md:p-6 overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-white/10 relative">
+              {/* Properly Sized Pic Container */}
+              <div className="w-full max-h-[64vh] rounded-2xl overflow-hidden mb-4 border border-white/10 relative bg-black/90 flex items-center justify-center p-3">
                 <img
                   src={reviewsData[activeImageIndex].image}
                   alt={reviewsData[activeImageIndex].client}
-                  className="w-full h-full object-cover"
+                  className="max-w-full max-h-[60vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
                   referrerPolicy="no-referrer"
                 />
               </div>
@@ -260,16 +280,18 @@ const ReviewsPage: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  <h3 className="text-xl font-heading font-bold text-white">
-                    {reviewsData[activeImageIndex].client} — <span className="text-gray-400 font-sans text-sm font-normal">{reviewsData[activeImageIndex].role}</span>
+                  <h3 className="text-lg md:text-xl font-heading font-bold text-white">
+                    {reviewsData[activeImageIndex].client} — <span className="text-gray-400 font-sans text-xs md:text-sm font-normal">{reviewsData[activeImageIndex].role}</span>
                   </h3>
-                  <p className="text-gray-300 text-sm mt-2 italic">
+                  <p className="text-gray-300 text-xs md:text-sm mt-1 italic">
                     "{reviewsData[activeImageIndex].comment}"
                   </p>
                 </div>
 
-                <div className="text-xs font-mono text-gray-400 self-end md:self-center">
-                  Review {activeImageIndex + 1} of {reviewsData.length}
+                <div className="flex items-center gap-3">
+                  <div className="text-xs font-mono text-gray-400 whitespace-nowrap">
+                    Review {activeImageIndex + 1} of {reviewsData.length}
+                  </div>
                 </div>
               </div>
             </motion.div>
