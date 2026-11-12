@@ -34,16 +34,6 @@ const reviewsData: Review[] = [
   },
   {
     id: 2,
-    client: 'Tilted Towers Highlights',
-    role: 'Competitive Esports Creator',
-    bio: 'Tournament player & gaming content creator delivering fast-paced battle royale highlights and trickshot montages to 320K+ fans.',
-    rating: 5,
-    comment: 'Insane velocity sync, 3D camera tracking around Tilted Towers, and punchy kill sound design. Blew up our engagement across YouTube and TikTok!',
-    image: 'https://i.postimg.cc/HW5YrMmz/1-tilted-towers-enhanced.png',
-    platform: 'Fortnite Montage & Highlights',
-  },
-  {
-    id: 3,
     client: 'Artisan Beans Roastery',
     role: 'Specialty Coffee Brand Director',
     bio: 'Direct-to-consumer specialty craft coffee roastery known for ethical single-origin harvests and sensory culinary storytelling.',
@@ -53,7 +43,7 @@ const reviewsData: Review[] = [
     platform: 'Brand Commercial & Social Ads',
   },
   {
-    id: 4,
+    id: 3,
     client: 'Fairy Candles Studio',
     role: 'Aesthetic Lifestyle Founder',
     bio: 'Artisan botanical candle studio crafting hand-poured soy wax goods, aesthetic home decor, and viral calming ASMR showcases.',
@@ -63,34 +53,44 @@ const reviewsData: Review[] = [
     platform: 'E-Commerce Product Showcase',
   },
   {
-    id: 5,
-    client: 'Told & Untold Stories',
-    role: 'Documentary Director & Producer',
-    bio: 'Independent investigative documentary filmmaker and narrative storyteller producing long-form video essays with over 600K cumulative views.',
+    id: 4,
+    client: 'Apex Creator Podcast',
+    role: 'Podcast Host & Video Producer',
+    bio: 'Weekly creator economy & tech entrepreneurship podcast producing high-retention multi-cam clips and viral vertical reels across YouTube Shorts, Reels, and TikTok.',
     rating: 5,
-    comment: 'Exceptional narrative pacing, nuanced audio mixing, and compelling title motion graphics. They turned complex archival footage into an emotionally gripping docu-series.',
-    image: 'https://i.postimg.cc/3JTKmwrt/4-told-untold-enhanced.png',
-    platform: 'Docu-Series & Narrative Video',
+    comment: 'These podcast clip highlights are unreal! Sharp speaker framing, punchy animated captions, and tight pacing that doubled our short-form reach overnight.',
+    image: 'https://i.postimg.cc/HLF44944/Podcast-Clip-Highlights-Chat-(1).png',
+    platform: 'Podcast Clips & Short-Form Reels',
+  },
+  {
+    id: 5,
+    client: 'Neon Pulse Reacts',
+    role: 'Reaction & Entertainment Creator',
+    bio: 'High-energy reaction YouTuber and variety streamer with 290K+ subscribers known for vibrant neon motion graphics, comedic timing, and interactive end screens.',
+    rating: 5,
+    comment: 'Love how the neon reaction outro turned out! The glowing cyan-magenta accents, crisp sound effects, and end-card motion flow keep viewers clicking right into the next video.',
+    image: 'https://i.postimg.cc/nLNYYGYr/Neon-Reaction-Outro-Chat-Screenshot-(1).jpg',
+    platform: 'Neon Reaction Outro & Branding',
   },
   {
     id: 6,
-    client: 'Banter Brigade',
-    role: 'Comedy & Gaming Creator Collective',
-    bio: 'Chaotic gaming and comedy podcast squad with 450K+ subscribers producing weekly viral challenge videos, animated skits, and energetic podcasts.',
+    client: 'WildHorizon Docs',
+    role: 'Nature & Wildlife Filmmaker',
+    bio: 'Independent wildlife cinematographer and conservation storyteller capturing raw expedition footage and atmospheric nature documentaries in 4K HDR.',
     rating: 5,
-    comment: 'The Banter Brigade intro animation is absolutely top tier! The kinetic 3D typography, camera speed ramps, and custom audio stingers hook our viewers in the first 5 seconds every single episode.',
-    image: 'https://i.postimg.cc/y8hvQsRk/Banter-Brigade-Intro-Video-Chat-(1).png',
-    platform: 'YouTube 3D Intro Animation',
+    comment: 'Truly breathtaking documentary pacing! The natural color grading, immersive ambient foley soundscape, and seamless storytelling elevated our expedition footage to broadcast quality.',
+    image: 'https://i.postimg.cc/k5LFFvFN/Wildlife-Documentary-Chat-Preview-(1).png',
+    platform: 'Wildlife Documentary Edit',
   },
   {
     id: 7,
-    client: 'Neon Stream Network',
-    role: 'Twitch Partner & Esports Host',
-    bio: 'Competitive FPS streamer and community tournament organizer specializing in synthwave aesthetics, neon visuals, and custom live broadcast overlays.',
+    client: 'Banter Brigade',
+    role: 'Comedy & Gaming Creator Collective',
+    bio: 'High-energy gaming and comedy squad with 450K+ subscribers known for hilarious squad banter, chaotic challenge videos, and viral funny moments compilations.',
     rating: 5,
-    comment: 'The neon outro edit is straight fire! Glowing cyberpunk aesthetics, perfectly synced synth beats, and seamless social callouts. Communication in Messenger was lightning fast!',
-    image: 'https://i.postimg.cc/wB6FnZ5M/Neon-Outro-Edit-in-Messenger-(1).png',
-    platform: 'Cyberpunk Neon Outro & End Screen',
+    comment: 'The funny moments edit had our entire squad crying laughing! Perfect comedic zoom cuts, meme SFX timing, and animated subtitles that kept viewers glued from start to finish.',
+    image: 'https://i.postimg.cc/yN2XXyXy/Banter-Brigade-Funny-Moments-Chat-(1).png',
+    platform: 'Gaming Funny Moments Edit',
   },
 ];
 
@@ -182,33 +182,17 @@ const ReviewsPage: React.FC = () => {
                 className="group relative bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#a8fbd3]/50 p-6 rounded-3xl flex flex-col justify-between transition-all duration-500 hover:shadow-[0_10px_30px_rgba(168,251,211,0.15)]"
               >
                 <div>
-                  {/* Top Bar: Platform & Stars */}
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-mono tracking-wider uppercase bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[#a8fbd3]">
-                      {review.platform}
-                    </span>
-                    <div className="flex items-center gap-1 text-yellow-400">
+                  {/* Top Bar: Client & Stars */}
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <h3 className="text-lg font-heading font-bold text-white">
+                      {review.client}
+                    </h3>
+                    <div className="flex items-center gap-1 text-yellow-400 shrink-0">
                       {[...Array(review.rating)].map((_, i) => (
                         <Star key={i} className="w-3.5 h-3.5 fill-current" />
                       ))}
                     </div>
                   </div>
-
-                  <h3 className="text-lg font-heading font-bold text-white mb-0.5">
-                    {review.client}
-                  </h3>
-                  <p className="text-xs font-mono text-gray-400 mb-2">
-                    {review.role}
-                  </p>
-                  {review.bio && (
-                    <p className="text-[11px] font-sans text-gray-300 leading-snug line-clamp-2 mb-3 bg-white/[0.03] px-2.5 py-1.5 rounded-xl border border-white/5 group-hover:border-[#a8fbd3]/20 transition-colors">
-                      <span className="text-[#a8fbd3] font-mono text-[9px] uppercase tracking-wider block mb-0.5">Creator Bio</span>
-                      {review.bio}
-                    </p>
-                  )}
-                  <p className="text-gray-300 text-xs italic line-clamp-2 mb-4 leading-relaxed">
-                    "{review.comment}"
-                  </p>
                 </div>
 
                 <div>

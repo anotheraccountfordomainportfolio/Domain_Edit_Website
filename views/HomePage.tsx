@@ -240,8 +240,7 @@ const FinestWorkSection: React.FC = () => {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="text-[10px] font-mono text-gray-500 uppercase">STUDIO MASTER</span>
+              <div className="pt-4 border-t border-white/10 flex items-center justify-end">
                 <Link
                   to="/portfolio"
                   className="inline-flex items-center gap-1.5 text-xs font-mono text-[#a8fbd3] hover:text-white transition-colors"
@@ -667,38 +666,6 @@ const WhatWeCreateSection: React.FC = () => {
             From high-energy gaming clips to full-length documentaries and viral short-form hooks, every frame is engineered for maximum retention and viewer conversion.
           </p>
 
-          {/* Continuous Kinetic Capabilities Marquee Bar */}
-          <div className="relative max-w-4xl mx-auto overflow-hidden rounded-full border border-white/10 bg-black/40 backdrop-blur-md py-2.5 px-4 mb-8">
-            <div className="animate-marquee-smooth flex items-center gap-8 whitespace-nowrap text-xs font-mono text-gray-300 uppercase tracking-widest">
-              <span>GAMING MONTAGES</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>4K CINEMATICS</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>3D MOTION GRAPHICS</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>VIRAL MEME PACING</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>HDR COLOR GRADING</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>DYNAMIC CAPTIONS</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>SOUND DESIGN & SFX</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>GAMING MONTAGES</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>4K CINEMATICS</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>3D MOTION GRAPHICS</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>VIRAL MEME PACING</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>HDR COLOR GRADING</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>DYNAMIC CAPTIONS</span>
-              <span className="text-[#a8fbd3]">✦</span>
-              <span>SOUND DESIGN & SFX</span>
-            </div>
-          </div>
 
           {/* Interactive Category Filter Tabs */}
           <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
@@ -849,8 +816,7 @@ const AgencyMotoCard: React.FC<{
         </p>
       </div>
 
-      <div className="relative z-10 mt-4 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-500">
-        <span className="group-hover:text-gray-300 transition-colors">{stepNum} // {meta}</span>
+      <div className="relative z-10 mt-4 pt-4 border-t border-white/5 flex items-center justify-end text-[10px] font-mono text-gray-500">
         <span className="text-[#a8fbd3] opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#a8fbd3] animate-ping" />
           ACTIVE
@@ -1648,37 +1614,71 @@ const clientFeedbackList: FeedbackItem[] = [
   },
   {
     id: 6,
-    client: 'Banter Brigade',
-    role: 'Comedy & Gaming Creator Collective',
-    bio: 'Chaotic gaming and comedy podcast squad with 450K+ subscribers producing weekly viral challenge videos, animated skits, and energetic podcasts.',
-    category: 'youtube',
+    client: 'Apex Creator Podcast',
+    role: 'Podcast Host & Video Producer',
+    bio: 'Weekly creator economy & tech entrepreneurship podcast producing high-retention multi-cam clips and viral vertical reels across YouTube Shorts, Reels, and TikTok.',
+    category: 'podcast',
     rating: 5,
-    comment: 'The Banter Brigade intro animation is absolutely top tier! The kinetic 3D typography, camera speed ramps, and custom audio stingers hook our viewers in the first 5 seconds every single episode.',
-    image: 'https://i.postimg.cc/y8hvQsRk/Banter-Brigade-Intro-Video-Chat-(1).png',
-    platform: 'YouTube 3D Intro Animation',
-    metric: 'VIRAL 3D INTRO • +45% BRAND RECALL',
-    metricColor: 'text-lime-400 border-lime-500/30 bg-lime-500/10',
-    icon: Clapperboard,
-    iconColor: 'text-lime-400',
-    accentBorder: 'hover:border-lime-500/60',
-    accentGlow: 'hover:shadow-[0_0_35px_rgba(163,230,53,0.25)]',
+    comment: 'These podcast clip highlights are unreal! Sharp speaker framing, punchy animated captions, and tight pacing that doubled our short-form reach overnight.',
+    image: 'https://i.postimg.cc/HLF44944/Podcast-Clip-Highlights-Chat-(1).png',
+    platform: 'Podcast Clips & Short-Form Reels',
+    metric: '2.4M CLIPS REACH • STUDIO AUDIO',
+    metricColor: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+    icon: Mic,
+    iconColor: 'text-purple-400',
+    accentBorder: 'hover:border-purple-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(192,132,252,0.25)]',
   },
   {
     id: 7,
-    client: 'Neon Stream Network',
-    role: 'Twitch Partner & Esports Host',
-    bio: 'Competitive FPS streamer and community tournament organizer specializing in synthwave aesthetics, neon visuals, and custom live broadcast overlays.',
-    category: 'gaming',
+    client: 'Neon Pulse Reacts',
+    role: 'Reaction & Entertainment Creator',
+    bio: 'High-energy reaction YouTuber and variety streamer with 290K+ subscribers known for vibrant neon motion graphics, comedic timing, and interactive end screens.',
+    category: 'youtube',
     rating: 5,
-    comment: 'The neon outro edit is straight fire! Glowing cyberpunk aesthetics, perfectly synced synth beats, and seamless social callouts. Communication in Messenger was lightning fast!',
-    image: 'https://i.postimg.cc/wB6FnZ5M/Neon-Outro-Edit-in-Messenger-(1).png',
-    platform: 'Cyberpunk Neon Outro & End Screen',
-    metric: 'CYBERPUNK NEON SFX • 100% RETENTION',
+    comment: 'Love how the neon reaction outro turned out! The glowing cyan-magenta accents, crisp sound effects, and end-card motion flow keep viewers clicking right into the next video.',
+    image: 'https://i.postimg.cc/nLNYYGYr/Neon-Reaction-Outro-Chat-Screenshot-(1).jpg',
+    platform: 'Neon Reaction Outro & Branding',
+    metric: '+52% END-SCREEN CTR • 60FPS MOTION',
     metricColor: 'text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10',
     icon: Layers,
     iconColor: 'text-fuchsia-400',
     accentBorder: 'hover:border-fuchsia-500/60',
     accentGlow: 'hover:shadow-[0_0_35px_rgba(232,121,249,0.25)]',
+  },
+  {
+    id: 8,
+    client: 'WildHorizon Docs',
+    role: 'Nature & Wildlife Filmmaker',
+    bio: 'Independent wildlife cinematographer and conservation storyteller capturing raw expedition footage and atmospheric nature documentaries in 4K HDR.',
+    category: 'youtube',
+    rating: 5,
+    comment: 'Truly breathtaking documentary pacing! The natural color grading, immersive ambient foley soundscape, and seamless storytelling elevated our expedition footage to broadcast quality.',
+    image: 'https://i.postimg.cc/k5LFFvFN/Wildlife-Documentary-Chat-Preview-(1).png',
+    platform: 'Wildlife Documentary Edit',
+    metric: '4K HDR MASTER • 89% RETENTION',
+    metricColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
+    icon: Film,
+    iconColor: 'text-emerald-400',
+    accentBorder: 'hover:border-emerald-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(52,211,153,0.25)]',
+  },
+  {
+    id: 9,
+    client: 'Banter Brigade',
+    role: 'Comedy & Gaming Creator Collective',
+    bio: 'High-energy gaming and comedy squad with 450K+ subscribers known for hilarious squad banter, chaotic challenge videos, and viral funny moments compilations.',
+    category: 'gaming',
+    rating: 5,
+    comment: 'The funny moments edit had our entire squad crying laughing! Perfect comedic zoom cuts, meme SFX timing, and animated subtitles that kept viewers glued from start to finish.',
+    image: 'https://i.postimg.cc/yN2XXyXy/Banter-Brigade-Funny-Moments-Chat-(1).png',
+    platform: 'Gaming Funny Moments Edit',
+    metric: 'VIRAL COMEDY PACING • +62% RETENTION',
+    metricColor: 'text-lime-400 border-lime-500/30 bg-lime-500/10',
+    icon: Smile,
+    iconColor: 'text-lime-400',
+    accentBorder: 'hover:border-lime-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(163,230,53,0.25)]',
   },
 ];
 
@@ -1751,16 +1751,6 @@ const ClientFeedbackCard: React.FC<{
           <h3 className="text-base font-heading font-bold uppercase text-white group-hover:text-[#a8fbd3] transition-colors">
             {item.client}
           </h3>
-          <p className="text-[11px] font-mono text-gray-400">
-            {item.role}
-          </p>
-        </div>
-
-        {/* Body: Quote */}
-        <div className="relative z-10 mb-4">
-          <p className="text-gray-300 text-xs italic leading-relaxed pl-3 border-l-2 border-[#a8fbd3]/40 group-hover:border-[#a8fbd3] transition-colors line-clamp-3">
-            "{item.comment}"
-          </p>
         </div>
       </div>
 
@@ -1968,14 +1958,6 @@ const ClientFeedbacksSection: React.FC = () => {
             <span>Explore More</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
           </Link>
-
-          <a
-            href="#contact"
-            className="group inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 text-white font-mono text-xs uppercase tracking-widest transition-all duration-300"
-          >
-            <span>Have a project? Let's Talk</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-          </a>
         </div>
       </div>
 
