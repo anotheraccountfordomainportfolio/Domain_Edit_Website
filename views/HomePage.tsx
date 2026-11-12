@@ -1,5 +1,6 @@
 import LazyYoutube from '../ui/LazyYoutube';
 import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { 
   Ticket, Globe, Zap, Music, MapPin, Menu, X, Calendar, Play, ChevronLeft, ChevronRight, 
@@ -228,11 +229,7 @@ const FinestWorkSection: React.FC = () => {
                   <LazyYoutube url={item.url} className="w-full h-full border-0 pointer-events-auto" title={item.title} />
                 </div>
 
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-[#a8fbd3]/10 text-[#a8fbd3] border border-[#a8fbd3]/20">
-                    {item.tag}
-                  </span>
-                </div>
+
 
                 <h3 className="text-xl font-heading font-black text-white uppercase mb-2 group-hover:text-[#a8fbd3] transition-colors">
                   {item.title}
@@ -325,28 +322,12 @@ const WhatWeCreateCard: React.FC<{
               <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${item.iconColor}`} />
             </div>
           </div>
-
-          {/* Equalizer animation and step number */}
-          <div className="flex items-center gap-2.5">
-            {/* Video/Audio timeline audio equalizer bouncing bars */}
-            <div className="flex items-end gap-0.5 h-4 opacity-40 group-hover:opacity-100 transition-opacity">
-              <div className="w-1 bg-[#a8fbd3] rounded-full animate-eq-1" />
-              <div className="w-1 bg-[#4fb7b3] rounded-full animate-eq-2" />
-              <div className="w-1 bg-[#a8fbd3] rounded-full animate-eq-3" />
-              <div className="w-1 bg-[#4fb7b3] rounded-full animate-eq-4" />
-            </div>
-
-            <span className="text-[10px] font-mono text-gray-500 group-hover:text-[#a8fbd3] transition-colors">
-              #{item.id}
-            </span>
-          </div>
         </div>
 
         <div className="flex items-center gap-2 mb-2">
           <span className={`text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${item.badgeColor}`}>
             {item.tag}
           </span>
-          <span className="text-[10px] font-mono text-gray-400">{item.spec}</span>
         </div>
 
         <h3 className="text-base md:text-lg font-heading font-black text-white uppercase mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#a8fbd3] transition-all">
@@ -384,6 +365,17 @@ const WhatWeCreateSection: React.FC = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [selectedCreationVideo, setSelectedCreationVideo] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (selectedCreationVideo) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedCreationVideo]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const el = containerRef.current;
@@ -743,49 +735,52 @@ const WhatWeCreateSection: React.FC = () => {
       </div>
 
       {/* Video Modal Preview for Cinematic Reel */}
-      <AnimatePresence>
-        {selectedCreationVideo && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedCreationVideo(null)}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
-          >
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedCreationVideo && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-3xl w-full bg-[#0a0a0a] border border-[#a8fbd3]/40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(168,251,211,0.3)] cursor-default p-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedCreationVideo(null)}
+              className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-pointer select-none"
             >
-              <button
-                onClick={() => setSelectedCreationVideo(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/20 flex items-center justify-center transition-all cursor-pointer"
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative max-w-3xl w-full bg-[#0a0a0a] border border-[#a8fbd3]/40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(168,251,211,0.3)] cursor-default p-6"
               >
-                <X className="w-5 h-5" />
-              </button>
+                <button
+                  onClick={() => setSelectedCreationVideo(null)}
+                  className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/20 flex items-center justify-center transition-all cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
-              <div className="mb-4">
-                <span className="text-[10px] font-mono text-[#a8fbd3] uppercase tracking-widest bg-[#a8fbd3]/10 px-3 py-1 rounded-full">
-                  {selectedCreationVideo.tag}
-                </span>
-                <h3 className="text-2xl font-heading font-black uppercase text-white mt-2">
-                  {selectedCreationVideo.title}
-                </h3>
-                <p className="text-xs font-mono text-gray-400 mt-1">
-                  {selectedCreationVideo.spec} • {selectedCreationVideo.software}
-                </p>
-              </div>
+                <div className="mb-4">
+                  <span className="text-[10px] font-mono text-[#a8fbd3] uppercase tracking-widest bg-[#a8fbd3]/10 px-3 py-1 rounded-full">
+                    {selectedCreationVideo.tag}
+                  </span>
+                  <h3 className="text-2xl font-heading font-black uppercase text-white mt-2">
+                    {selectedCreationVideo.title}
+                  </h3>
+                  <p className="text-xs font-mono text-gray-400 mt-1">
+                    {selectedCreationVideo.spec} • {selectedCreationVideo.software}
+                  </p>
+                </div>
 
-              <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-white/10 shadow-inner">
-                <LazyYoutube url={selectedCreationVideo.videoUrl} className="w-full h-full border-0 pointer-events-auto" />
-              </div>
+                <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-white/10 shadow-inner">
+                  <LazyYoutube url={selectedCreationVideo.videoUrl} className="w-full h-full border-0 pointer-events-auto" />
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 };
@@ -1348,11 +1343,6 @@ const HowWeWorkSection: React.FC = () => {
 
                 {/* Body Content */}
                 <div className="relative z-10 mb-4">
-                  <div className="flex items-center gap-1.5 mb-1.5">
-                    <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded border ${item.badgeColor}`}>
-                      {item.tag}
-                    </span>
-                  </div>
                   <h3 className="text-base md:text-lg font-heading font-black text-white uppercase mb-1.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#a8fbd3] transition-all">
                     {item.step}
                   </h3>
@@ -1556,6 +1546,7 @@ interface FeedbackItem {
   id: number;
   client: string;
   role: string;
+  bio?: string;
   category: 'youtube' | 'short' | 'podcast' | 'gaming';
   rating: number;
   comment: string;
@@ -1574,6 +1565,7 @@ const clientFeedbackList: FeedbackItem[] = [
     id: 1,
     client: 'Valorant Creator',
     role: 'Gaming Creator & Streamer',
+    bio: 'Radiant-tier competitive streamer and YouTube montage artist delivering high-octane FPS clutches to 180K+ subscribers.',
     category: 'gaming',
     rating: 5,
     comment: 'The Valorant montage was insane! Clean beat sync, crisp color grading, and flawless flow throughout.',
@@ -1588,83 +1580,105 @@ const clientFeedbackList: FeedbackItem[] = [
   },
   {
     id: 2,
-    client: 'Sarah Jenkins',
-    role: 'Marketing Director, Vibe Media',
-    category: 'short',
+    client: 'Tilted Towers Highlights',
+    role: 'Competitive Esports Creator',
+    bio: 'Tournament player & gaming content creator delivering fast-paced battle royale highlights and trickshot montages to 320K+ fans.',
+    category: 'gaming',
     rating: 5,
-    comment: 'Incredible turnaround time and vertical reels went viral within 48 hours! Dynamic captions and hook pacing that convert effortlessly.',
-    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
-    platform: 'Instagram Reels & TikTok',
-    metric: '2.4M VIEWS IN 48H',
-    metricColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
-    icon: Smartphone,
-    iconColor: 'text-pink-400',
-    accentBorder: 'hover:border-pink-500/60',
-    accentGlow: 'hover:shadow-[0_0_35px_rgba(244,114,182,0.25)]',
-  },
-  {
-    id: 3,
-    client: 'Marcus Thorne',
-    role: 'Podcast Host & Producer',
-    category: 'podcast',
-    rating: 5,
-    comment: 'The audio polishing and multi-cam synching are studio-grade. Clean cuts, zero dead air, and balanced broadcast frequency response.',
-    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
-    platform: 'Multi-Cam Podcast Show',
-    metric: 'ZERO DEAD AIR • STUDIO SFX',
-    metricColor: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
-    icon: Mic,
-    iconColor: 'text-cyan-400',
-    accentBorder: 'hover:border-cyan-500/60',
-    accentGlow: 'hover:shadow-[0_0_35px_rgba(34,211,238,0.25)]',
-  },
-  {
-    id: 4,
-    client: 'Elena Rostova',
-    role: 'E-Commerce Brand Founder',
-    category: 'podcast',
-    rating: 5,
-    comment: 'Our product promo looks like a Super Bowl commercial. The cinematic color grading and 3D kinetic text elevated our brand positioning instantly.',
-    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
-    platform: 'Commercial Promo Creative',
-    metric: '+180% CONVERSION ROAS',
+    comment: 'Insane velocity sync, 3D camera tracking around Tilted Towers, and punchy kill sound design. Blew up our engagement across YouTube and TikTok!',
+    image: 'https://i.postimg.cc/HW5YrMmz/1-tilted-towers-enhanced.png',
+    platform: 'Fortnite Montage & Highlights',
+    metric: '1.8M VIEWS • +380% WATCH TIME',
     metricColor: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
-    icon: Flame,
+    icon: Gamepad2,
     iconColor: 'text-amber-400',
     accentBorder: 'hover:border-amber-500/60',
     accentGlow: 'hover:shadow-[0_0_35px_rgba(251,191,36,0.25)]',
   },
   {
+    id: 3,
+    client: 'Artisan Beans Roastery',
+    role: 'Specialty Coffee Brand Director',
+    bio: 'Direct-to-consumer specialty craft coffee roastery known for ethical single-origin harvests and sensory culinary storytelling.',
+    category: 'short',
+    rating: 5,
+    comment: 'Our roasted bean commercial looks like a high-end cinematic documentary. Rich warm color grading, sensory macro pacing, and flawless audio mix that drove massive direct sales.',
+    image: 'https://i.postimg.cc/QCphw2mb/2-beans-enhanced.png',
+    platform: 'Brand Commercial & Social Ads',
+    metric: '+310% ROAS • 4K COMMERCIAL',
+    metricColor: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
+    icon: Flame,
+    iconColor: 'text-orange-400',
+    accentBorder: 'hover:border-orange-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(251,146,60,0.25)]',
+  },
+  {
+    id: 4,
+    client: 'Fairy Candles Studio',
+    role: 'Aesthetic Lifestyle Founder',
+    bio: 'Artisan botanical candle studio crafting hand-poured soy wax goods, aesthetic home decor, and viral calming ASMR showcases.',
+    category: 'short',
+    rating: 5,
+    comment: 'The ethereal lighting and dreamy aesthetic transitions made our candle collection look truly magical. Highest converting product showcase we have ever run!',
+    image: 'https://i.postimg.cc/PqRXwzNZ/3-fairy-candles-enhanced.png',
+    platform: 'E-Commerce Product Showcase',
+    metric: '4.2M REACH • 3.8X ROAS',
+    metricColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
+    icon: Sparkles,
+    iconColor: 'text-pink-400',
+    accentBorder: 'hover:border-pink-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(244,114,182,0.25)]',
+  },
+  {
     id: 5,
-    client: 'David Chen',
-    role: 'Tech Reviewer & Streamer',
+    client: 'Told & Untold Stories',
+    role: 'Documentary Director & Producer',
+    bio: 'Independent investigative documentary filmmaker and narrative storyteller producing long-form video essays with over 600K cumulative views.',
     category: 'youtube',
     rating: 5,
-    comment: 'Fast, precise, and deeply creative. Dominic knows how to hook viewers in the first 3 seconds and keep them glued with hyper-clean sound design.',
-    image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
-    platform: 'Tech Showcase & Gaming',
-    metric: '98.9% AUDIENCE RETENTION',
-    metricColor: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+    comment: 'Exceptional narrative pacing, nuanced audio mixing, and compelling title motion graphics. They turned complex archival footage into an emotionally gripping docu-series.',
+    image: 'https://i.postimg.cc/3JTKmwrt/4-told-untold-enhanced.png',
+    platform: 'Docu-Series & Narrative Video',
+    metric: '84% RETENTION • VIRAL DOC',
+    metricColor: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
     icon: Tv,
-    iconColor: 'text-purple-400',
-    accentBorder: 'hover:border-purple-500/60',
-    accentGlow: 'hover:shadow-[0_0_35px_rgba(192,132,252,0.25)]',
+    iconColor: 'text-cyan-400',
+    accentBorder: 'hover:border-cyan-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(34,211,238,0.25)]',
   },
   {
     id: 6,
-    client: 'Jessica Taylor',
-    role: 'Lifestyle Influencer',
-    category: 'short',
+    client: 'Banter Brigade',
+    role: 'Comedy & Gaming Creator Collective',
+    bio: 'Chaotic gaming and comedy podcast squad with 450K+ subscribers producing weekly viral challenge videos, animated skits, and energetic podcasts.',
+    category: 'youtube',
     rating: 5,
-    comment: 'The kinetic captions and seamless match cuts are unreal! My followers constantly ask who edits my content. Absolutely worth every penny.',
-    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80',
-    platform: 'Shorts & TikTok Ecosystem',
-    metric: '850K+ VIRAL REACH',
-    metricColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
-    icon: Sparkles,
-    iconColor: 'text-emerald-400',
-    accentBorder: 'hover:border-emerald-500/60',
-    accentGlow: 'hover:shadow-[0_0_35px_rgba(52,211,153,0.25)]',
+    comment: 'The Banter Brigade intro animation is absolutely top tier! The kinetic 3D typography, camera speed ramps, and custom audio stingers hook our viewers in the first 5 seconds every single episode.',
+    image: 'https://i.postimg.cc/y8hvQsRk/Banter-Brigade-Intro-Video-Chat-(1).png',
+    platform: 'YouTube 3D Intro Animation',
+    metric: 'VIRAL 3D INTRO • +45% BRAND RECALL',
+    metricColor: 'text-lime-400 border-lime-500/30 bg-lime-500/10',
+    icon: Clapperboard,
+    iconColor: 'text-lime-400',
+    accentBorder: 'hover:border-lime-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(163,230,53,0.25)]',
+  },
+  {
+    id: 7,
+    client: 'Neon Stream Network',
+    role: 'Twitch Partner & Esports Host',
+    bio: 'Competitive FPS streamer and community tournament organizer specializing in synthwave aesthetics, neon visuals, and custom live broadcast overlays.',
+    category: 'gaming',
+    rating: 5,
+    comment: 'The neon outro edit is straight fire! Glowing cyberpunk aesthetics, perfectly synced synth beats, and seamless social callouts. Communication in Messenger was lightning fast!',
+    image: 'https://i.postimg.cc/wB6FnZ5M/Neon-Outro-Edit-in-Messenger-(1).png',
+    platform: 'Cyberpunk Neon Outro & End Screen',
+    metric: 'CYBERPUNK NEON SFX • 100% RETENTION',
+    metricColor: 'text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10',
+    icon: Layers,
+    iconColor: 'text-fuchsia-400',
+    accentBorder: 'hover:border-fuchsia-500/60',
+    accentGlow: 'hover:shadow-[0_0_35px_rgba(232,121,249,0.25)]',
   },
 ];
 
@@ -1730,13 +1744,6 @@ const ClientFeedbackCard: React.FC<{
               </div>
             </div>
           </div>
-
-          {/* Equalizer Bars */}
-          <div className="flex items-end gap-1 h-4 px-2 py-1 rounded-lg bg-black/40 border border-white/5 opacity-70 group-hover:opacity-100 transition-opacity">
-            <div className="w-1 bg-[#a8fbd3] rounded-full animate-eq-1" />
-            <div className="w-1 bg-cyan-400 rounded-full animate-eq-2" />
-            <div className="w-1 bg-pink-400 rounded-full animate-eq-3" />
-          </div>
         </div>
 
         {/* Client Info */}
@@ -1787,8 +1794,43 @@ const ClientFeedbackCard: React.FC<{
 };
 
 const ClientFeedbacksSection: React.FC = () => {
-  const [selectedProof, setSelectedProof] = useState<FeedbackItem | null>(null);
+  const [selectedProofIndex, setSelectedProofIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLElement>(null);
+  const selectedProof = selectedProofIndex !== null ? clientFeedbackList[selectedProofIndex] : null;
+
+  useEffect(() => {
+    if (selectedProofIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedProofIndex]);
+
+  const handleNextProof = () => {
+    if (selectedProofIndex !== null) {
+      setSelectedProofIndex((selectedProofIndex + 1) % clientFeedbackList.length);
+    }
+  };
+
+  const handlePrevProof = () => {
+    if (selectedProofIndex !== null) {
+      setSelectedProofIndex((selectedProofIndex - 1 + clientFeedbackList.length) % clientFeedbackList.length);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedProofIndex === null) return;
+      if (e.key === 'ArrowRight') handleNextProof();
+      if (e.key === 'ArrowLeft') handlePrevProof();
+      if (e.key === 'Escape') setSelectedProofIndex(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProofIndex]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const el = containerRef.current;
@@ -1803,7 +1845,7 @@ const ClientFeedbacksSection: React.FC = () => {
       id="client-feedbacks"
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative z-10 py-20 md:py-32 overflow-hidden select-none [contain:paint]"
+      className="relative z-10 py-20 md:py-32 overflow-hidden select-none"
     >
       {/* Specular Mouse Tracking Radial Spotlight */}
       <div
@@ -1906,13 +1948,14 @@ const ClientFeedbacksSection: React.FC = () => {
             </div>
           </div>
         </div>
-        {/* 6 Review Cards Grid */}
+
+        {/* Client Review Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
-          {clientFeedbackList.slice(0, 6).map((item) => (
+          {clientFeedbackList.map((item, index) => (
             <ClientFeedbackCard
               key={item.id}
               item={item}
-              onOpenProof={(proof) => setSelectedProof(proof)}
+              onOpenProof={() => setSelectedProofIndex(index)}
             />
           ))}
         </div>
@@ -1936,80 +1979,123 @@ const ClientFeedbacksSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Lightbox Modal for Original Screenshot Proof - In-App Preview */}
-      <AnimatePresence>
-        {selectedProof && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedProof(null)}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-8 cursor-pointer"
-          >
+      {/* Lightbox Modal for Original Screenshot Proof - In-App Preview with Prev/Next Navigation */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedProof && selectedProofIndex !== null && (
             <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(168,251,211,0.25)] cursor-default"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProofIndex(null)}
+              className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-8 cursor-pointer select-none"
             >
               {/* Close Button */}
               <button
-                onClick={() => setSelectedProof(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-white text-white hover:text-black border border-white/20 flex items-center justify-center transition-all cursor-pointer"
+                onClick={() => setSelectedProofIndex(null)}
+                className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:text-[#a8fbd3] hover:border-[#a8fbd3]/50 transition-all shadow-xl cursor-pointer"
+                aria-label="Close image"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
 
-              <div className="p-4 md:p-6 flex flex-col items-center">
-                {/* Proof Image Container - In-App Preview */}
-                <div className="relative w-full max-h-[72vh] bg-black/80 flex items-center justify-center p-2 rounded-2xl border border-white/10 mb-4 overflow-hidden">
-                  <img
-                    src={selectedProof.image}
-                    alt={`${selectedProof.client} Screenshot Proof`}
-                    className="max-w-full max-h-[68vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute bottom-4 left-4 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
-                    <BadgeCheck className="w-3.5 h-3.5" />
-                    <span>AUTHENTIC CLIENT CHAT / VERIFIED</span>
-                  </div>
-                </div>
+              {/* Previous Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevProof();
+                }}
+                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-4 rounded-full bg-white/10 border border-white/20 text-white hover:text-[#a8fbd3] hover:border-[#a8fbd3]/50 transition-all shadow-xl cursor-pointer"
+                aria-label="Previous review"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
 
-                {/* Details Bar */}
-                <div className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-3 border-t border-white/10">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-lg border ${selectedProof.metricColor}`}>
-                        {selectedProof.metric}
-                      </span>
-                      <div className="flex items-center gap-1 text-yellow-400">
-                        {[...Array(selectedProof.rating)].map((_, i) => (
-                          <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                        ))}
-                      </div>
+              {/* Next Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextProof();
+                }}
+                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-4 rounded-full bg-white/10 border border-white/20 text-white hover:text-[#a8fbd3] hover:border-[#a8fbd3]/50 transition-all shadow-xl cursor-pointer"
+                aria-label="Next review"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+
+              <motion.div
+                key={selectedProof.id}
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative max-w-5xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(168,251,211,0.25)] cursor-default my-auto"
+              >
+                <div className="p-4 md:p-6 flex flex-col items-center">
+                  {/* Proof Image Container - In-App Preview */}
+                  <div className="relative w-full max-h-[72vh] bg-black/80 flex items-center justify-center p-2 rounded-2xl border border-white/10 mb-4 overflow-hidden">
+                    <img
+                      src={selectedProof.image}
+                      alt={`${selectedProof.client} Screenshot Proof`}
+                      className="max-w-full max-h-[68vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute bottom-4 left-4 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
+                      <BadgeCheck className="w-3.5 h-3.5" />
+                      <span>AUTHENTIC CLIENT CHAT / VERIFIED</span>
                     </div>
-                    <h3 className="text-lg md:text-xl font-heading font-black text-white uppercase">
-                      {selectedProof.client} • <span className="text-gray-400 font-sans text-xs font-normal">{selectedProof.role}</span>
-                    </h3>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <a
-                      href="#contact"
-                      onClick={() => setSelectedProof(null)}
-                      className="px-5 py-2.5 rounded-xl bg-[#a8fbd3] hover:bg-white text-black font-heading font-bold text-xs uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(168,251,211,0.3)] cursor-pointer"
-                    >
-                      Book A Call
-                    </a>
+                  {/* Details Bar */}
+                  <div className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-3 border-t border-white/10">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-lg border ${selectedProof.metricColor}`}>
+                          {selectedProof.metric}
+                        </span>
+                        <div className="flex items-center gap-1 text-yellow-400">
+                          {[...Array(selectedProof.rating)].map((_, i) => (
+                            <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                          ))}
+                        </div>
+                      </div>
+                      <h3 className="text-lg md:text-xl font-heading font-black text-white uppercase">
+                        {selectedProof.client} • <span className="text-gray-400 font-sans text-xs font-normal">{selectedProof.role}</span>
+                      </h3>
+                      {selectedProof.bio && (
+                        <div className="mt-2 mb-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 max-w-xl">
+                          <span className="text-[9px] font-mono uppercase tracking-widest text-[#a8fbd3] block mb-0.5">Creator Bio</span>
+                          <p className="text-gray-300 text-xs leading-relaxed">
+                            {selectedProof.bio}
+                          </p>
+                        </div>
+                      )}
+                      <p className="text-gray-300 text-xs italic mt-1 max-w-xl">
+                        "{selectedProof.comment}"
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="text-xs font-mono text-gray-400 whitespace-nowrap">
+                        Review {selectedProofIndex + 1} of {clientFeedbackList.length}
+                      </div>
+                      <a
+                        href="#contact"
+                        onClick={() => setSelectedProofIndex(null)}
+                        className="px-5 py-2.5 rounded-xl bg-[#a8fbd3] hover:bg-white text-black font-heading font-bold text-xs uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(168,251,211,0.3)] cursor-pointer"
+                      >
+                        Book A Call
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 };
