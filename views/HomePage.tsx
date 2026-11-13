@@ -25,7 +25,47 @@ import { BlueButterflies } from '../ui/BlueButterflies';
 import { Snail } from '../ui/Snail';
 import { BlueGlaucus } from '../ui/BlueGlaucus';
 
-// GPU-Accelerated Interactive Card with zero React re-render mouse tracking
+// Lightweight compositor-only radial spotlight hook (zero style recalc on sibling/child elements)
+function useSpotlightRef() {
+  const spotRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const onMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    rectRef.current = e.currentTarget.getBoundingClientRect();
+  };
+
+  const onMouseLeave = () => {
+    rectRef.current = null;
+  };
+
+  const onMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const el = spotRef.current;
+      if (!el) return;
+      const rect = rectRef.current || target.getBoundingClientRect();
+      rectRef.current = rect;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+    });
+  };
+
+  return { spotRef, onMouseEnter, onMouseLeave, onMouseMove };
+}
+
+// GPU-Accelerated Interactive Card with zero layout/paint mouse overhead
 const InteractiveStoryCard: React.FC<{
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -33,28 +73,15 @@ const InteractiveStoryCard: React.FC<{
   accentGlow: string;
   iconColor: string;
 }> = ({ icon: Icon, title, desc, accentGlow, iconColor }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--card-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--card-y', `${e.clientY - rect.top}px`);
-  };
-
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleCardMouseMove}
-      className={`group relative p-6 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/10 ${accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] flex flex-col items-center text-center cursor-pointer overflow-hidden will-change-transform shadow-[0_8px_30px_rgba(0,0,0,0.3)]`}
+      className={`group relative p-6 rounded-2xl bg-[#111432]/75 border border-white/10 ${accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] flex flex-col items-center text-center cursor-pointer overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.3)]`}
     >
-      {/* Zero-lag card cursor sheen */}
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"
         style={{
           background:
-            'radial-gradient(280px circle at var(--card-x, 50%) var(--card-y, 50%), rgba(255,255,255,0.08), transparent 70%)',
+            'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.09), transparent 70%)',
         }}
       />
 
@@ -74,45 +101,38 @@ const InteractiveStoryCard: React.FC<{
 
 // High-performance, GPU-accelerated Interactive OUR STORY Section
 const OurStorySection: React.FC = () => {
-  const containerRef = useRef<HTMLElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-  };
+  const { spotRef, onMouseEnter, onMouseLeave, onMouseMove } = useSpotlightRef();
 
   return (
     <section
       id="our-story"
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative z-10 py-16 md:py-24 overflow-hidden select-none group [contain:paint]"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      className="relative z-10 py-16 md:py-24 overflow-hidden select-none group cv-auto"
     >
-      {/* Zero-lag Interactive Cursor Spotlight */}
+      {/* Compositor-only Interactive Cursor Spotlight */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 will-change-transform z-0"
+        ref={spotRef}
+        className="pointer-events-none absolute top-0 left-0 w-[680px] h-[680px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
         style={{
-          background:
-            'radial-gradient(650px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168,251,211,0.12), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(168,251,211,0.12) 0%, transparent 70%)',
         }}
       />
 
-      {/* Floating Animated Cyber Orbs (Hardware-accelerated CSS) */}
+      {/* Ambient Cyber Orbs via pure radial gradients (zero CSS blur overhead) */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div 
-          className="absolute top-1/4 -left-20 w-[40vw] h-[40vw] bg-gradient-to-br from-[#a8fbd3]/15 via-[#4fb7b3]/10 to-transparent rounded-full blur-3xl animate-pulse will-change-transform" 
-          style={{ animationDuration: '8s' }} 
+        <div
+          className="absolute top-1/4 -left-20 w-[40vw] h-[40vw] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(168,251,211,0.12) 0%, rgba(79,183,179,0.06) 45%, transparent 70%)' }}
         />
-        <div 
-          className="absolute bottom-0 -right-20 w-[45vw] h-[45vw] bg-gradient-to-tl from-[#637ab9]/15 via-[#a8fbd3]/8 to-transparent rounded-full blur-3xl animate-pulse will-change-transform" 
-          style={{ animationDuration: '10s' }} 
+        <div
+          className="absolute bottom-0 -right-20 w-[45vw] h-[45vw] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(99,122,185,0.12) 0%, rgba(168,251,211,0.05) 45%, transparent 70%)' }}
         />
       </div>
 
-      {/* Floating Micro-sparkles (CSS animated) */}
+      {/* Static Micro-sparkles */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         {[...Array(6)].map((_, i) => (
           <div
@@ -120,37 +140,31 @@ const OurStorySection: React.FC = () => {
             style={{
               top: `${18 + i * 13}%`,
               left: `${8 + (i * 16) % 85}%`,
-              animationDuration: `${3.5 + i * 0.8}s`,
-              animationDelay: `${i * 0.5}s`,
             }}
-            className="absolute w-1.5 h-1.5 rounded-full bg-[#a8fbd3] shadow-[0_0_8px_#a8fbd3] animate-bounce opacity-40 will-change-transform"
+            className="absolute w-1.5 h-1.5 rounded-full bg-[#a8fbd3] shadow-[0_0_8px_#a8fbd3] opacity-40"
           />
         ))}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12 md:mb-16">
-          {/* Interactive Badge with spinning sparkle */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/40 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4 transition-all duration-300 shadow-[0_0_15px_rgba(168,251,211,0.1)] hover:scale-105 cursor-pointer">
-            <Sparkles className="w-3.5 h-3.5 text-[#a8fbd3] animate-spin" style={{ animationDuration: '6s' }} />
+            <Sparkles className="w-3.5 h-3.5 text-[#a8fbd3] animate-spin-slow" />
             <span>Behind The Edits</span>
           </div>
 
-          {/* Full uncropped "OUR STORY" heading strictly on ONE line */}
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-heading font-black tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white text-center leading-none mb-6 drop-shadow-[0_0_35px_rgba(168,251,211,0.25)] group-hover:drop-shadow-[0_0_55px_rgba(168,251,211,0.5)] transition-all duration-500 select-none whitespace-nowrap">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-heading font-black tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white text-center leading-none mb-6 transition-all duration-500 select-none whitespace-nowrap">
             OUR STORY
           </h2>
 
-          <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-8 font-light max-w-2xl drop-shadow-sm">
+          <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-8 font-light max-w-2xl">
             Built on relentless creative passion and technical precision, Domain Edits transforms raw footage into cinematic narratives that captivate viewers, boost retention, and scale creator brands worldwide.
           </p>
 
-          {/* Interactive "Read My Story" Button with glowing aura and arrow slide */}
           <div className="relative group/btn">
-            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#a8fbd3]/40 via-[#4fb7b3]/30 to-[#a8fbd3]/40 blur-md opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 pointer-events-none -z-10" />
             <Link
               to="/about"
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-white/10 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/15 hover:border-[#a8fbd3] transition-all duration-300 font-heading font-bold text-sm tracking-wider uppercase shadow-[0_10px_25px_rgba(0,0,0,0.4)] backdrop-blur-xl group-hover/btn:scale-105 active:scale-95 will-change-transform"
+              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-white/10 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/15 hover:border-[#a8fbd3] transition-all duration-300 font-heading font-bold text-sm tracking-wider uppercase shadow-[0_10px_25px_rgba(0,0,0,0.4)] group-hover/btn:scale-105 active:scale-95"
             >
               <span>Read My Story</span>
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-300" />
@@ -158,7 +172,6 @@ const OurStorySection: React.FC = () => {
           </div>
         </div>
 
-        {/* 3 Interactive Metric Cards with individual sheen */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6 max-w-4xl mx-auto">
           <InteractiveStoryCard
             icon={Heart}
@@ -204,15 +217,15 @@ const FinestWorkSection: React.FC = () => {
   ];
 
   return (
-    <section id="finest-work" className="relative z-10 py-20 md:py-32 px-4 md:px-6 overflow-hidden">
+    <section id="finest-work" className="relative z-10 py-20 md:py-32 px-4 md:px-6 overflow-hidden cv-auto">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4">
-            <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
+            <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
             <span>Curated Masterpieces</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black tracking-tight uppercase text-white mb-6 drop-shadow-[0_0_35px_rgba(168,251,211,0.25)]">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black tracking-tight uppercase text-white mb-6">
             A Showcase Of Our Finest Work
           </h2>
 
@@ -223,13 +236,11 @@ const FinestWorkSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {finestProjects.map((item, idx) => (
-            <div key={idx} className="group relative bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#a8fbd3]/50 p-5 rounded-3xl transition-all duration-300 hover:-translate-y-2 shadow-[0_16px_40px_rgba(0,0,0,0.4)] flex flex-col justify-between">
+            <div key={idx} className="group relative bg-[#111432]/75 border border-white/10 hover:border-[#a8fbd3]/50 p-5 rounded-3xl transition-all duration-300 hover:-translate-y-2 shadow-[0_16px_40px_rgba(0,0,0,0.4)] flex flex-col justify-between">
               <div>
                 <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/10 bg-black mb-5 shadow-inner">
                   <LazyYoutube url={item.url} className="w-full h-full border-0 pointer-events-auto" title={item.title} />
                 </div>
-
-
 
                 <h3 className="text-xl font-heading font-black text-white uppercase mb-2 group-hover:text-[#a8fbd3] transition-colors">
                   {item.title}
@@ -275,37 +286,21 @@ const WhatWeCreateCard: React.FC<{
   };
   onClick?: () => void;
 }> = ({ item, onClick }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const Icon = item.icon;
-
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--card-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--card-y', `${e.clientY - rect.top}px`);
-  };
 
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleCardMouseMove}
       onClick={onClick}
-      className={`group relative p-5 md:p-6 rounded-2xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_10px_30px_rgba(0,0,0,0.3)]`}
+      className={`group relative p-5 md:p-6 rounded-2xl bg-[#111432]/75 hover:bg-[#171b40]/85 border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.3)]`}
     >
-      {/* Specular spotlight following cursor inside card */}
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
         style={{
           background:
-            'radial-gradient(240px circle at var(--card-x, 50%) var(--card-y, 50%), rgba(255,255,255,0.12), transparent 75%)',
+            'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%)',
         }}
       />
 
-      {/* Diagonal laser sheen shimmer sweep on hover */}
-      <div className="pointer-events-none absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent -rotate-45 translate-x-[-150%] group-hover:translate-x-[250%] transition-transform duration-1000 ease-out" />
-
-      {/* Cyber HUD Corner Brackets */}
       <div className="absolute top-2 left-2 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3]/70 transition-colors pointer-events-none">┌</div>
       <div className="absolute top-2 right-2 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3]/70 transition-colors pointer-events-none">┐</div>
       <div className="absolute bottom-2 left-2 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3]/70 transition-colors pointer-events-none">└</div>
@@ -313,10 +308,7 @@ const WhatWeCreateCard: React.FC<{
 
       <div className="relative z-10 mb-4">
         <div className="flex items-center justify-between mb-4">
-          {/* Animated Moving Icon Pod */}
           <div className="relative">
-            {/* Pulsing ring aura */}
-            <div className="absolute -inset-1 rounded-2xl bg-white/10 group-hover:bg-[#a8fbd3]/20 blur-sm group-hover:animate-pulse transition-all" />
             <div className="relative w-12 h-12 rounded-xl bg-white/5 border border-white/10 group-hover:border-white/30 flex items-center justify-center text-[#a8fbd3] group-hover:bg-white/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-inner">
               <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${item.iconColor}`} />
             </div>
@@ -334,15 +326,13 @@ const WhatWeCreateCard: React.FC<{
         </h3>
 
         {item.videoUrl && (
-          <div 
-            onClick={(e) => e.stopPropagation()} 
+          <div
+            onClick={(e) => e.stopPropagation()}
             className="my-3 rounded-xl overflow-hidden border border-white/10 bg-black aspect-video pointer-events-auto shadow-md relative z-20"
           >
             <LazyYoutube url={item.videoUrl} title={item.title} className="w-full h-full border-0 pointer-events-auto" />
           </div>
         )}
-
-
       </div>
 
       <div className="relative z-10 pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-400">
@@ -358,10 +348,9 @@ const WhatWeCreateCard: React.FC<{
   );
 };
 
-// High-performance Animated WHAT WE CREATE Section with Moving Icons & Interactive Pipeline Effects
+// High-performance Animated WHAT WE CREATE Section
 const WhatWeCreateSection: React.FC = () => {
-  const containerRef = useRef<HTMLElement>(null);
-  const navigate = useNavigate();
+  const { spotRef, onMouseEnter, onMouseLeave, onMouseMove } = useSpotlightRef();
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [selectedCreationVideo, setSelectedCreationVideo] = useState<any | null>(null);
 
@@ -375,14 +364,6 @@ const WhatWeCreateSection: React.FC = () => {
       document.body.style.overflow = '';
     };
   }, [selectedCreationVideo]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--wc-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--wc-y', `${e.clientY - rect.top}px`);
-  };
 
   const categories = [
     'All',
@@ -596,23 +577,24 @@ const WhatWeCreateSection: React.FC = () => {
       );
 
   return (
-    <section 
-      id="what-we-create" 
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative z-10 py-16 md:py-24 overflow-hidden select-none group [contain:paint]"
+    <section
+      id="what-we-create"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      className="relative z-10 py-16 md:py-24 overflow-hidden select-none group cv-auto"
     >
-      {/* Zero-lag Interactive Spotlight Ambient Glow */}
+      {/* Compositor-only Interactive Spotlight */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 will-change-transform z-0"
+        ref={spotRef}
+        className="pointer-events-none absolute top-0 left-0 w-[750px] h-[750px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
         style={{
-          background:
-            'radial-gradient(750px circle at var(--wc-x, 50%) var(--wc-y, 50%), rgba(168,251,211,0.08), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(168,251,211,0.08) 0%, transparent 70%)',
         }}
       />
 
       {/* Cyber Grid Backing */}
-      <div 
+      <div
         className="pointer-events-none absolute inset-0 opacity-15 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] z-0"
         style={{
           backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
@@ -621,29 +603,25 @@ const WhatWeCreateSection: React.FC = () => {
         }}
       />
 
-      {/* Continuous Animated Floating Telemetry Badges with Moving Icons */}
+      {/* Floating Telemetry Badges */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden z-10">
-        {/* Floating Badge 1: Film 4K */}
-        <div className="absolute top-12 left-4 md:left-12 animate-float-drift hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-400/30 text-cyan-300 text-[10px] font-mono tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.2)] backdrop-blur-md">
-          <Film className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow" />
+        <div className="absolute top-12 left-4 md:left-12 animate-float-drift hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/75 border border-cyan-400/30 text-cyan-300 text-[10px] font-mono tracking-widest uppercase">
+          <Film className="w-3.5 h-3.5 text-cyan-400" />
           <span>4K 60FPS MASTERING</span>
         </div>
 
-        {/* Floating Badge 2: Zap Retention */}
-        <div className="absolute top-20 right-4 md:right-16 animate-float-drift-reverse hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-950/40 border border-amber-400/30 text-amber-300 text-[10px] font-mono tracking-widest uppercase shadow-[0_0_20px_rgba(245,158,11,0.2)] backdrop-blur-md">
-          <Zap className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+        <div className="absolute top-20 right-4 md:right-16 animate-float-drift-reverse hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-950/75 border border-amber-400/30 text-amber-300 text-[10px] font-mono tracking-widest uppercase">
+          <Zap className="w-3.5 h-3.5 text-amber-400" />
           <span>VIRAL RETENTION PACING</span>
         </div>
 
-        {/* Floating Badge 3: Sparkles VFX */}
-        <div className="absolute bottom-16 left-6 md:left-20 animate-float-drift hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-950/40 border border-purple-400/30 text-purple-300 text-[10px] font-mono tracking-widest uppercase shadow-[0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-md">
-          <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-spin-slow" />
+        <div className="absolute bottom-16 left-6 md:left-20 animate-float-drift hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-950/75 border border-purple-400/30 text-purple-300 text-[10px] font-mono tracking-widest uppercase">
+          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
           <span>3D MOTION & VFX LAB</span>
         </div>
 
-        {/* Floating Badge 4: Disc3 Audio */}
-        <div className="absolute bottom-24 right-8 md:right-24 animate-float-drift-reverse hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-950/40 border border-rose-400/30 text-rose-300 text-[10px] font-mono tracking-widest uppercase shadow-[0_0_20px_rgba(244,63,94,0.2)] backdrop-blur-md">
-          <Disc3 className="w-3.5 h-3.5 text-rose-400 animate-spin-slow" />
+        <div className="absolute bottom-24 right-8 md:right-24 animate-float-drift-reverse hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-950/75 border border-rose-400/30 text-rose-300 text-[10px] font-mono tracking-widest uppercase">
+          <Disc3 className="w-3.5 h-3.5 text-rose-400" />
           <span>DYNAMIC SOUNDSCAPES</span>
         </div>
       </div>
@@ -753,7 +731,7 @@ const WhatWeCreateSection: React.FC = () => {
 };
 
 
-// Interactive GPU-Accelerated Agency Philosophy Card with Specular Mouse Tracking
+// Interactive GPU-Accelerated Agency Philosophy Card
 const AgencyMotoCard: React.FC<{
   title: string;
   desc: string;
@@ -767,32 +745,18 @@ const AgencyMotoCard: React.FC<{
   animStyle?: React.CSSProperties;
   meta: string;
   stepNum: string;
-}> = ({ title, desc, icon: Icon, badge, badgeColor, accentBorder, accentGlow, iconColor, iconAnim = '', animStyle, meta, stepNum }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--card-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--card-y', `${e.clientY - rect.top}px`);
-  };
-
+}> = ({ title, desc, icon: Icon, badge, badgeColor, accentBorder, accentGlow, iconColor, iconAnim = '', animStyle }) => {
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleCardMouseMove}
-      className={`group relative p-7 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 ${accentBorder} ${accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 hover:bg-white/[0.06] flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
+      className={`group relative p-7 rounded-3xl bg-[#111432]/75 border border-white/10 ${accentBorder} ${accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 hover:bg-[#171b40]/85 flex flex-col justify-between cursor-pointer overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
     >
-      {/* Specular spotlight following cursor inside card */}
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
         style={{
           background:
-            'radial-gradient(280px circle at var(--card-x, 50%) var(--card-y, 50%), rgba(255,255,255,0.12), transparent 75%)',
+            'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%)',
         }}
       />
-      {/* HUD corner decorations */}
       <div className="absolute top-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">┌</div>
       <div className="absolute top-2.5 right-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">┐</div>
       <div className="absolute bottom-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">└</div>
@@ -818,7 +782,7 @@ const AgencyMotoCard: React.FC<{
 
       <div className="relative z-10 mt-4 pt-4 border-t border-white/5 flex items-center justify-end text-[10px] font-mono text-gray-500">
         <span className="text-[#a8fbd3] opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#a8fbd3] animate-ping" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#a8fbd3]" />
           ACTIVE
         </span>
       </div>
@@ -826,37 +790,30 @@ const AgencyMotoCard: React.FC<{
   );
 };
 
-// Ultra-smooth, animated & interactive AGENCY MOTO section
+// Ultra-smooth AGENCY MOTO section
 const AgencyMotoSection: React.FC = () => {
-  const motoRef = useRef<HTMLElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = motoRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--moto-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--moto-y', `${e.clientY - rect.top}px`);
-  };
+  const { spotRef, onMouseEnter, onMouseLeave, onMouseMove } = useSpotlightRef();
 
   return (
     <section
       id="agency-moto"
-      ref={motoRef}
-      onMouseMove={handleMouseMove}
-      className="relative z-10 py-24 md:py-36 overflow-hidden select-none [contain:paint]"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      className="relative z-10 py-24 md:py-36 overflow-hidden select-none group cv-auto"
     >
-      {/* Interactive Cursor Spotlight */}
+      {/* Compositor-only Interactive Cursor Spotlight */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity duration-500 z-0"
+        ref={spotRef}
+        className="pointer-events-none absolute top-0 left-0 w-[750px] h-[750px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
         style={{
-          background:
-            'radial-gradient(750px circle at var(--moto-x, 50%) var(--moto-y, 50%), rgba(168,251,211,0.08), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(168,251,211,0.08) 0%, transparent 70%)',
         }}
       />
 
       {/* Cyber Matrix Grid in Background */}
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-25">
-        <div 
+        <div
           className="w-full h-full"
           style={{
             backgroundImage: 'radial-gradient(rgba(168,251,211,0.25) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)',
@@ -868,16 +825,14 @@ const AgencyMotoSection: React.FC = () => {
         />
       </div>
 
-      {/* Concentric Rotating Cyber Orbit Rings with Sweeping Radar Beam */}
+      {/* Concentric Cyber Orbit Rings */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden flex items-center justify-center">
-        {/* Outer Tech Ring */}
-        <div 
-          className="absolute w-[680px] h-[680px] md:w-[980px] md:h-[980px] rounded-full border border-white/[0.05] animate-spin"
+        <div
+          className="absolute w-[680px] h-[680px] md:w-[920px] md:h-[920px] rounded-full border border-white/[0.05] animate-spin"
           style={{ animationDuration: '90s' }}
         >
-          {/* Orbital satellite nodes */}
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1 rounded-full bg-black/80 border border-[#a8fbd3]/40 text-[#a8fbd3] text-[9px] font-mono shadow-[0_0_15px_rgba(168,251,211,0.3)]">
-            <Sparkles className="w-3 h-3 text-[#a8fbd3] animate-spin" style={{ animationDuration: '4s' }} />
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1 rounded-full bg-black/80 border border-[#a8fbd3]/40 text-[#a8fbd3] text-[9px] font-mono">
+            <Sparkles className="w-3 h-3 text-[#a8fbd3]" />
             <span>ORBIT // ALPHA</span>
           </div>
           <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/80 border border-white/20 text-white/60 text-[9px] font-mono">
@@ -886,97 +841,66 @@ const AgencyMotoSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Middle Radar Scan Ring with Conic Gradient Sweep */}
-        <div 
-          className="absolute w-[450px] h-[450px] md:w-[650px] md:h-[650px] rounded-full border border-[#a8fbd3]/10 overflow-hidden animate-radar-sweep"
-        >
-          <div 
+        <div className="absolute w-[450px] h-[450px] md:w-[620px] md:h-[620px] rounded-full border border-[#a8fbd3]/10 overflow-hidden animate-radar-sweep">
+          <div
             className="w-full h-full"
             style={{
-              background: 'conic-gradient(from 0deg, rgba(168,251,211,0.18) 0deg, rgba(79,183,179,0.06) 45deg, transparent 70deg, transparent 360deg)',
+              background: 'conic-gradient(from 0deg, rgba(168,251,211,0.14) 0deg, rgba(79,183,179,0.04) 45deg, transparent 70deg, transparent 360deg)',
             }}
           />
         </div>
 
-        {/* Inner Tech Ring */}
-        <div 
-          className="absolute w-[280px] h-[280px] md:w-[400px] md:h-[400px] rounded-full border border-dashed border-white/10 animate-spin"
-          style={{ animationDuration: '45s', animationDirection: 'reverse' }}
+        <div
+          className="absolute w-[520px] h-[320px] rounded-full opacity-70"
+          style={{ background: 'radial-gradient(circle, rgba(168,251,211,0.1) 0%, transparent 70%)' }}
         />
-
-        {/* Ambient Core Light Glow */}
-        <div className="absolute w-[520px] h-[320px] bg-gradient-to-r from-[#a8fbd3]/15 via-[#4fb7b3]/10 to-transparent rounded-full blur-3xl opacity-70 will-change-transform" />
       </div>
 
-      {/* Floating Drifting Moving Icons with Cyber Badges */}
+      {/* Floating Drifting Badges */}
       <div className="pointer-events-none absolute inset-0 -z-5 overflow-hidden">
-        {/* Floating Item 1: Clock */}
-        <div 
-          style={{ top: '12%', left: '5%' }} 
-          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 text-amber-400 animate-float-drift shadow-[0_0_20px_rgba(251,191,36,0.15)]"
+        <div
+          style={{ top: '12%', left: '5%' }}
+          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#111432]/85 border border-white/10 text-amber-400 animate-float-drift"
         >
-          <Clock className="w-4 h-4 animate-spin" style={{ animationDuration: '12s' }} />
+          <Clock className="w-4 h-4" />
           <span className="text-[10px] font-mono uppercase tracking-wider text-amber-300/90 font-bold">48H EXPRESS</span>
         </div>
 
-        {/* Floating Item 2: Zap */}
-        <div 
-          style={{ top: '18%', right: '6%' }} 
-          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 text-[#a8fbd3] animate-float-drift-reverse shadow-[0_0_20px_rgba(168,251,211,0.15)]"
+        <div
+          style={{ top: '18%', right: '6%' }}
+          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#111432]/85 border border-white/10 text-[#a8fbd3] animate-float-drift-reverse"
         >
-          <Zap className="w-4 h-4 fill-current animate-pulse" />
+          <Zap className="w-4 h-4 fill-current" />
           <span className="text-[10px] font-mono uppercase tracking-wider text-[#a8fbd3] font-bold">HYPER VELOCITY</span>
         </div>
 
-        {/* Floating Item 3: Layers */}
-        <div 
-          style={{ bottom: '26%', left: '4%' }} 
-          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 text-cyan-400 animate-float-drift-reverse shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+        <div
+          style={{ bottom: '26%', left: '4%' }}
+          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#111432]/85 border border-white/10 text-cyan-400 animate-float-drift-reverse"
         >
-          <Layers className="w-4 h-4 animate-bounce" style={{ animationDuration: '4s' }} />
+          <Layers className="w-4 h-4" />
           <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-300 font-bold">MULTI-CAM VFX</span>
         </div>
 
-        {/* Floating Item 4: Flame */}
-        <div 
-          style={{ bottom: '22%', right: '5%' }} 
-          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 text-rose-400 animate-float-drift shadow-[0_0_20px_rgba(244,63,94,0.15)]"
+        <div
+          style={{ bottom: '22%', right: '5%' }}
+          className="absolute hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#111432]/85 border border-white/10 text-rose-400 animate-float-drift"
         >
-          <Flame className="w-4 h-4 fill-current animate-pulse" />
+          <Flame className="w-4 h-4 fill-current" />
           <span className="text-[10px] font-mono uppercase tracking-wider text-rose-300 font-bold">MAX RETENTION</span>
-        </div>
-
-        {/* Floating Item 5: Cpu */}
-        <div 
-          style={{ top: '55%', left: '2%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/[0.03] border border-white/10 text-white/50 animate-float-drift"
-        >
-          <Cpu className="w-3.5 h-3.5 text-[#a8fbd3]" />
-          <span className="text-[9px] font-mono uppercase tracking-widest text-gray-400">4K 60FPS</span>
-        </div>
-
-        {/* Floating Item 6: ShieldCheck */}
-        <div 
-          style={{ top: '52%', right: '3%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/[0.03] border border-white/10 text-white/50 animate-float-drift-reverse"
-        >
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-[9px] font-mono uppercase tracking-widest text-gray-400">100% SECURE</span>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          {/* Animated Futuristic Radar Pill */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/50 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-6 backdrop-blur-md transition-all duration-300 shadow-[0_0_25px_rgba(168,251,211,0.2)] hover:scale-105 cursor-pointer">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/50 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-6 transition-all duration-300 hover:scale-105 cursor-pointer">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#a8fbd3] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#a8fbd3]"></span>
             </span>
             <span>AGENCY MOTO</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-black tracking-tighter uppercase text-white mb-5 drop-shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-black tracking-tighter uppercase text-white mb-5">
             EVERY DETAIL <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">MATTERS.</span>
           </h2>
           <p className="text-gray-300 text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto">
@@ -984,7 +908,6 @@ const AgencyMotoSection: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Interactive Motion Pillar Cards with Specular Tracking & Corner HUD */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           <AgencyMotoCard
             title="Rapid Turnaround"
@@ -995,8 +918,7 @@ const AgencyMotoSection: React.FC = () => {
             accentBorder="hover:border-amber-400/50"
             accentGlow="hover:shadow-[0_0_35px_rgba(251,191,36,0.25)]"
             iconColor="group-hover:text-amber-400"
-            iconAnim="animate-spin"
-            animStyle={{ animationDuration: '10s' }}
+            iconAnim="animate-spin-slow"
             meta="EXPEDITED"
             stepNum="P-01"
           />
@@ -1042,14 +964,13 @@ const AgencyMotoSection: React.FC = () => {
         </div>
 
         {/* Continuous Kinetic Cyber Marquee Ribbon */}
-        <div className="relative mb-14 overflow-hidden rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-md py-4">
+        <div className="relative mb-14 overflow-hidden rounded-2xl bg-[#111432]/75 border border-white/10 py-4">
           <div className="animate-marquee-smooth flex items-center gap-8 text-[11px] font-mono uppercase tracking-[0.25em] text-[#a8fbd3]">
-            {/* Duplicated for seamless loop */}
-            {[...Array(2)].map((_, loopIdx) => (
+            {[0, 1].map((loopIdx) => (
               <div key={loopIdx} className="flex items-center gap-8 shrink-0">
-                <span className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#a8fbd3] animate-spin" style={{ animationDuration: '4s' }} /> ZERO COMPROMISE</span>
+                <span className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#a8fbd3]" /> ZERO COMPROMISE</span>
                 <span className="text-white/20">✦</span>
-                <span className="flex items-center gap-2"><Flame className="w-3.5 h-3.5 text-rose-400 animate-pulse" /> MAX RETENTION</span>
+                <span className="flex items-center gap-2"><Flame className="w-3.5 h-3.5 text-rose-400" /> MAX RETENTION</span>
                 <span className="text-white/20">✦</span>
                 <span className="flex items-center gap-2"><Zap className="w-3.5 h-3.5 text-[#a8fbd3]" /> 4K PRORES 60FPS</span>
                 <span className="text-white/20">✦</span>
@@ -1064,11 +985,10 @@ const AgencyMotoSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Interactive Glowing "Explore More Services" Button */}
         <div className="text-center">
           <Link
             to="/portfolio"
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/20 hover:border-[#a8fbd3] font-heading font-bold uppercase tracking-widest rounded-xl transition-all duration-300 shadow-lg hover:shadow-[0_0_35px_rgba(168,251,211,0.4)] hover:scale-105 active:scale-95 will-change-transform"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-[#a8fbd3] text-white hover:text-black border border-white/20 hover:border-[#a8fbd3] font-heading font-bold uppercase tracking-widest rounded-xl transition-all duration-300 shadow-lg hover:shadow-[0_0_35px_rgba(168,251,211,0.4)] hover:scale-105 active:scale-95"
           >
             <span>Explore More Services</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
@@ -1079,18 +999,10 @@ const AgencyMotoSection: React.FC = () => {
   );
 };
 
-// Interactive Animated HOW WE WORK (Simple Steps) Section with HUD pipeline & moving telemetry
+// Interactive Animated HOW WE WORK (Simple Steps) Section
 const HowWeWorkSection: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number | null>(null);
-  const containerRef = useRef<HTMLElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--work-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--work-y', `${e.clientY - rect.top}px`);
-  };
+  const { spotRef, onMouseEnter, onMouseLeave, onMouseMove } = useSpotlightRef();
 
   const steps = [
     { 
@@ -1162,24 +1074,24 @@ const HowWeWorkSection: React.FC = () => {
   ];
 
   return (
-    <section 
-      id="how-we-work" 
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative z-10 py-20 md:py-32 overflow-hidden select-none [contain:paint]"
+    <section
+      id="how-we-work"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      className="relative z-10 py-20 md:py-32 overflow-hidden select-none group cv-auto"
     >
-      {/* Dynamic Cursor Illumination Spotlight */}
+      {/* Compositor-only Dynamic Cursor Illumination Spotlight */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity duration-500 z-0"
+        ref={spotRef}
+        className="pointer-events-none absolute top-0 left-0 w-[700px] h-[700px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
         style={{
-          background:
-            'radial-gradient(700px circle at var(--work-x, 50%) var(--work-y, 50%), rgba(168,251,211,0.07), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(168,251,211,0.07) 0%, transparent 70%)',
         }}
       />
 
-      {/* Cyber Circuit Dot Grid Background */}
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-20">
-        <div 
+        <div
           className="w-full h-full"
           style={{
             backgroundImage: 'radial-gradient(rgba(168,251,211,0.3) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
@@ -1191,60 +1103,51 @@ const HowWeWorkSection: React.FC = () => {
         />
       </div>
 
-      {/* Floating Animated Ambient Icons & HUD Badges */}
+      {/* Floating Ambient Badges */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        {/* Floating Item 1: Workflow */}
-        <div 
-          style={{ top: '12%', left: '4%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-white/60 animate-float-drift backdrop-blur-sm"
+        <div
+          style={{ top: '12%', left: '4%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111432]/85 border border-white/10 text-white/60 animate-float-drift"
         >
-          <Workflow className="w-3.5 h-3.5 text-[#a8fbd3] animate-spin" style={{ animationDuration: '12s' }} />
+          <Workflow className="w-3.5 h-3.5 text-[#a8fbd3]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-gray-300">PIPELINE 6.0</span>
         </div>
 
-        {/* Floating Item 2: Zap (Speed) */}
-        <div 
-          style={{ top: '18%', right: '5%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-white/60 animate-float-drift-reverse backdrop-blur-sm"
+        <div
+          style={{ top: '18%', right: '5%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111432]/85 border border-white/10 text-white/60 animate-float-drift-reverse"
         >
-          <Zap className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+          <Zap className="w-3.5 h-3.5 text-amber-400" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-gray-300">TURBO WORKFLOW</span>
         </div>
 
-        {/* Floating Item 3: Repeat / Iteration */}
-        <div 
-          style={{ top: '65%', left: '3%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-white/60 animate-float-drift backdrop-blur-sm"
+        <div
+          style={{ top: '65%', left: '3%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111432]/85 border border-white/10 text-white/60 animate-float-drift"
         >
-          <Repeat className="w-3.5 h-3.5 text-cyan-400 animate-spin" style={{ animationDuration: '8s' }} />
+          <Repeat className="w-3.5 h-3.5 text-cyan-400" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-gray-300">LIVE FEEDBACK LOOP</span>
         </div>
 
-        {/* Floating Item 4: Shield Verification */}
-        <div 
-          style={{ top: '68%', right: '4%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-white/60 animate-float-drift-reverse backdrop-blur-sm"
+        <div
+          style={{ top: '68%', right: '4%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111432]/85 border border-white/10 text-white/60 animate-float-drift-reverse"
         >
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-gray-300">SATISFACTION GUARANTEED</span>
         </div>
 
-        {/* Ambient Pulsing Radar Ring in Background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[900px] md:h-[900px] rounded-full border border-white/[0.04] animate-pulse-ring pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[900px] md:h-[900px] rounded-full border border-white/[0.04] pointer-events-none" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
-        {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/50 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4 backdrop-blur-md transition-all duration-300 shadow-[0_0_20px_rgba(168,251,211,0.15)] hover:scale-105 cursor-pointer">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#a8fbd3] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#a8fbd3]"></span>
-            </span>
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#a8fbd3]/50 text-[#a8fbd3] text-xs font-mono uppercase tracking-widest mb-4 transition-all duration-300 hover:scale-105 cursor-pointer">
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#a8fbd3]" />
             <span>Studio Production Protocol</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-heading font-black tracking-tighter uppercase text-white mb-3 drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl font-heading font-black tracking-tighter uppercase text-white mb-3">
             SIMPLE <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">STEPS</span>
           </h2>
           <p className="text-xs md:text-sm font-mono text-[#a8fbd3] uppercase tracking-[0.3em] flex items-center justify-center gap-2">
@@ -1252,20 +1155,17 @@ const HowWeWorkSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Visual Pipeline Progression Tracker (Desktop Bar) */}
         <div className="relative mb-8 hidden lg:block px-4">
           <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden relative">
-            {/* Animated Energy Flow Laser */}
             <div className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-[#a8fbd3] to-transparent animate-energy-flow" />
           </div>
-          {/* Node checkmarks along track */}
           <div className="flex justify-between items-center -mt-2.5">
-            {steps.map((st, i) => (
-              <div 
+            {steps.map((_st, i) => (
+              <div
                 key={i}
                 className={`w-4 h-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
-                  activeStep === i 
-                    ? 'border-[#a8fbd3] bg-black scale-125 shadow-[0_0_12px_#a8fbd3]' 
+                  activeStep === i
+                    ? 'border-[#a8fbd3] bg-black scale-125 shadow-[0_0_12px_#a8fbd3]'
                     : 'border-white/30 bg-black/80 hover:border-[#a8fbd3]'
                 }`}
               >
@@ -1275,29 +1175,23 @@ const HowWeWorkSection: React.FC = () => {
           </div>
         </div>
 
-        {/* 6 Animated Interactive Step Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 mb-14">
           {steps.map((item, idx) => {
             const StepIcon = item.icon;
-            const isHovered = activeStep === idx;
-
             return (
               <div
                 key={idx}
                 onMouseEnter={() => setActiveStep(idx)}
                 onMouseLeave={() => setActiveStep(null)}
-                className={`group relative p-6 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] backdrop-blur-xl border border-white/10 hover:border-[#a8fbd3]/60 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform hover:-translate-y-2 shadow-[0_12px_32px_rgba(0,0,0,0.3)] ${item.glow}`}
+                className={`group relative p-6 rounded-2xl bg-[#111432]/75 hover:bg-[#171b40]/85 border border-white/10 hover:border-[#a8fbd3]/60 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer overflow-hidden hover:-translate-y-2 shadow-[0_12px_32px_rgba(0,0,0,0.3)] ${item.glow}`}
               >
-                {/* Specular Card Hover Glow */}
                 <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-b from-white/[0.08] to-transparent" />
 
-                {/* HUD Corner Accents */}
                 <div className="absolute top-2 left-2 text-[8px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">┌</div>
                 <div className="absolute top-2 right-2 text-[8px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">┐</div>
                 <div className="absolute bottom-2 left-2 text-[8px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">└</div>
                 <div className="absolute bottom-2 right-2 text-[8px] font-mono text-white/20 group-hover:text-[#a8fbd3]/60 transition-colors pointer-events-none">┘</div>
 
-                {/* Top Bar: Animated Icon + Step Index */}
                 <div className="relative z-10 flex items-center justify-between mb-5">
                   <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#a8fbd3] group-hover:bg-[#a8fbd3] group-hover:text-black group-hover:rotate-6 group-hover:scale-110 transition-all duration-300 shadow-inner">
                     <StepIcon className="w-5 h-5 transition-transform group-hover:scale-110" />
@@ -1307,7 +1201,6 @@ const HowWeWorkSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Body Content */}
                 <div className="relative z-10 mb-4">
                   <h3 className="text-base md:text-lg font-heading font-black text-white uppercase mb-1.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#a8fbd3] transition-all">
                     {item.step}
@@ -1317,7 +1210,6 @@ const HowWeWorkSection: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Footer Telemetry */}
                 <div className="relative z-10 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-gray-500 group-hover:text-[#a8fbd3] transition-colors">
                   <span>{item.duration}</span>
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
@@ -1327,11 +1219,10 @@ const HowWeWorkSection: React.FC = () => {
           })}
         </div>
 
-        {/* Interactive CTA Bar */}
         <div className="text-center">
           <a
             href="#contact"
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(168,251,211,0.35)] hover:scale-105 active:scale-95 cursor-pointer will-change-transform"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(168,251,211,0.35)] hover:scale-105 active:scale-95 cursor-pointer"
           >
             <span>Ready to start? Let's Talk</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
@@ -1344,36 +1235,26 @@ const HowWeWorkSection: React.FC = () => {
 
 // Animated, interactive TRUSTED BY & COMMUNITY section
 const AnimatedReviewSection: React.FC = () => {
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const containerRef = useRef<HTMLElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--review-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--review-y', `${e.clientY - rect.top}px`);
-  };
+  const { spotRef, onMouseEnter, onMouseLeave, onMouseMove } = useSpotlightRef();
 
   return (
-    <section 
-      id="review" 
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative z-10 py-20 md:py-28 overflow-hidden select-none [contain:paint]"
+    <section
+      id="review"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      className="relative z-10 py-20 md:py-28 overflow-hidden select-none group cv-auto"
     >
-      {/* Specular Mouse Tracking Spotlight */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity duration-500 z-0"
+        ref={spotRef}
+        className="pointer-events-none absolute top-0 left-0 w-[650px] h-[650px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
         style={{
-          background:
-            'radial-gradient(650px circle at var(--review-x, 50%) var(--review-y, 50%), rgba(168,251,211,0.08), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(168,251,211,0.08) 0%, transparent 70%)',
         }}
       />
 
-      {/* Futuristic Background Matrix Grid */}
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-20">
-        <div 
+        <div
           className="w-full h-full"
           style={{
             backgroundImage: 'radial-gradient(rgba(168,251,211,0.3) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)',
@@ -1385,67 +1266,56 @@ const AnimatedReviewSection: React.FC = () => {
         />
       </div>
 
-      {/* Floating Animated Ambient Icons */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        {/* Floating Facebook Badge */}
-        <div 
-          style={{ top: '20%', left: '4%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-blue-500/20 text-white/70 animate-float-drift backdrop-blur-sm shadow-[0_0_20px_rgba(24,119,242,0.15)]"
+        <div
+          style={{ top: '20%', left: '4%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111432]/85 border border-blue-500/20 text-white/70 animate-float-drift"
         >
-          <Facebook className="w-4 h-4 text-[#1877F2] animate-pulse" />
+          <Facebook className="w-4 h-4 text-[#1877F2]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-blue-300">FB VERIFIED</span>
         </div>
 
-        {/* Floating Instagram Badge */}
-        <div 
-          style={{ top: '22%', right: '4%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-pink-500/20 text-white/70 animate-float-drift-reverse backdrop-blur-sm shadow-[0_0_20px_rgba(228,64,95,0.15)]"
+        <div
+          style={{ top: '22%', right: '4%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#111432]/85 border border-pink-500/20 text-white/70 animate-float-drift-reverse"
         >
-          <Instagram className="w-4 h-4 text-[#E4405F] animate-pulse" />
+          <Instagram className="w-4 h-4 text-[#E4405F]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-pink-300">IG COMMUNITY</span>
         </div>
 
-        {/* Floating Star & Sparkle Badge */}
-        <div 
-          style={{ bottom: '15%', left: '8%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/[0.02] border border-white/10 text-white/50 animate-float-drift backdrop-blur-sm"
+        <div
+          style={{ bottom: '15%', left: '8%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-[#111432]/85 border border-white/10 text-white/50 animate-float-drift"
         >
-          <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 animate-spin" style={{ animationDuration: '10s' }} />
+          <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
           <span className="text-[9px] font-mono uppercase tracking-widest text-gray-400">TOP TIER SATISFACTION</span>
         </div>
 
-        {/* Floating Flame Badge */}
-        <div 
-          style={{ bottom: '18%', right: '8%' }} 
-          className="absolute hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/[0.02] border border-white/10 text-white/50 animate-float-drift-reverse backdrop-blur-sm"
+        <div
+          style={{ bottom: '18%', right: '8%' }}
+          className="absolute hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-[#111432]/85 border border-white/10 text-white/50 animate-float-drift-reverse"
         >
-          <Flame className="w-3.5 h-3.5 text-amber-400 animate-bounce" style={{ animationDuration: '3s' }} />
+          <Flame className="w-3.5 h-3.5 text-amber-400" />
           <span className="text-[9px] font-mono uppercase tracking-widest text-gray-400">VIRAL RETENTION</span>
         </div>
 
-        {/* Rotating Concentric Ring */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] md:w-[850px] md:h-[850px] rounded-full border border-white/[0.03] animate-pulse-ring pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] md:w-[850px] md:h-[850px] rounded-full border border-white/[0.03] pointer-events-none" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-        <h3 className="text-3xl md:text-5xl font-heading font-black tracking-tighter uppercase text-white mb-10 md:mb-12 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
+        <h3 className="text-3xl md:text-5xl font-heading font-black tracking-tighter uppercase text-white mb-10 md:mb-12">
           TRUSTED BY OVER <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">20+ CREATORS</span>
         </h3>
 
-        {/* Interactive Social Channels Showcase with 3D Hover & Glowing Aura */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-6 md:gap-10 max-w-2xl mx-auto">
-          {/* Facebook Card */}
           <a
             href="https://www.facebook.com/people/DomainEdit/61591837791833/"
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => setHoveredCard('facebook')}
-            onMouseLeave={() => setHoveredCard(null)}
-            className="group relative w-full sm:w-64 p-6 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-[#1877F2]/60 backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col items-center justify-center cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(24,119,242,0.35)]"
+            className="group relative w-full sm:w-64 p-6 rounded-2xl bg-[#111432]/75 hover:bg-[#171b40]/85 border border-white/10 hover:border-[#1877F2]/60 transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col items-center justify-center cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(24,119,242,0.35)]"
             data-hover="true"
             data-cursor-text="FACEBOOK"
           >
-            {/* Ambient Corner Accents */}
             <div className="absolute top-2 left-2 text-[8px] font-mono text-white/20 group-hover:text-[#1877F2] transition-colors pointer-events-none">┌</div>
             <div className="absolute top-2 right-2 text-[8px] font-mono text-white/20 group-hover:text-[#1877F2] transition-colors pointer-events-none">┐</div>
             <div className="absolute bottom-2 left-2 text-[8px] font-mono text-white/20 group-hover:text-[#1877F2] transition-colors pointer-events-none">└</div>
@@ -1468,18 +1338,14 @@ const AnimatedReviewSection: React.FC = () => {
             </span>
           </a>
 
-          {/* Instagram Card */}
           <a
             href="https://www.instagram.com/domain.editss/"
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => setHoveredCard('instagram')}
-            onMouseLeave={() => setHoveredCard(null)}
-            className="group relative w-full sm:w-64 p-6 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-[#E4405F]/60 backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col items-center justify-center cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(228,64,95,0.35)]"
+            className="group relative w-full sm:w-64 p-6 rounded-2xl bg-[#111432]/75 hover:bg-[#171b40]/85 border border-white/10 hover:border-[#E4405F]/60 transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col items-center justify-center cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(228,64,95,0.35)]"
             data-hover="true"
             data-cursor-text="INSTAGRAM"
           >
-            {/* Ambient Corner Accents */}
             <div className="absolute top-2 left-2 text-[8px] font-mono text-white/20 group-hover:text-[#E4405F] transition-colors pointer-events-none">┌</div>
             <div className="absolute top-2 right-2 text-[8px] font-mono text-white/20 group-hover:text-[#E4405F] transition-colors pointer-events-none">┐</div>
             <div className="absolute bottom-2 left-2 text-[8px] font-mono text-white/20 group-hover:text-[#E4405F] transition-colors pointer-events-none">└</div>
@@ -1686,44 +1552,29 @@ const ClientFeedbackCard: React.FC<{
   item: FeedbackItem;
   onOpenProof?: (item: FeedbackItem) => void;
 }> = ({ item, onOpenProof }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const Icon = item.icon;
-
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--card-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--card-y', `${e.clientY - rect.top}px`);
-  };
 
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleCardMouseMove}
       onClick={() => onOpenProof?.(item)}
-      className={`group relative p-6 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden will-change-transform shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
+      className={`group relative p-6 rounded-3xl bg-[#111432]/75 border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
     >
-      {/* Specular Spotlight inside Card */}
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
           background:
-            'radial-gradient(350px circle at var(--card-x, 50%) var(--card-y, 50%), rgba(255,255,255,0.08), transparent 70%)',
+            'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 70%)',
         }}
       />
 
-      {/* Cyber HUD Corner Crosshairs */}
       <div className="absolute top-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┌</div>
       <div className="absolute top-2.5 right-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┐</div>
       <div className="absolute bottom-2.5 left-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">└</div>
       <div className="absolute bottom-2.5 right-2.5 text-[9px] font-mono text-white/20 group-hover:text-[#a8fbd3] transition-colors pointer-events-none">┘</div>
 
       <div>
-        {/* Header: Moving Icon Pod + Platform Tag + Stars */}
         <div className="relative z-10 flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            {/* Animated Moving Icon Pod */}
             <div className="relative">
               <div className={`w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${item.iconColor} group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-inner group-hover:border-[#a8fbd3]/50`}>
                 <Icon className="w-5 h-5 transition-transform group-hover:scale-110" />
@@ -1736,17 +1587,13 @@ const ClientFeedbackCard: React.FC<{
               </span>
               <div className="flex items-center gap-1 text-yellow-400 mt-0.5">
                 {[...Array(item.rating)].map((_, r) => (
-                  <Star
-                    key={r}
-                    className="w-3 h-3 fill-current"
-                  />
+                  <Star key={r} className="w-3 h-3 fill-current" />
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Client Info */}
         <div className="mb-3 relative z-10">
           <h3 className="text-base font-heading font-bold uppercase text-white group-hover:text-[#a8fbd3] transition-colors">
             {item.client}
@@ -1754,18 +1601,18 @@ const ClientFeedbackCard: React.FC<{
         </div>
       </div>
 
-      {/* Image Thumbnail Preview - Cleanly Sized */}
       <div className="relative z-10 mt-auto">
         <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 bg-black/60 flex items-center justify-center p-2 mb-3 transition-all">
           <img
             src={item.image}
             alt={item.client}
-            className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
             referrerPolicy="no-referrer"
             loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/80 px-2.5 py-1 rounded-lg border border-[#a8fbd3]/30 backdrop-blur-md">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/85 px-2.5 py-1 rounded-lg border border-[#a8fbd3]/30">
               Expand Review Proof
             </span>
           </div>
@@ -1785,7 +1632,7 @@ const ClientFeedbackCard: React.FC<{
 
 const ClientFeedbacksSection: React.FC = () => {
   const [selectedProofIndex, setSelectedProofIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLElement>(null);
+  const { spotRef, onMouseEnter, onMouseLeave, onMouseMove } = useSpotlightRef();
   const selectedProof = selectedProofIndex !== null ? clientFeedbackList[selectedProofIndex] : null;
 
   useEffect(() => {
@@ -1822,31 +1669,22 @@ const ClientFeedbacksSection: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedProofIndex]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--feedbacks-x', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--feedbacks-y', `${e.clientY - rect.top}px`);
-  };
-
   return (
     <section
       id="client-feedbacks"
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative z-10 py-20 md:py-32 overflow-hidden select-none"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      className="relative z-10 py-20 md:py-32 overflow-hidden select-none group cv-auto"
     >
-      {/* Specular Mouse Tracking Radial Spotlight */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity duration-500 z-0"
+        ref={spotRef}
+        className="pointer-events-none absolute top-0 left-0 w-[750px] h-[750px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
         style={{
-          background:
-            'radial-gradient(750px circle at var(--feedbacks-x, 50%) var(--feedbacks-y, 50%), rgba(168,251,211,0.08), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(168,251,211,0.08) 0%, transparent 70%)',
         }}
       />
 
-      {/* Cyber Grid Matrix Background */}
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-20">
         <div
           className="w-full h-full"
@@ -1861,66 +1699,58 @@ const ClientFeedbacksSection: React.FC = () => {
         />
       </div>
 
-      {/* Moving Ambient Telemetry Badges Floating in Space */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        {/* Floating Camera Badge */}
         <div
           style={{ top: '12%', left: '3%' }}
-          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-[#a8fbd3]/20 text-white/80 animate-float-drift backdrop-blur-md shadow-[0_0_25px_rgba(168,251,211,0.15)]"
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#111432]/85 border border-[#a8fbd3]/20 text-white/80 animate-float-drift"
         >
-          <Camera className="w-4 h-4 text-[#a8fbd3] animate-pulse" />
+          <Camera className="w-4 h-4 text-[#a8fbd3]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-[#a8fbd3]">100% ORIGINAL SCREENSHOTS</span>
         </div>
 
-        {/* Floating Creator Praise Badge */}
         <div
           style={{ top: '15%', right: '3%' }}
-          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-cyan-500/20 text-white/80 animate-float-drift-reverse backdrop-blur-md shadow-[0_0_25px_rgba(34,211,238,0.15)]"
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#111432]/85 border border-cyan-500/20 text-white/80 animate-float-drift-reverse"
         >
-          <Quote className="w-4 h-4 text-cyan-400 animate-bounce" style={{ animationDuration: '3.5s' }} />
+          <Quote className="w-4 h-4 text-cyan-400" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-300">AUTHENTIC TESTIMONIALS</span>
         </div>
 
-        {/* Floating 5.0 Trust Badge */}
         <div
           style={{ bottom: '10%', left: '4%' }}
-          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-yellow-500/20 text-white/80 animate-float-drift backdrop-blur-md shadow-[0_0_25px_rgba(234,179,8,0.15)]"
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#111432]/85 border border-yellow-500/20 text-white/80 animate-float-drift"
         >
-          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 animate-spin" style={{ animationDuration: '10s' }} />
+          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-yellow-300">5.0 STAR TRUST SCORE</span>
         </div>
 
-        {/* Floating Viral Retention Badge */}
         <div
           style={{ bottom: '12%', right: '4%' }}
-          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-emerald-500/20 text-white/80 animate-float-drift-reverse backdrop-blur-md shadow-[0_0_25px_rgba(52,211,153,0.15)]"
+          className="absolute hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#111432]/85 border border-emerald-500/20 text-white/80 animate-float-drift-reverse"
         >
-          <TrendingUp className="w-4 h-4 text-[#a8fbd3] animate-pulse" />
+          <TrendingUp className="w-4 h-4 text-[#a8fbd3]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-300">+340% AVG RETENTION</span>
         </div>
 
-        {/* Rotating Concentric Radar Rings */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[950px] md:h-[950px] rounded-full border border-white/[0.04] animate-pulse-ring pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[950px] md:h-[950px] rounded-full border border-white/[0.04] pointer-events-none" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
-        {/* Animated Section Header */}
         <div className="text-center mb-10">
-          <h2 className="text-4xl md:text-6xl font-heading font-black tracking-tighter uppercase text-white mb-3 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
+          <h2 className="text-4xl md:text-6xl font-heading font-black tracking-tighter uppercase text-white mb-3">
             CLIENTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a8fbd3] to-white">FEEDBACK</span>
           </h2>
 
           <div className="flex items-center justify-center gap-3 text-xs md:text-sm font-mono tracking-widest uppercase mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#a8fbd3]/10 border border-[#a8fbd3]/30 text-[#a8fbd3]">
-              <Camera className="w-3.5 h-3.5 animate-pulse" />
+              <Camera className="w-3.5 h-3.5" />
               100% Original Screenshots & Chats
             </span>
           </div>
 
-          {/* Continuous Kinetic Marquee Ticker */}
-          <div className="relative overflow-hidden py-2.5 rounded-2xl bg-white/[0.02] border border-white/10 mb-10 max-w-5xl mx-auto backdrop-blur-sm">
+          <div className="relative overflow-hidden py-2.5 rounded-2xl bg-[#111432]/75 border border-white/10 mb-10 max-w-5xl mx-auto">
             <div className="animate-marquee-smooth text-[11px] font-mono uppercase tracking-widest text-gray-400 flex items-center gap-6">
-              <span className="flex items-center gap-1.5 text-[#a8fbd3] font-bold"><Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} /> 100% ORIGINAL SCREENSHOTS</span>
+              <span className="flex items-center gap-1.5 text-[#a8fbd3] font-bold"><Sparkles className="w-3.5 h-3.5" /> 100% ORIGINAL SCREENSHOTS</span>
               <span className="text-white/20">✦</span>
               <span className="flex items-center gap-1.5 text-yellow-400"><Star className="w-3.5 h-3.5 fill-yellow-400" /> 5.0 VERIFIED RATING</span>
               <span className="text-white/20">✦</span>
@@ -1939,7 +1769,6 @@ const ClientFeedbacksSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Client Review Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
           {clientFeedbackList.map((item, index) => (
             <ClientFeedbackCard
@@ -1953,7 +1782,7 @@ const ClientFeedbacksSection: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
           <Link
             to="/reviews"
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(168,251,211,0.35)] hover:scale-105 active:scale-95 cursor-pointer will-change-transform"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#a8fbd3] text-black font-heading font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(168,251,211,0.35)] hover:scale-105 active:scale-95 cursor-pointer"
           >
             <span>Explore More</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
@@ -2144,8 +1973,8 @@ const HomePage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="flex items-center gap-3 md:gap-6 text-xs md:text-base font-mono text-[#a8fbd3] tracking-[0.2em] md:tracking-[0.3em] uppercase mb-4 bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm"
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="flex items-center gap-3 md:gap-6 text-xs md:text-base font-mono text-[#a8fbd3] tracking-[0.2em] md:tracking-[0.3em] uppercase mb-4 bg-black/30 px-4 py-2 rounded-full"
           >
             <span>VIDEO</span>
             <span>EDITOR</span>
@@ -2153,23 +1982,23 @@ const HomePage: React.FC = () => {
 
           {/* Main Title */}
           <div className="relative w-full flex justify-center items-center min-h-[24vw] md:min-h-[12vw]">
-            <KineticText 
-              text="DOMAIN EDITS" 
-              as="h1" 
-              className="text-[12vw] md:text-[10vw] leading-[0.9] font-black tracking-tighter text-center z-10" 
+            <KineticText
+              text="DOMAIN EDITS"
+              as="h1"
+              className="text-[12vw] md:text-[10vw] leading-[0.9] font-black tracking-tighter text-center z-10"
             />
-            
-            {/* Static Orb */}
-            <div 
-               className="absolute -z-20 w-[50vw] h-[50vw] bg-white/5 blur-[40px] rounded-full pointer-events-none opacity-40"
+
+            <div
+              className="absolute -z-20 w-[50vw] h-[50vw] rounded-full pointer-events-none opacity-40"
+              style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)' }}
             />
           </div>
-          
+
           <motion.div
-             initial={{ scaleX: 0 }}
-             animate={{ scaleX: 1 }}
-             transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
-             className="w-full max-w-md h-px bg-gradient-to-r from-transparent via-white/50 to-transparent mt-4 md:mt-8 mb-6 md:mb-8"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 1.0, delay: 0.3, ease: 'circOut' }}
+            className="w-full max-w-md h-px bg-gradient-to-r from-transparent via-white/50 to-transparent mt-4 md:mt-8 mb-6 md:mb-8"
           />
 
         </motion.div>
@@ -2178,33 +2007,26 @@ const HomePage: React.FC = () => {
         <div className="absolute bottom-12 md:bottom-24 left-[-5vw] w-[110vw] z-20 overflow-visible pointer-events-none transform rotate-3 origin-center">
           <Snail />
           <div className="w-full py-4 md:py-6 bg-white text-black overflow-hidden border-y-4 border-black shadow-[0_0_40px_rgba(255,255,255,0.4)] pointer-events-auto">
-            <motion.div 
-              className="flex w-fit will-change-transform"
-              animate={{ x: "-50%" }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            >
-              {/* Duplicate content for seamless loop */}
+            <div className="animate-marquee-smooth" style={{ animationDuration: '50s' }}>
               {[0, 1].map((key) => (
                 <div key={key} className="flex whitespace-nowrap shrink-0">
                   {[...Array(4)].map((_, i) => (
                     <span key={i} className="text-3xl md:text-7xl font-heading font-black px-8 flex items-center gap-4">
-                      SKILLS <span className="text-black text-2xl md:text-4xl">●</span> 
-                      ABILITIES <span className="text-black text-2xl md:text-4xl">●</span> 
+                      SKILLS <span className="text-black text-2xl md:text-4xl">●</span>
+                      ABILITIES <span className="text-black text-2xl md:text-4xl">●</span>
                     </span>
                   ))}
                 </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Recent Works / Video Showcase */}
-      <div id="recent-work" className="relative max-w-7xl mx-auto px-4 md:px-6 py-16 z-30">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-[#a8fbd3]/5 via-transparent to-[#4fb7b3]/5 blur-[80px] rounded-3xl" />
-        
+      <div id="recent-work" className="relative max-w-7xl mx-auto px-4 md:px-6 py-16 z-30 cv-auto">
         <div className="text-center mb-12">
-          <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4">
+          <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4">
             Featured Projects
           </div>
           <h2 className="text-4xl md:text-6xl font-heading font-bold uppercase tracking-tight text-white justify-center text-center">
@@ -2212,7 +2034,6 @@ const HomePage: React.FC = () => {
           </h2>
         </div>
 
-        {/* Three Sections / Filter Tabs */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           <button
             onClick={() => setHomeTab('all')}
@@ -2234,7 +2055,7 @@ const HomePage: React.FC = () => {
           ]
             .filter(project => homeTab === 'all' || project.type === homeTab)
             .map((project, idx) => (
-            <div key={idx} className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 md:p-6 rounded-3xl shadow-[0_16px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#a8fbd3]/40 transition-all duration-300 group">
+            <div key={idx} className="bg-[#111432]/75 border border-white/10 p-4 md:p-6 rounded-3xl shadow-[0_16px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#a8fbd3]/40 transition-all duration-300 group">
               <div>
                 <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/5 bg-black mb-4 shadow-inner">
                   <LazyYoutube url={project.url} className="w-full h-full border-0 pointer-events-auto" />
@@ -2261,43 +2082,29 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 1. OUR STORY SECTION */}
       <OurStorySection />
-
-      {/* FINEST WORK SECTION WITH EXACT HEADING */}
       <FinestWorkSection />
-
-      {/* 2. WHAT WE CREATE SECTION */}
       <WhatWeCreateSection />
-
-      {/* 3. CLIENTS FEEDBACKS SECTION */}
       <ClientFeedbacksSection />
-
-      {/* 4. AGENCY MOTO SECTION */}
       <AgencyMotoSection />
-
-      {/* 5. HOW WE WORK SECTION */}
       <HowWeWorkSection />
-
-      {/* TRUSTED BY / REVIEW SECTION */}
       <AnimatedReviewSection />
 
       {/* CONTACT SECTION */}
-      <section id="contact" className="relative z-10 py-20 md:py-32 px-4 md:px-6 overflow-hidden">
+      <section id="contact" className="relative z-10 py-20 md:py-32 px-4 md:px-6 overflow-hidden cv-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-20 relative h-[10vw] md:h-[15vw] flex items-center justify-center overflow-visible">
-             <h2 className="text-[14vw] md:text-[16vw] font-heading font-bold opacity-50 text-transparent bg-clip-text bg-gradient-to-r from-[#a8fbd3] via-white to-[#a8fbd3] whitespace-nowrap leading-none select-none pointer-events-none tracking-tighter absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 drop-shadow-[0_0_30px_rgba(168,251,211,0.4)]">
+             <h2 className="text-[14vw] md:text-[16vw] font-heading font-bold opacity-50 text-transparent bg-clip-text bg-gradient-to-r from-[#a8fbd3] via-white to-[#a8fbd3] whitespace-nowrap leading-none select-none pointer-events-none tracking-tighter absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
                LETS TALK
              </h2>
-             
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.5 }}
             >
               <h3 className="text-4xl md:text-6xl font-heading font-bold mb-8 uppercase leading-tight">
                 WANNA <br/> <KineticText text="DISCUSS" as="span" className="justify-start mt-2" />
@@ -2305,7 +2112,7 @@ const HomePage: React.FC = () => {
               <p className="text-gray-400 text-lg mb-12 max-w-md">
                 I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.
               </p>
-              
+
               <div className="space-y-8">
                 <div className="flex items-center gap-6 group">
                   <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#a8fbd3] group-hover:text-black transition-all duration-300">
@@ -2316,7 +2123,7 @@ const HomePage: React.FC = () => {
                     <p className="text-xl font-bold">Domain.Edits@outlook.com</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-6 group">
                   <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#a8fbd3] group-hover:text-black transition-all duration-300">
                     <MessageSquare className="w-5 h-5" />
@@ -2324,20 +2131,20 @@ const HomePage: React.FC = () => {
                   <div>
                     <p className="text-xs font-mono text-[#a8fbd3] uppercase tracking-widest mb-1">Socials</p>
                     <div className="flex gap-4">
-                      <a 
-                        href="https://www.facebook.com/people/DomainEdit/61591837791833/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href="https://www.facebook.com/people/DomainEdit/61591837791833/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="hover:text-[#a8fbd3] transition-colors cursor-pointer"
                         data-hover="true"
                         data-cursor-text="FACEBOOK"
                       >
                         Facebook
                       </a>
-                      <a 
-                        href="https://www.instagram.com/domain.editss/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href="https://www.instagram.com/domain.editss/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="hover:text-[#a8fbd3] transition-colors cursor-pointer"
                         data-hover="true"
                         data-cursor-text="INSTAGRAM"
@@ -2351,11 +2158,11 @@ const HomePage: React.FC = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-3xl relative overflow-visible"
+              transition={{ duration: 0.5 }}
+              className="bg-[#111432]/75 border border-white/10 p-8 md:p-12 rounded-3xl relative overflow-visible"
             >
               
               {isSubmitted ? (

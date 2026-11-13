@@ -178,11 +178,10 @@ const ReviewsPage: React.FC = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group relative bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#a8fbd3]/50 p-6 rounded-3xl flex flex-col justify-between transition-all duration-500 hover:shadow-[0_10px_30px_rgba(168,251,211,0.15)]"
+                transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.25) }}
+                className="group relative bg-[#111432]/75 border border-white/10 hover:border-[#a8fbd3]/50 p-6 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-[0_10px_30px_rgba(168,251,211,0.15)]"
               >
                 <div>
-                  {/* Top Bar: Client & Stars */}
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <h3 className="text-lg font-heading font-bold text-white">
                       {review.client}
@@ -196,20 +195,20 @@ const ReviewsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  {/* Clickable Review Image Thumbnail - Cleanly Framed */}
-                  <div 
+                  <div
                     onClick={() => setActiveImageIndex(index)}
                     className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-3 transition-all bg-black/60 flex items-center justify-center p-2"
                   >
-                    <img 
-                      src={review.image} 
-                      alt={review.platform} 
-                      className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-700"
+                    <img
+                      src={review.image}
+                      alt={review.platform}
+                      className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
                       referrerPolicy="no-referrer"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                      <span className="text-xs font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/80 px-3 py-1.5 rounded-xl border border-[#a8fbd3]/30 backdrop-blur-md">
+                      <span className="text-xs font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/85 px-3 py-1.5 rounded-xl border border-[#a8fbd3]/30">
                         Open Review
                       </span>
                     </div>

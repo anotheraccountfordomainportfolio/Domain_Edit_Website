@@ -127,7 +127,7 @@ const ContactPage = () => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-3xl"
+              className="bg-[#111432]/75 border border-white/10 p-8 md:p-12 rounded-3xl"
             >
               {isSubmitted ? (
                 <motion.div 

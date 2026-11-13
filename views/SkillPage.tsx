@@ -37,99 +37,48 @@ interface SkillCardProps {
   key?: any;
 }
 
-// Highly dynamic, GPU-accelerated SkillCard with liquid hover, morphing borders, floating icons, and soft glow shadows
+// Highly dynamic, GPU-accelerated SkillCard without per-mousemove React re-renders
 const SkillCard = ({ name, desc, index, icon }: SkillCardProps) => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  };
-
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 25 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ delay: (index % 3) * 0.08, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ delay: Math.min((index % 3) * 0.06, 0.2), duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       onClick={() => {
         toast.info(name, {
           description: desc,
           icon: icon,
         });
       }}
-      className="relative overflow-hidden cursor-pointer select-none border border-white/10 backdrop-blur-xl bg-white/[0.02] p-8 rounded-2xl group will-change-transform"
-      style={{
-        borderRadius: isHovered ? "28px 16px 28px 16px" : "16px",
-        borderColor: isHovered ? "rgba(168, 251, 211, 0.4)" : "rgba(255, 255, 255, 0.1)",
-        boxShadow: isHovered 
-          ? "0 10px 30px -10px rgba(0,0,0,0.5), 0 0 20px 2px rgba(168, 251, 211, 0.15)" 
-          : "none",
-        transform: isHovered ? "translateY(-6px) translateZ(0) scale(1.02)" : "translateY(0px) translateZ(0) scale(1)",
-        transition: "border-radius 0.6s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-      }}
+      className="relative overflow-hidden cursor-pointer select-none border border-white/10 hover:border-[#a8fbd3]/45 bg-[#111432]/75 p-8 rounded-2xl group hover:-translate-y-1.5 transition-all duration-300 shadow-[0_10px_28px_rgba(0,0,0,0.3)]"
       data-hover="true"
       data-cursor-text={name.toUpperCase()}
     >
-      {/* Liquid Hover / Spotlight Radial Glow Effect */}
-      {isHovered && (
-        <span 
-          className="absolute pointer-events-none rounded-full blur-[65px] opacity-25 mix-blend-screen bg-[#a8fbd3] transition-opacity duration-300"
-          style={{
-            left: mousePos.x - 75,
-            top: mousePos.y - 75,
-            width: 150,
-            height: 150,
-          }}
-        />
-      )}
-
-      {/* Shine Sweep Overlay */}
-      <div 
-        className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/[0.05] to-transparent -translate-x-full group-hover:animate-shinesweep pointer-events-none"
-        style={{
-          transform: "skewX(-25deg)",
-        }}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ background: 'radial-gradient(circle at 50% 0%, rgba(168,251,211,0.12), transparent 70%)' }}
       />
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 relative z-10">
         <span className="font-mono text-xs text-white/40 group-hover:text-[#a8fbd3] transition-colors duration-300">
           {(index + 1).toString().padStart(2, '0')}
         </span>
-        
-        {/* Floating Icons container */}
-        <div 
-          className="text-white/60 group-hover:text-[#a8fbd3] p-2.5 rounded-xl bg-white/[0.03] group-hover:bg-[#a8fbd3]/10 border border-white/5 group-hover:border-[#a8fbd3]/20 transition-all duration-300"
-          style={{
-            transform: isHovered ? "translateY(-6px) rotate(8deg)" : "translateY(0px) rotate(0deg)",
-            transition: "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease, background-color 0.3s ease",
-          }}
-        >
+
+        <div className="text-white/60 group-hover:text-[#a8fbd3] p-2.5 rounded-xl bg-white/[0.03] group-hover:bg-[#a8fbd3]/10 border border-white/5 group-hover:border-[#a8fbd3]/20 group-hover:-translate-y-1 group-hover:rotate-6 transition-all duration-300">
           {icon}
         </div>
       </div>
 
-      <h4 className="text-xl font-heading font-bold uppercase mb-2 tracking-wide text-white group-hover:text-[#a8fbd3] transition-colors duration-300">
+      <h4 className="relative z-10 text-xl font-heading font-bold uppercase mb-2 tracking-wide text-white group-hover:text-[#a8fbd3] transition-colors duration-300">
         {name}
       </h4>
-      <p className="text-gray-400 font-sans text-sm leading-relaxed font-light group-hover:text-white/90 transition-colors duration-300">
+      <p className="relative z-10 text-gray-400 font-sans text-sm leading-relaxed font-light group-hover:text-white/90 transition-colors duration-300">
         {desc}
       </p>
 
-      {/* Neon Pulse visual dot in the corner */}
       <div className="absolute bottom-4 right-4 flex items-center justify-center">
         <span className="relative flex h-1.5 w-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#a8fbd3] opacity-75" />
           <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#a8fbd3]" />
         </span>
       </div>
@@ -193,13 +142,12 @@ const ToolProgressBar = ({ name, icon }: { name: string; icon: any; key?: any })
   };
 
   return (
-    <motion.div 
+    <motion.div
       ref={ref}
       onClick={handleBarClick}
-      whileHover={{ y: -4, scale: 1.01 }}
-      className={`bg-white/5 backdrop-blur-xl border p-6 rounded-2xl transition-all duration-300 cursor-pointer select-none group relative overflow-hidden ${
-        isClicked 
-          ? "border-[#a8fbd3] shadow-[0_0_20px_rgba(168,251,211,0.25)] scale-[0.98]" 
+      className={`bg-[#111432]/75 border p-6 rounded-2xl transition-all duration-300 cursor-pointer select-none group relative overflow-hidden hover:-translate-y-1 ${
+        isClicked
+          ? "border-[#a8fbd3] shadow-[0_0_20px_rgba(168,251,211,0.25)] scale-[0.98]"
           : "border-white/10 hover:border-[#a8fbd3]/40"
       }`}
     >
@@ -367,9 +315,8 @@ const SkillPage = () => {
             </div>
           </div>
 
-          {/* Section 2: Tools Stack with Progress Bars and Counter Animation */}
-          <div className="mb-32 relative">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#31326f]/15 rounded-full blur-[120px] pointer-events-none -z-10" />
+          {/* Section 2: Tools Stack with Progress Bars */}
+          <div className="mb-32 relative cv-auto">
             
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
               <div>
@@ -456,9 +403,8 @@ const SkillPage = () => {
           </div>
 
           {/* Section 4: What Can I Edit list */}
-          <div className="mb-32">
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-3xl relative overflow-hidden">
-              <div className="absolute -top-12 -right-12 w-64 h-64 bg-[#a8fbd3]/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="mb-32 cv-auto">
+            <div className="bg-[#111432]/75 border border-white/10 p-8 md:p-12 rounded-3xl relative overflow-hidden">
               
               <div className="max-w-2xl">
                 <span className="text-[#a8fbd3] font-mono text-xs uppercase tracking-widest block mb-3">// EDITING EXPERTISES</span>

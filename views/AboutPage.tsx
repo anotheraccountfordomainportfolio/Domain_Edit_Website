@@ -180,12 +180,16 @@ const AboutPage = () => {
               </div>
 
               <div className="relative group" data-hover="true" data-cursor-text="HELLO">
-                <div className="absolute -inset-4 bg-gradient-to-r from-[#a8fbd3] to-[#4fb7b3] rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                <div
+                  className="absolute -inset-6 rounded-3xl opacity-30 group-hover:opacity-50 transition-opacity pointer-events-none"
+                  style={{ background: 'radial-gradient(circle, rgba(168,251,211,0.3) 0%, rgba(79,183,179,0.15) 50%, transparent 75%)' }}
+                />
                 <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10">
-                  <img 
-                    src="https://i.postimg.cc/CKJTqK8Y/Professional-Color-Grading-Workspace.png" 
-                    alt="Domain Edits - Professional Color Grading Workspace" 
-                    className="w-full h-full object-cover transition-all duration-700 scale-110 hover:scale-100"
+                  <img
+                    src="https://i.postimg.cc/CKJTqK8Y/Professional-Color-Grading-Workspace.png"
+                    alt="Domain Edits - Professional Color Grading Workspace"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-500 scale-105 hover:scale-100"
                     referrerPolicy="no-referrer"
                    />
                 </div>
@@ -226,7 +230,7 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4"
+                className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4"
               >
                 Capabilities
               </motion.div>
@@ -238,16 +242,15 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 cv-auto">
               {expertise.map((item, idx) => (
                 <motion.div
                   key={item.title}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.05 }}
-                  whileHover={{ y: -6, scale: 1.01 }}
-                  className="p-6 rounded-2xl bg-white/[0.02] backdrop-blur-md border border-white/5 hover:border-[#a8fbd3]/30 transition-all duration-300 relative overflow-hidden group flex flex-col justify-between"
+                  transition={{ duration: 0.4, delay: Math.min(idx * 0.03, 0.2) }}
+                  className="p-6 rounded-2xl bg-[#111432]/75 border border-white/5 hover:border-[#a8fbd3]/30 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group flex flex-col justify-between"
                   data-hover="true"
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#a8fbd3]/10 to-transparent rounded-bl-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -274,7 +277,7 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4"
+                className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#a8fbd3] font-mono text-xs uppercase tracking-widest mb-4"
               >
                 Journey
               </motion.div>
@@ -294,13 +297,13 @@ const AboutPage = () => {
           </div>
 
           {/* STACK SECTION */}
-          <div className="mt-32">
+          <div className="mt-32 cv-auto">
             <div className="text-center md:text-left mb-12">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[#4fb7b3] font-mono text-xs uppercase tracking-widest mb-4"
+                className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#4fb7b3] font-mono text-xs uppercase tracking-widest mb-4"
               >
                 Production Tools
               </motion.div>
@@ -316,17 +319,14 @@ const AboutPage = () => {
               {stack.map((item, idx) => (
                 <motion.div
                   key={item.name}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="p-6 rounded-2xl bg-white/[0.01] hover:bg-white/[0.03] backdrop-blur-md border border-white/5 hover:border-[#4fb7b3]/40 transition-all duration-300 relative overflow-hidden group cursor-pointer select-none"
+                  transition={{ duration: 0.4, delay: Math.min(idx * 0.05, 0.25) }}
+                  className="p-6 rounded-2xl bg-[#111432]/75 hover:bg-[#171b40]/85 border border-white/5 hover:border-[#4fb7b3]/40 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group cursor-pointer select-none"
                   data-hover="true"
                   data-cursor-text={item.name.split(' ').pop()?.toUpperCase()}
                 >
-                  <div className="absolute -inset-1 bg-gradient-to-r from-[#a8fbd3]/0 via-[#4fb7b3]/0 to-[#a8fbd3]/0 group-hover:from-[#a8fbd3]/5 group-hover:via-[#4fb7b3]/5 group-hover:to-[#a8fbd3]/5 transition-all duration-700 blur" />
-                  
                   <div className="relative flex flex-col justify-between h-full">
                     <div>
                       <span className="text-[10px] font-mono tracking-widest text-[#4fb7b3] uppercase bg-[#4fb7b3]/10 px-2.5 py-0.5 rounded-full block w-fit mb-4">
@@ -344,12 +344,8 @@ const AboutPage = () => {
         </div>
       </main>
 
-      {/* Find Us On Floating Bar with Glass Effect */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mb-24 md:mb-32 relative z-20">
-        <div className="w-full bg-white/[0.02] border border-white/10 rounded-3xl py-10 md:py-14 px-8 md:px-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 backdrop-blur-xl shadow-[0_25px_60px_rgba(0,0,0,0.5)]">
-          {/* Subtle decorative background glow */}
-          <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-64 h-64 bg-[#a8fbd3]/5 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-64 h-64 bg-[#4fb7b3]/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="w-full bg-[#111432]/80 border border-white/10 rounded-3xl py-10 md:py-14 px-8 md:px-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_25px_60px_rgba(0,0,0,0.5)]">
           
           <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#a8fbd3] mb-3">Connect with the Studio</span>

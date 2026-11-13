@@ -176,7 +176,7 @@ const PortfolioPage = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 cv-auto">
             {filteredProjects.map((project, index) => {
               const thumb = getThumbnail(project.video) || project.image || 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1200&auto=format&fit=crop';
               return (
@@ -186,19 +186,20 @@ const PortfolioPage = () => {
                   className="group relative overflow-visible cursor-pointer"
                 >
                   <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-white/10 mb-6 bg-black">
-                    <img 
-                      src={thumb} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                    <img
+                      src={thumb}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100"
                       referrerPolicy="no-referrer"
-                      loading={index < 4 ? "eager" : "lazy"} 
+                      loading={index < 4 ? "eager" : "lazy"}
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                      <div className="w-14 h-14 rounded-full bg-[#a8fbd3] text-black flex items-center justify-center shadow-[0_0_30px_rgba(168,251,211,0.5)] transform group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-14 h-14 rounded-full bg-[#a8fbd3] text-black flex items-center justify-center shadow-[0_0_24px_rgba(168,251,211,0.45)] transform group-hover:scale-110 transition-transform duration-300">
                         <Play className="w-6 h-6 fill-black ml-0.5" />
                       </div>
                     </div>
-                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-mono bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 pointer-events-none">
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-mono bg-black/80 px-3 py-1.5 rounded-xl border border-white/10 pointer-events-none">
                       <span className="truncate">{project.title}</span>
                       <span className="text-[#a8fbd3] font-bold flex items-center gap-1">▶ Play Video</span>
                     </div>

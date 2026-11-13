@@ -114,7 +114,7 @@ const PrivacyPage: React.FC = () => {
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
 
-        <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <div className="bg-[#111432]/75 border border-white/10 rounded-3xl p-6 sm:p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-14 h-14 rounded-2xl bg-[#a8fbd3]/10 border border-[#a8fbd3]/30 flex items-center justify-center text-[#a8fbd3] shrink-0">
               <Shield className="w-7 h-7" />

@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
 @layer utilities {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -8,22 +20,26 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 750px;
+  }
 }
 
 @keyframes kinetic {
   0% {
     opacity: 0;
-    transform: translateY(40px) scaleY(0);
+    transform: translate3d(0, 32px, 0) scaleY(0.2);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scaleY(1);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
 @layer utilities {
   .animate-kinetic {
-    animation: kinetic 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: kinetic 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 }
 
@@ -38,55 +54,19 @@
 
 @layer utilities {
   .animate-gradient-shift {
-    animation: gradient-shift 6s linear infinite;
+    animation: gradient-shift 8s linear infinite;
   }
-}
-
-@keyframes blob1 {
-  0% { transform: translate3d(0, 0, 0); }
-  25% { transform: translate3d(40px, -20px, 0); }
-  50% { transform: translate3d(-20px, 20px, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-}
-
-@keyframes blob2 {
-  0% { transform: translate3d(0, 0, 0); }
-  25% { transform: translate3d(-40px, 40px, 0); }
-  50% { transform: translate3d(20px, -20px, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-}
-
-@keyframes blob3 {
-  0% { transform: translate3d(0, 0, 0); }
-  25% { transform: translate3d(50px, -40px, 0); }
-  50% { transform: translate3d(-50px, 40px, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-}
-
-@keyframes star-pulse {
-  0% { opacity: var(--star-opacity); }
-  50% { opacity: calc(var(--star-opacity) * 1.8); }
-  100% { opacity: var(--star-opacity); }
-}
-
-@layer utilities {
-  .animate-blob1 { animation: blob1 30s linear infinite; }
-  .animate-blob2 { animation: blob2 35s ease-in-out infinite; }
-  .animate-blob3 { animation: blob3 40s ease-in-out infinite; }
-  .animate-star { animation: star-pulse var(--star-duration) ease-in-out infinite var(--star-delay); }
 }
 
 @keyframes float-drifter {
   0% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  33% { transform: translate3d(8px, -18px, 0) rotate(4deg); }
-  66% { transform: translate3d(-10px, -8px, 0) rotate(-3deg); }
+  50% { transform: translate3d(6px, -14px, 0) rotate(3deg); }
   100% { transform: translate3d(0, 0, 0) rotate(0deg); }
 }
 
 @keyframes float-drifter-reverse {
   0% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  33% { transform: translate3d(-12px, -14px, 0) rotate(-4deg); }
-  66% { transform: translate3d(8px, -22px, 0) rotate(3deg); }
+  50% { transform: translate3d(-8px, -16px, 0) rotate(-3deg); }
   100% { transform: translate3d(0, 0, 0) rotate(0deg); }
 }
 
@@ -96,23 +76,16 @@
 }
 
 @keyframes radar-sweep {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes pulse-sheen {
-  0%, 100% { opacity: 0.2; transform: scale(0.98); }
-  50% { opacity: 0.6; transform: scale(1.02); }
+  from { transform: rotate(0deg) translateZ(0); }
+  to { transform: rotate(360deg) translateZ(0); }
 }
 
 .animate-float-drift {
-  animation: float-drifter 7s ease-in-out infinite;
-  will-change: transform;
+  animation: float-drifter 8s ease-in-out infinite;
 }
 
 .animate-float-drift-reverse {
-  animation: float-drifter-reverse 9s ease-in-out infinite;
-  will-change: transform;
+  animation: float-drifter-reverse 10s ease-in-out infinite;
 }
 
 .animate-marquee-smooth {
@@ -127,56 +100,58 @@
 }
 
 .animate-radar-sweep {
-  animation: radar-sweep 12s linear infinite;
-  will-change: transform;
+  animation: radar-sweep 14s linear infinite;
 }
 
 @keyframes energy-flow {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
+  0% { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(200%, 0, 0); }
 }
 
 @keyframes pulse-ring {
-  0% { transform: scale(0.95); opacity: 0.3; }
-  50% { transform: scale(1.05); opacity: 0.8; }
-  100% { transform: scale(0.95); opacity: 0.3; }
+  0%, 100% { transform: scale3d(0.96, 0.96, 1); opacity: 0.3; }
+  50% { transform: scale3d(1.04, 1.04, 1); opacity: 0.7; }
 }
 
 .animate-energy-flow {
-  animation: energy-flow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: energy-flow 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .animate-pulse-ring {
-  animation: pulse-ring 4s ease-in-out infinite;
+  animation: pulse-ring 5s ease-in-out infinite;
 }
 
 @keyframes eq-bar-1 {
-  0%, 100% { height: 4px; }
-  50% { height: 16px; }
+  0%, 100% { transform: scaleY(0.25); }
+  50% { transform: scaleY(1); }
 }
 @keyframes eq-bar-2 {
-  0%, 100% { height: 14px; }
-  50% { height: 6px; }
+  0%, 100% { transform: scaleY(0.9); }
+  50% { transform: scaleY(0.35); }
 }
 @keyframes eq-bar-3 {
-  0%, 100% { height: 8px; }
-  50% { height: 18px; }
+  0%, 100% { transform: scaleY(0.45); }
+  50% { transform: scaleY(1); }
 }
 @keyframes eq-bar-4 {
-  0%, 100% { height: 12px; }
-  50% { height: 4px; }
+  0%, 100% { transform: scaleY(0.75); }
+  50% { transform: scaleY(0.25); }
 }
 
 .animate-eq-1 {
+  transform-origin: bottom;
   animation: eq-bar-1 0.8s ease-in-out infinite;
 }
 .animate-eq-2 {
+  transform-origin: bottom;
   animation: eq-bar-2 0.6s ease-in-out infinite 0.15s;
 }
 .animate-eq-3 {
+  transform-origin: bottom;
   animation: eq-bar-3 0.7s ease-in-out infinite 0.3s;
 }
 .animate-eq-4 {
+  transform-origin: bottom;
   animation: eq-bar-4 0.9s ease-in-out infinite 0.05s;
 }
 
@@ -204,3 +179,17 @@
   animation-play-state: paused;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-float-drift,
+  .animate-float-drift-reverse,
+  .animate-radar-sweep,
+  .animate-pulse-ring,
+  .animate-spin-slow,
+  .animate-marquee-smooth,
+  .animate-ticker {
+    animation: none !important;
+  }
+}
