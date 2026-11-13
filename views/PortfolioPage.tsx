@@ -210,9 +210,6 @@ const PortfolioPage = () => {
                       <p className="text-gray-400 text-sm max-w-md">{project.description}</p>
                     </div>
                     <div className="flex gap-2 flex-wrap justify-end max-w-[150px]">
-                      {project.tags.map(tag => (
-                        <span key={tag} className="text-[10px] px-2 py-1 rounded-full border border-white/10 text-gray-500 uppercase">{tag}</span>
-                      ))}
                     </div>
                   </div>
                 </div>

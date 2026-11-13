@@ -2239,11 +2239,7 @@ const HomePage: React.FC = () => {
                 <div className="relative overflow-hidden rounded-2xl aspect-video border border-white/5 bg-black mb-4 shadow-inner">
                   <LazyYoutube url={project.url} className="w-full h-full border-0 pointer-events-auto" />
                 </div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[#a8fbd3] text-[10px] font-mono uppercase tracking-widest bg-[#a8fbd3]/10 px-2.5 py-0.5 rounded-full">
-                    {project.tag}
-                  </span>
-                </div>
+
                 <h3 className="text-xl font-heading font-bold uppercase mb-2 text-white group-hover:text-[#a8fbd3] transition-colors">
                   {project.title}
                 </h3>
