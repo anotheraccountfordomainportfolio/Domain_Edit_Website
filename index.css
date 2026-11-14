@@ -188,8 +188,22 @@
   .animate-radar-sweep,
   .animate-pulse-ring,
   .animate-spin-slow,
-  .animate-marquee-smooth,
+    .animate-marquee-smooth,
   .animate-ticker {
     animation: none !important;
   }
 }
+
+.protected-media {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+@media print {
+  .protected-print-hide {
+    display: none !important;
+  }
+}
+

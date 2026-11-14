@@ -24,6 +24,7 @@ import BottomNav from '../ui/BottomNav';
 import { BlueButterflies } from '../ui/BlueButterflies';
 import { Snail } from '../ui/Snail';
 import { BlueGlaucus } from '../ui/BlueGlaucus';
+import { ProtectedImage, protectedContainerProps, useContentProtection } from '../ui/ProtectedImage';
 
 // Lightweight compositor-only radial spotlight hook (zero style recalc on sibling/child elements)
 function useSpotlightRef() {
@@ -1401,7 +1402,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'gaming',
     rating: 5,
     comment: 'The Valorant montage was insane! Clean beat sync, crisp color grading, and flawless flow throughout.',
-    image: 'https://i.postimg.cc/sfhmHG8J/Valorant-Montage-Chat-with-Puppy-Profile-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2Mvc2ZobUhHOEovVmFsb3JhbnQtTW9udGFnZS1DaGF0LXdpdGgtUHVwcHktUHJvZmlsZS0oMSkucG5n',
     platform: 'Valorant Montage',
     metric: 'VERIFIED CLIENT CHAT • 100% ORIGINAL',
     metricColor: 'text-[#a8fbd3] border-[#a8fbd3]/30 bg-[#a8fbd3]/10',
@@ -1418,7 +1419,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'gaming',
     rating: 5,
     comment: 'Insane velocity sync, 3D camera tracking around Tilted Towers, and punchy kill sound design. Blew up our engagement across YouTube and TikTok!',
-    image: 'https://i.postimg.cc/HW5YrMmz/1-tilted-towers-enhanced.png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvSFc1WXJNbXovMS10aWx0ZWQtdG93ZXJzLWVuaGFuY2VkLnBuZw==',
     platform: 'Fortnite Montage & Highlights',
     metric: '1.8M VIEWS • +380% WATCH TIME',
     metricColor: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
@@ -1435,7 +1436,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'short',
     rating: 5,
     comment: 'Our roasted bean commercial looks like a high-end cinematic documentary. Rich warm color grading, sensory macro pacing, and flawless audio mix that drove massive direct sales.',
-    image: 'https://i.postimg.cc/QCphw2mb/2-beans-enhanced.png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvUUNwaHcybWIvMi1iZWFucy1lbmhhbmNlZC5wbmc=',
     platform: 'Brand Commercial & Social Ads',
     metric: '+310% ROAS • 4K COMMERCIAL',
     metricColor: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
@@ -1452,7 +1453,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'short',
     rating: 5,
     comment: 'The ethereal lighting and dreamy aesthetic transitions made our candle collection look truly magical. Highest converting product showcase we have ever run!',
-    image: 'https://i.postimg.cc/PqRXwzNZ/3-fairy-candles-enhanced.png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvUHFSWHd6TlovMy1mYWlyeS1jYW5kbGVzLWVuaGFuY2VkLnBuZw==',
     platform: 'E-Commerce Product Showcase',
     metric: '4.2M REACH • 3.8X ROAS',
     metricColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
@@ -1469,7 +1470,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'youtube',
     rating: 5,
     comment: 'Exceptional narrative pacing, nuanced audio mixing, and compelling title motion graphics. They turned complex archival footage into an emotionally gripping docu-series.',
-    image: 'https://i.postimg.cc/3JTKmwrt/4-told-untold-enhanced.png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvM0pUS213cnQvNC10b2xkLXVudG9sZC1lbmhhbmNlZC5wbmc=',
     platform: 'Docu-Series & Narrative Video',
     metric: '84% RETENTION • VIRAL DOC',
     metricColor: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
@@ -1486,7 +1487,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'podcast',
     rating: 5,
     comment: 'These podcast clip highlights are unreal! Sharp speaker framing, punchy animated captions, and tight pacing that doubled our short-form reach overnight.',
-    image: 'https://i.postimg.cc/HLF44944/Podcast-Clip-Highlights-Chat-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvSExGNDQ5NDQvUG9kY2FzdC1DbGlwLUhpZ2hsaWdodHMtQ2hhdC0oMSkucG5n',
     platform: 'Podcast Clips & Short-Form Reels',
     metric: '2.4M CLIPS REACH • STUDIO AUDIO',
     metricColor: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
@@ -1503,7 +1504,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'youtube',
     rating: 5,
     comment: 'Love how the neon reaction outro turned out! The glowing cyan-magenta accents, crisp sound effects, and end-card motion flow keep viewers clicking right into the next video.',
-    image: 'https://i.postimg.cc/nLNYYGYr/Neon-Reaction-Outro-Chat-Screenshot-(1).jpg',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvbkxOWVlHWXIvTmVvbi1SZWFjdGlvbi1PdXRyby1DaGF0LVNjcmVlbnNob3QtKDEpLmpwZw==',
     platform: 'Neon Reaction Outro & Branding',
     metric: '+52% END-SCREEN CTR • 60FPS MOTION',
     metricColor: 'text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10',
@@ -1520,7 +1521,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'youtube',
     rating: 5,
     comment: 'Truly breathtaking documentary pacing! The natural color grading, immersive ambient foley soundscape, and seamless storytelling elevated our expedition footage to broadcast quality.',
-    image: 'https://i.postimg.cc/k5LFFvFN/Wildlife-Documentary-Chat-Preview-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvazVMRkZ2Rk4vV2lsZGxpZmUtRG9jdW1lbnRhcnktQ2hhdC1QcmV2aWV3LSgxKS5wbmc=',
     platform: 'Wildlife Documentary Edit',
     metric: '4K HDR MASTER • 89% RETENTION',
     metricColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
@@ -1537,7 +1538,7 @@ const clientFeedbackList: FeedbackItem[] = [
     category: 'gaming',
     rating: 5,
     comment: 'The funny moments edit had our entire squad crying laughing! Perfect comedic zoom cuts, meme SFX timing, and animated subtitles that kept viewers glued from start to finish.',
-    image: 'https://i.postimg.cc/yN2XXyXy/Banter-Brigade-Funny-Moments-Chat-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MveU4yWFh5WHkvQmFudGVyLUJyaWdhZGUtRnVubnktTW9tZW50cy1DaGF0LSgxKS5wbmc=',
     platform: 'Gaming Funny Moments Edit',
     metric: 'VIRAL COMEDY PACING • +62% RETENTION',
     metricColor: 'text-lime-400 border-lime-500/30 bg-lime-500/10',
@@ -1557,7 +1558,9 @@ const ClientFeedbackCard: React.FC<{
   return (
     <div
       onClick={() => onOpenProof?.(item)}
-      className={`group relative p-6 rounded-3xl bg-[#111432]/75 border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.35)]`}
+      {...protectedContainerProps}
+      draggable={false}
+      className={`group relative p-6 rounded-3xl bg-[#111432]/75 border border-white/10 ${item.accentBorder} ${item.accentGlow} transition-all duration-300 ease-out hover:-translate-y-2 flex flex-col justify-between cursor-pointer overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.35)] protected-media select-none`}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -1602,16 +1605,14 @@ const ClientFeedbackCard: React.FC<{
       </div>
 
       <div className="relative z-10 mt-auto">
-        <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 bg-black/60 flex items-center justify-center p-2 mb-3 transition-all">
-          <img
+        <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 bg-black/60 flex items-center justify-center p-2 mb-3 transition-all protected-media">
+          <ProtectedImage
             src={item.image}
             alt={item.client}
-            className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
-            referrerPolicy="no-referrer"
-            loading="lazy"
-            decoding="async"
+            className="w-full h-full"
+            canvasClassName="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+          <div className="absolute inset-0 z-20 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl pointer-events-none">
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/85 px-2.5 py-1 rounded-lg border border-[#a8fbd3]/30">
               Expand Review Proof
             </span>
@@ -1669,13 +1670,20 @@ const ClientFeedbacksSection: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedProofIndex]);
 
+  useContentProtection({
+    enabled: true,
+    blockContextMenu: selectedProofIndex !== null,
+    blockCopy: selectedProofIndex !== null,
+  });
+
   return (
     <section
       id="client-feedbacks"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseMove={onMouseMove}
-      className="relative z-10 py-20 md:py-32 overflow-hidden select-none group cv-auto"
+      {...protectedContainerProps}
+      className="relative z-10 py-20 md:py-32 overflow-hidden select-none group cv-auto protected-media protected-print-hide"
     >
       <div
         ref={spotRef}
@@ -1799,7 +1807,8 @@ const ClientFeedbacksSection: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedProofIndex(null)}
-              className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-8 cursor-pointer select-none"
+              {...protectedContainerProps}
+              className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-8 cursor-pointer select-none protected-media protected-print-hide"
             >
               {/* Close Button */}
               <button
@@ -1841,20 +1850,22 @@ const ClientFeedbacksSection: React.FC = () => {
                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative max-w-5xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(168,251,211,0.25)] cursor-default my-auto"
+                {...protectedContainerProps}
+                className="relative max-w-5xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(168,251,211,0.25)] cursor-default my-auto protected-media"
               >
                 <div className="p-4 md:p-6 flex flex-col items-center">
-                  {/* Proof Image Container - In-App Preview */}
-                  <div className="relative w-full max-h-[72vh] bg-black/80 flex items-center justify-center p-2 rounded-2xl border border-white/10 mb-4 overflow-hidden">
-                    <img
+                  {/* Proof Image Container - Protected In-App Preview */}
+                  <div className="relative w-full max-h-[72vh] bg-black/80 flex items-center justify-center p-2 rounded-2xl border border-white/10 mb-4 overflow-hidden protected-media">
+                    <ProtectedImage
                       src={selectedProof.image}
                       alt={`${selectedProof.client} Screenshot Proof`}
-                      className="max-w-full max-h-[68vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
-                      referrerPolicy="no-referrer"
+                      eager
+                      className="max-w-full max-h-[68vh] inline-flex items-center justify-center"
+                      canvasClassName="max-w-full max-h-[68vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
                     />
-                    <div className="absolute bottom-4 left-4 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
+                    <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
                       <BadgeCheck className="w-3.5 h-3.5" />
-                      <span>AUTHENTIC CLIENT CHAT / VERIFIED</span>
+                      <span>AUTHENTIC CLIENT CHAT / PROTECTED</span>
                     </div>
                   </div>
 

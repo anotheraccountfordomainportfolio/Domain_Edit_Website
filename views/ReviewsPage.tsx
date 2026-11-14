@@ -9,6 +9,7 @@ import Footer from '../ui/Footer';
 import { SmoothCursor } from '../ui/magicui/smooth-cursor';
 import { BlueGlaucus } from '../ui/BlueGlaucus';
 import { BlueButterflies } from '../ui/BlueButterflies';
+import { ProtectedImage, protectedContainerProps, useContentProtection } from '../ui/ProtectedImage';
 
 interface Review {
   id: number;
@@ -29,7 +30,7 @@ const reviewsData: Review[] = [
     bio: 'Radiant-tier competitive streamer and YouTube montage artist delivering high-octane FPS clutches to 180K+ subscribers.',
     rating: 5,
     comment: 'The Valorant montage was insane! Clean beat sync, crisp color grading, and flawless flow throughout.',
-    image: 'https://i.postimg.cc/sfhmHG8J/Valorant-Montage-Chat-with-Puppy-Profile-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2Mvc2ZobUhHOEovVmFsb3JhbnQtTW9udGFnZS1DaGF0LXdpdGgtUHVwcHktUHJvZmlsZS0oMSkucG5n',
     platform: 'Valorant Montage',
   },
   {
@@ -39,7 +40,7 @@ const reviewsData: Review[] = [
     bio: 'Direct-to-consumer specialty craft coffee roastery known for ethical single-origin harvests and sensory culinary storytelling.',
     rating: 5,
     comment: 'Our roasted bean commercial looks like a high-end cinematic documentary. Rich warm color grading, sensory macro pacing, and flawless audio mix that drove massive direct sales.',
-    image: 'https://i.postimg.cc/QCphw2mb/2-beans-enhanced.png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvUUNwaHcybWIvMi1iZWFucy1lbmhhbmNlZC5wbmc=',
     platform: 'Brand Commercial & Social Ads',
   },
   {
@@ -49,7 +50,7 @@ const reviewsData: Review[] = [
     bio: 'Artisan botanical candle studio crafting hand-poured soy wax goods, aesthetic home decor, and viral calming ASMR showcases.',
     rating: 5,
     comment: 'The ethereal lighting and dreamy aesthetic transitions made our candle collection look truly magical. Highest converting product showcase we have ever run!',
-    image: 'https://i.postimg.cc/PqRXwzNZ/3-fairy-candles-enhanced.png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvUHFSWHd6TlovMy1mYWlyeS1jYW5kbGVzLWVuaGFuY2VkLnBuZw==',
     platform: 'E-Commerce Product Showcase',
   },
   {
@@ -59,7 +60,7 @@ const reviewsData: Review[] = [
     bio: 'Weekly creator economy & tech entrepreneurship podcast producing high-retention multi-cam clips and viral vertical reels across YouTube Shorts, Reels, and TikTok.',
     rating: 5,
     comment: 'These podcast clip highlights are unreal! Sharp speaker framing, punchy animated captions, and tight pacing that doubled our short-form reach overnight.',
-    image: 'https://i.postimg.cc/HLF44944/Podcast-Clip-Highlights-Chat-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvSExGNDQ5NDQvUG9kY2FzdC1DbGlwLUhpZ2hsaWdodHMtQ2hhdC0oMSkucG5n',
     platform: 'Podcast Clips & Short-Form Reels',
   },
   {
@@ -69,7 +70,7 @@ const reviewsData: Review[] = [
     bio: 'High-energy reaction YouTuber and variety streamer with 290K+ subscribers known for vibrant neon motion graphics, comedic timing, and interactive end screens.',
     rating: 5,
     comment: 'Love how the neon reaction outro turned out! The glowing cyan-magenta accents, crisp sound effects, and end-card motion flow keep viewers clicking right into the next video.',
-    image: 'https://i.postimg.cc/nLNYYGYr/Neon-Reaction-Outro-Chat-Screenshot-(1).jpg',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvbkxOWVlHWXIvTmVvbi1SZWFjdGlvbi1PdXRyby1DaGF0LVNjcmVlbnNob3QtKDEpLmpwZw==',
     platform: 'Neon Reaction Outro & Branding',
   },
   {
@@ -79,7 +80,7 @@ const reviewsData: Review[] = [
     bio: 'Independent wildlife cinematographer and conservation storyteller capturing raw expedition footage and atmospheric nature documentaries in 4K HDR.',
     rating: 5,
     comment: 'Truly breathtaking documentary pacing! The natural color grading, immersive ambient foley soundscape, and seamless storytelling elevated our expedition footage to broadcast quality.',
-    image: 'https://i.postimg.cc/k5LFFvFN/Wildlife-Documentary-Chat-Preview-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MvazVMRkZ2Rk4vV2lsZGxpZmUtRG9jdW1lbnRhcnktQ2hhdC1QcmV2aWV3LSgxKS5wbmc=',
     platform: 'Wildlife Documentary Edit',
   },
   {
@@ -89,7 +90,7 @@ const reviewsData: Review[] = [
     bio: 'High-energy gaming and comedy squad with 450K+ subscribers known for hilarious squad banter, chaotic challenge videos, and viral funny moments compilations.',
     rating: 5,
     comment: 'The funny moments edit had our entire squad crying laughing! Perfect comedic zoom cuts, meme SFX timing, and animated subtitles that kept viewers glued from start to finish.',
-    image: 'https://i.postimg.cc/yN2XXyXy/Banter-Brigade-Funny-Moments-Chat-(1).png',
+    image: 'aHR0cHM6Ly9pLnBvc3RpbWcuY2MveU4yWFh5WHkvQmFudGVyLUJyaWdhZGUtRnVubnktTW9tZW50cy1DaGF0LSgxKS5wbmc=',
     platform: 'Gaming Funny Moments Edit',
   },
 ];
@@ -132,8 +133,17 @@ const ReviewsPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeImageIndex]);
 
+  useContentProtection({
+    enabled: true,
+    blockContextMenu: true,
+    blockCopy: true,
+  });
+
   return (
-    <div className="relative min-h-screen flex flex-col text-white selection:bg-[#4fb7b3] selection:text-black cursor-auto overflow-x-hidden">
+    <div
+      {...protectedContainerProps}
+      className="relative min-h-screen flex flex-col text-white selection:bg-[#4fb7b3] selection:text-black cursor-auto overflow-x-hidden protected-media select-none"
+    >
       <SmoothCursor />
       <FluidBackground />
       <FloatingTextBackground />
@@ -197,17 +207,17 @@ const ReviewsPage: React.FC = () => {
                 <div>
                   <div
                     onClick={() => setActiveImageIndex(index)}
-                    className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-3 transition-all bg-black/60 flex items-center justify-center p-2"
+                    {...protectedContainerProps}
+                    draggable={false}
+                    className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 group-hover:border-[#a8fbd3]/40 cursor-pointer mb-3 transition-all bg-black/60 flex items-center justify-center p-2 protected-media"
                   >
-                    <img
+                    <ProtectedImage
                       src={review.image}
                       alt={review.platform}
-                      className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
+                      className="w-full h-full"
+                      canvasClassName="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                    <div className="absolute inset-0 z-20 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl pointer-events-none">
                       <span className="text-xs font-mono uppercase tracking-widest text-[#a8fbd3] bg-black/85 px-3 py-1.5 rounded-xl border border-[#a8fbd3]/30">
                         Open Review
                       </span>
@@ -242,8 +252,9 @@ const ReviewsPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-3xl flex items-center justify-center p-4 md:p-10 select-none"
+              className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-3xl flex items-center justify-center p-4 md:p-10 select-none protected-media protected-print-hide"
               onClick={() => setActiveImageIndex(null)}
+              {...protectedContainerProps}
             >
               {/* Close Button */}
               <button
@@ -278,22 +289,24 @@ const ReviewsPage: React.FC = () => {
                 <ChevronRight className="w-6 h-6" />
               </button>
 
-              {/* Modal Content - Properly Sized Pic */}
+              {/* Modal Content - Protected Properly Sized Pic */}
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center bg-[#0a0a0a] rounded-3xl border border-white/20 p-5 md:p-6 overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)] my-auto"
+                className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center bg-[#0a0a0a] rounded-3xl border border-white/20 p-5 md:p-6 overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)] my-auto protected-media"
                 onClick={(e) => e.stopPropagation()}
+                {...protectedContainerProps}
               >
                 {/* Properly Sized Pic Container */}
-                <div className="w-full max-h-[64vh] rounded-2xl overflow-hidden mb-4 border border-white/10 relative bg-black/90 flex items-center justify-center p-3">
-                  <img
+                <div className="w-full max-h-[64vh] rounded-2xl overflow-hidden mb-4 border border-white/10 relative bg-black/90 flex items-center justify-center p-3 protected-media">
+                  <ProtectedImage
                     src={reviewsData[activeImageIndex].image}
                     alt={reviewsData[activeImageIndex].client}
-                    className="max-w-full max-h-[60vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
-                    referrerPolicy="no-referrer"
+                    eager
+                    className="max-w-full max-h-[60vh] inline-flex items-center justify-center"
+                    canvasClassName="max-w-full max-h-[60vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
                   />
                 </div>
 
